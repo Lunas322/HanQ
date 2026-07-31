@@ -1,10 +1,12 @@
-import { Logo } from "./components/Logo";
+import { Header } from "./components/Header";
+import { LanguageToggle } from "./components/LanguageToggle";
 
-
-export default function Page () {
+export default function Page() {
   return (
-    <div className="flex justify-center items-center">
-      <Logo size="Logo" Tag="h1"/>
+    <div className="min-h-dvh bg-surface">
+      <Header>
+        <LanguageToggle/>
+      </Header>
     </div>
-  )
+  );
 }
