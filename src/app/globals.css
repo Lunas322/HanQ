@@ -2,4 +2,11 @@
 
 @theme {
   --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
+
+  /* HanQ Design System (Figma) — 색 토큰 */
+  --color-brand: #0064ff; /* Figma: color-text-brand */
+  --color-ink: #191f28; /* Figma: 본문/제목 텍스트 */
+  --color-ink-muted: #8b95a1; /* Figma: color-text-tertiary */
+  --color-surface: #ffffff; /* Figma: color-bg-surface */
+  --color-muted: #f2f4f6; /* Figma: color-bg-muted (배경 + 보더 겸용) */
 }
