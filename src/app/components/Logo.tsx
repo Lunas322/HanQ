@@ -1,6 +1,6 @@
 
 const sizeClass = {
-  xl: "text-[28px]",
+  xl: "text-[34px]",
   lg: "text-[22px]",
   md: "text-[17px]",
   sm: "text-[15px]",
