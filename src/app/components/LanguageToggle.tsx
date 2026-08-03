@@ -24,14 +24,18 @@ const PILL_SELECTED =
 const PILL_IDLE = "text-tertiary";
 
 
-export function LanguageToggle() {
+type Props = {
+  showLabel?: boolean;
+};
+
+export function LanguageToggle({ showLabel = false }: Props) {
   const [selected, setSelected] = useState<Language>("ko");
 
   return (
     <div
       className="flex items-center gap-[2px] rounded-full bg-muted p-[3px] text-[12px] font-bold"
     >
-      {LANGUAGES.map(({ code, flag}) => {
+      {LANGUAGES.map(({ code, flag, label }) => {
         const isSelected = code === selected;
 
         return (
@@ -41,6 +45,7 @@ export function LanguageToggle() {
             className={`${PILL_BASE} ${isSelected ? PILL_SELECTED : PILL_IDLE}`}
           >
             <span>{flag}</span>
+            {showLabel && <span>{label}</span>}
           </button>
         );
       })}
