@@ -21,7 +21,7 @@ const PILL_BASE =
 const PILL_SELECTED =
   "bg-surface text-brand shadow-[0px_4px_10px_-2px_rgba(0,0,0,0.06),0px_1px_2px_0px_rgba(0,0,0,0.04)]";
 
-const PILL_IDLE = "text-ink-muted";
+const PILL_IDLE = "text-tertiary";
 
 
 export function LanguageToggle() {

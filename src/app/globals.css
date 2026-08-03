@@ -4,9 +4,17 @@
   --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
 
   /* HanQ Design System (Figma) — 색 토큰 */
+  /* 텍스트 */
+  --color-ink: #191f28; /* Figma: color-text-primary */
+  --color-secondary: #6b7684; /* Figma: color-text-secondary */
+  --color-tertiary: #8b95a1; /* Figma: color-text-tertiary */
+  --color-disabled: #d1d6db; /* Figma: color-text-disabled */
+
+  /* 브랜드 */
   --color-brand: #0064ff; /* Figma: color-text-brand */
-  --color-ink: #191f28; /* Figma: 본문/제목 텍스트 */
-  --color-ink-muted: #8b95a1; /* Figma: color-text-tertiary */
+  --color-brand-subtle: #e8f3ff; /* brand 위에 얹는 옅은 배경 */
+
+  /* 배경 */
   --color-surface: #ffffff; /* Figma: color-bg-surface */
   --color-muted: #f2f4f6; /* Figma: color-bg-muted (배경 + 보더 겸용) */
 }
