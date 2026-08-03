@@ -17,4 +17,7 @@
   /* 배경 */
   --color-surface: #ffffff; /* Figma: color-bg-surface */
   --color-muted: #f2f4f6; /* Figma: color-bg-muted (배경 + 보더 겸용) */
+
+  /* border */
+  --color-default: #E5E8EB;
 }
