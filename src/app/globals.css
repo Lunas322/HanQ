@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* 가로 스크롤 영역에서 스크롤바만 숨김 (스크롤 동작은 그대로) */
+@utility scrollbar-hide {
+  scrollbar-width: none; /* Firefox, Chrome 121+ */
+  &::-webkit-scrollbar {
+    display: none; /* Safari, 구버전 Chrome */
+  }
+}
+
 @theme {
   --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
 
@@ -17,4 +25,7 @@
   /* 배경 */
   --color-surface: #ffffff; /* Figma: color-bg-surface */
   --color-muted: #f2f4f6; /* Figma: color-bg-muted (배경 + 보더 겸용) */
+
+  /* border */
+  --color-default: #E5E8EB;
 }

@@ -13,8 +13,7 @@ export type Question = {
   likeCount: number;
   commentCount: number;
   time: string;
-  category: string;
-  emoji: string;
+  categoryId: string;
 };
 
 export const QUESTIONS: Question[] = [
@@ -25,8 +24,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 2,
     commentCount: 4,
     time: "3분 전",
-    category: "취미",
-    emoji: "🎮",
+    categoryId: "hobby",
   },
   {
     id: "q2",
@@ -35,8 +33,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 47,
     commentCount: 12,
     time: "1시간 전",
-    category: "여행",
-    emoji: "✈️",
+    categoryId: "travel",
   },
   {
     id: "q3",
@@ -45,8 +42,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 0,
     commentCount: 0,
     time: "2시간 전",
-    category: "취업",
-    emoji: "💼",
+    categoryId: "job",
   },
   {
     id: "q4",
@@ -56,8 +52,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 128,
     commentCount: 34,
     time: "5시간 전",
-    category: "문화 / 일본",
-    emoji: "🎎",
+    categoryId: "culture",
   },
   {
     id: "q5",
@@ -66,8 +61,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 9,
     commentCount: 3,
     time: "어제",
-    category: "언어",
-    emoji: "💬",
+    categoryId: "language",
   },
   {
     id: "q6",
@@ -76,7 +70,6 @@ export const QUESTIONS: Question[] = [
     likeCount: 1,
     commentCount: 1,
     time: "2일 전",
-    category: "음식",
-    emoji: "🍜",
+    categoryId: "food",
   },
 ];

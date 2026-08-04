@@ -1,18 +1,24 @@
+import type { Category } from "../mocks/categories";
 import type { Question } from "../mocks/questions";
 
 type Props = {
   question: Question;
+  category?: Category;
 };
 
-export function QuestionCard({ question }: Props) {
-  const { user, content, likeCount, commentCount, time, category, emoji } = question;
+export function QuestionCard({ question, category }: Props) {
+  const { user, content, likeCount, commentCount, time } = question;
 
   return (
-    <div className="mt-3 w-full h-auto p-5 rounded-2xl shadow-[0_2px_8px_0_rgba(25,31,40,0.06)] flex flex-col gap-3">
-      <div className="bg-muted rounded-2xl w-fit flex px-[10px] py-[5px] gap-1 items-center">
-        <div>{emoji}</div>
-        <div className="text-[12px] text-secondary font-medium">{category}</div>
-      </div>
+    <div className="mt-3 w-full h-auto p-5 rounded-2xl shadow-[0_2px_8px_0_rgba(25,31,40,0.06)] flex flex-col gap-3 bg-surface">
+      {category && (
+        <div className="bg-muted rounded-2xl h-6 w-fit flex px-[10px] py-[5px] gap-1 items-center">
+          <div>{category.emoji}</div>
+          <div className="text-[12px] text-secondary font-medium">
+            {category.label}
+          </div>
+        </div>
+      )}
       <div className="text-[17px] font-bold">
         <span>{content}</span>
       </div>

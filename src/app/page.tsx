@@ -3,6 +3,7 @@ import { HeroContent } from "./components/HeroContent";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { Logo } from "./components/Logo";
 import { QuestionCard } from "./components/QuestionCard";
+import { findCategory } from "./mocks/categories";
 import { QUESTIONS } from "./mocks/questions";
 
 export default function Page() {
@@ -22,7 +23,10 @@ export default function Page() {
         <ul>
           {QUESTIONS.map((question) => (
             <li key={question.id}>
-              <QuestionCard question={question} />
+              <QuestionCard
+                question={question}
+                category={findCategory(question.categoryId)}
+              />
             </li>
           ))}
         </ul>
