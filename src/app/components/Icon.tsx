@@ -7,7 +7,9 @@ export type IconName =
   | "Comment"
   | "Heart"
   | "Home"
+  | "More"
   | "Plus"
+  | "Translate"
   | "User";
 
 // 색은 여기서 정하지 않는다. stroke="currentColor"라서 부모의 text-* 가 색을 결정한다.
@@ -45,8 +47,31 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
       strokeLinejoin="round"
     />
   ),
+  // 점 3개는 선이 아니라 면이라서, 부모 svg의 fill/stroke를 자식에서 덮어쓴다.
+  More: (
+    <>
+      <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" />
+    </>
+  ),
   Plus: (
     <path d="M12 5V19M5 12H19" strokeLinecap="round" strokeLinejoin="round" />
+  ),
+  Translate: (
+    <>
+      <path d="M2 5H14M7 2H8" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M4 14L10 8L12 5M5 8L11 14"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22 22L17 12L12 22M14 18H20"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </>
   ),
   User: (
     <>
@@ -80,7 +105,7 @@ export function Icon({ icon, size, className }: Props) {
       stroke="currentColor"
       strokeWidth={2}
       aria-hidden="true"
-      className={`${sizeClass[size]} ${className ?? ""}`}
+      className={`text-icon ${sizeClass[size]} ${className ?? ""}`}
     >
       {ICON_PATHS[icon]}
     </svg>
