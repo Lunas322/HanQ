@@ -33,9 +33,11 @@ export default function Page() {
       </section>
 
       <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-5.5">
-        <div className="w-full h-14">
-          <Button content="Google로 3초 만에 시작하기" disabled={false} />
-        </div>
+        <Button
+          content="Google로 3초 만에 시작하기"
+          size="lg"
+          className="w-full"
+        />
         <p className="mt-[10px] flex justify-center text-[12px] font-medium text-tertiary">
           가입하면 이용약관과 개인정보 방침에 동의하게 돼요
         </p>
