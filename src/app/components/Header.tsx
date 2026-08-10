@@ -19,15 +19,16 @@ const LeftIcon: Record<MainIcon,React.ReactNode> = {
 
 export function Header({ children,mainIcon,title }: Props) {
   return (
-    <header className="flex h-14 w-full items-center justify-between border-b border-muted bg-surface pl-5 pr-3">
+    // 양옆 1fr이 남은 공간을 똑같이 나눠 가지므로, 좌우 내용 폭과 무관하게 가운데가 진짜 가운데다.
+    // 세 칸을 항상 렌더해야 한다. 비었다고 건너뛰면 다음 요소가 그 칸으로 밀려 들어온다.
+    <header className="grid h-14 w-full grid-cols-[1fr_auto_1fr] items-center border-b border-muted bg-surface pl-5 pr-3">
+      <div className="flex items-center justify-self-start">
+        {LeftIcon[mainIcon]}
+      </div>
 
+      <span className="min-w-0 truncate text-center font-bold">{title}</span>
 
-    {LeftIcon[mainIcon]}
-
-    {title ? (<div className="flex items-center justify-center font-bold">{title}</div>):null}
-      {children ? (
-        <div className="flex items-center gap-2">{children}</div>
-      ) : null}
+      <div className="flex items-center gap-2 justify-self-end">{children}</div>
     </header>
   );
 }
