@@ -7,7 +7,7 @@ type Props = {
     children: React.ReactNode
 }
 
-export default function detailLayouy ({children}:Props) {
+export default function detailLayout ({children}:Props) {
     return (
   <>
       <div className="sticky top-0 z-50">
