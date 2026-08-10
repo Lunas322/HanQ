@@ -11,9 +11,9 @@ export default function HomeLayout({ children }: Props) {
   return (
     <>
       <div className="sticky top-0 z-50">
-        <Header>
+        <Header mainIcon="Logo">
           <LanguageToggle />
-          <Icon size="l" icon="Bell" />
+          <Icon size="l" icon="Bell" className="text-icon" />
         </Header>
       </div>
 

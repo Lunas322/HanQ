@@ -17,6 +17,11 @@
   --color-secondary: #6b7684; /* Figma: color-text-secondary */
   --color-tertiary: #8b95a1; /* Figma: color-text-tertiary */
   --color-disabled: #d1d6db; /* Figma: color-text-disabled */
+  --color-icon: #8B95A1;
+  --color-primary: #191F28;
+  --color-strong: #333D4B;
+  --color-body: #4E5968;
+  --color-page: #F9FAFB;
 
   /* 브랜드 */
   --color-brand: #0064ff; /* Figma: color-text-brand */
@@ -28,4 +33,18 @@
 
   /* border */
   --color-default: #E5E8EB;
+
+  /* 좋아요(활성) — Figma: color-accent-like / color-bg-danger */
+  --color-like: #f04452;
+  --color-like-subtle: #feeced;
+
+  /* 아바타 팔레트 — Figma: color/avatar/* (bg + fg 한 쌍) */
+  --color-avatar-blue-bg: #e8f3ff;
+  --color-avatar-blue-fg: #0064ff;
+  --color-avatar-purple-bg: #e5e5ff;
+  --color-avatar-purple-fg: #4d1acc;
+  --color-avatar-red-bg: #feeced;
+  --color-avatar-red-fg: #f04452;
+  --color-avatar-green-bg: #e6f9f3;
+  --color-avatar-green-fg: #12b886;
 }
