@@ -105,7 +105,7 @@ export function Icon({ icon, size, className }: Props) {
       stroke="currentColor"
       strokeWidth={2}
       aria-hidden="true"
-      className={`text-icon ${sizeClass[size]} ${className ?? ""}`}
+      className={`${sizeClass[size]} ${className ?? ""}`}
     >
       {ICON_PATHS[icon]}
     </svg>
