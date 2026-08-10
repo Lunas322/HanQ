@@ -9,13 +9,12 @@ export function findCategory(id: string) {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: "all", label: "전체", emoji: "🎮" },
-  { id: "culture", label: "문화", emoji: "🎎" },
+  { id: "korea", label: "한국 문화", emoji: "🇰🇷" },
+  { id: "japan", label: "일본 문화", emoji: "🇯🇵" },
+  { id: "career", label: "취업 / 대학", emoji: "🎓" },
+  { id: "love", label: "연애", emoji: "❤️" },
   { id: "travel", label: "여행", emoji: "✈️" },
-  { id: "job", label: "취업", emoji: "💼" },
-  { id: "language", label: "언어", emoji: "💬" },
   { id: "food", label: "음식", emoji: "🍜" },
   { id: "hobby", label: "취미", emoji: "🎮" },
-  { id: "hobby1", label: "취미1", emoji: "🎮" },
-
+  { id: "free", label: "자유 질문", emoji: "💬" },
 ];
