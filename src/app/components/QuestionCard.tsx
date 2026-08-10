@@ -1,5 +1,9 @@
 import type { Category } from "../mocks/categories";
 import type { Question } from "../mocks/questions";
+import { Avatar } from "./Avatar";
+import { Badge } from "./Badge";
+import { Flag } from "./Flag";
+import { Icon } from "./Icon";
 
 type Props = {
   question: Question;
@@ -7,43 +11,36 @@ type Props = {
 };
 
 export function QuestionCard({ question, category }: Props) {
-  const { user, content, likeCount, commentCount, time } = question;
+  const { user, likeCount, commentCount, time } = question;
 
   return (
     <div className="mt-3 w-full h-auto p-5 rounded-2xl shadow-[0_2px_8px_0_rgba(25,31,40,0.06)] flex flex-col gap-3 bg-surface">
-      {category && (
-        <div className="bg-muted rounded-2xl h-6 w-fit flex px-[10px] py-[5px] gap-1 items-center">
-          <div>{category.emoji}</div>
-          <div className="text-[12px] text-secondary font-medium">
-            {category.label}
-          </div>
-        </div>
-      )}
-      <div className="text-[17px] font-bold">
-        <span>{content}</span>
-      </div>
+      {category && <Badge emoji={category.emoji} label={category.label} />}
+
+      <h3 className="text-[17px] font-bold">{question.title}</h3>
+
       <div className="flex justify-between items-center gap-3">
         <div className="flex min-w-0 gap-2 items-center">
-          <div className="shrink-0 w-[26px] h-[26px] bg-brand-subtle rounded-2xl text-brand text-[11px] font-bold flex justify-center items-center">
-            {user.name.slice(0, 1)}
-          </div>
-          <div className="truncate text-[13px] font-medium text-secondary">
-            <span>{user.name}</span>
-          </div>
-          <div className="shrink-0">{user.languages === "ko" ? "🇰🇷" : "🇯🇵"}</div>
-          <div className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
-            <span>· {time}</span>
-          </div>
+          <Avatar name={user.name} size="sm" />
+          <span className="truncate text-[13px] font-medium text-secondary">
+            {user.name}
+          </span>
+          <Flag language={user.languages} />
+          <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
+            · {time}
+          </span>
         </div>
-        <div className="shrink-0 flex justify-between gap-3 text-[13px] font-bold items-center">
-          <div className="flex items-center gap-1 text-tertiary text-[13px]">
-            <img src="/Icon/Heart.svg" className="w-4 h-4" />
+
+        {/* 카드의 숫자는 보여주기만 한다. 카드 전체가 링크가 될 자리라 버튼을 겹치지 않는다. */}
+        <div className="shrink-0 flex gap-3 text-[13px] font-bold text-tertiary items-center">
+          <span className="flex items-center gap-1">
+            <Icon icon="Heart" size="s" />
             {likeCount}
-          </div>
-          <div className="flex items-center gap-1 text-tertiary text-[13px]">
-            <img src="/Icon/Comment.svg" className="w-4 h-4" />
+          </span>
+          <span className="flex items-center gap-1">
+            <Icon icon="Comment" size="s" />
             {commentCount}
-          </div>
+          </span>
         </div>
       </div>
     </div>
