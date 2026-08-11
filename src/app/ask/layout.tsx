@@ -7,17 +7,17 @@ type Props = {
     children: React.ReactNode
 }
 
-export default function detailLayout ({children}:Props) {
+export default function askLayout ({children}:Props) {
     return (
   <>
       <div className="sticky top-0 z-50">
-        <Header mainIcon="ChevronLeft" title="질문">
+        <Header mainIcon="ChevronLeft" title="질문하기">
           <LanguageToggle />
-          <Icon size="l" icon="More" className="text-icon" />
+          <Icon size="l" icon="Close" className="text-icon" />
         </Header>
       </div>
 
-      <main className="flex-1 bg-muted ">{children}</main>
+      <main className="flex flex-1 flex-col bg-surface">{children}</main>
       </>
     )
 }

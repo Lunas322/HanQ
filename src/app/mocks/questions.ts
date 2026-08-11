@@ -27,7 +27,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 2,
     commentCount: 4,
     time: "3분 전",
-    categoryId: "hobby",
+    categoryId: "career",
   },
   {
     id: "q2",
@@ -49,7 +49,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 0,
     commentCount: 0,
     time: "2시간 전",
-    categoryId: "job",
+    categoryId: "career",
   },
   {
     id: "q4",
@@ -60,7 +60,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 128,
     commentCount: 34,
     time: "5시간 전",
-    categoryId: "culture",
+    categoryId: "japan",
   },
   {
     id: "q5",
@@ -71,7 +71,7 @@ export const QUESTIONS: Question[] = [
     likeCount: 9,
     commentCount: 3,
     time: "어제",
-    categoryId: "language",
+    categoryId: "korea",
   },
   {
     id: "q6",
