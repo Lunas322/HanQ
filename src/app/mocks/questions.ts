@@ -85,4 +85,15 @@ export const QUESTIONS: Question[] = [
     time: "2일 전",
     categoryId: "food",
   },
+  {
+    id: "q7",
+    user: { id: "u1", name: "유리", languages: "ko" },
+    title: "오사카에서 꼭 먹어야 할 로컬 음식 추천해 주세요",
+    content:
+      "다음 달에 오사카에 3박 4일로 갑니다. 관광객용 맛집 말고 현지인이 자주 가는 곳을 알고 싶어요. 예약 없이 갈 수 있는 곳이면 더 좋습니다.",
+    likeCount: 34,
+    commentCount: 8,
+    time: "18분 전",
+    categoryId: "food",
+  },
 ];

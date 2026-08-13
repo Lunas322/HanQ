@@ -74,4 +74,24 @@ export const ANSWERS: Answer[] = [
     liked: false,
     time: "1시간 전",
   },
+  {
+    id: "a6",
+    questionId: "q2",
+    author: { id: "u1", name: "유리", language: "ko", avatarColor: "blue" },
+    content:
+      "저도 작년에 우메다에서 한 달 살았어요. 단기는 시세가 확 뛰니까 먼스리 맨션 사이트를 먼저 보는 걸 추천해요.",
+    likeCount: 6,
+    liked: false,
+    time: "30분 전",
+  },
+  {
+    id: "a7",
+    questionId: "q4",
+    author: { id: "u1", name: "유리", language: "ko", avatarColor: "blue" },
+    content:
+      "저는 백화점 지하에서 파는 과자 세트를 자주 사 갔어요. 2~3천엔이면 부담 없이 받아주시더라고요.",
+    likeCount: 21,
+    liked: false,
+    time: "3시간 전",
+  },
 ];
