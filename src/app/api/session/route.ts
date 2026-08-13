@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 
-import { SESSION_COOKIE_NAME } from "@/lib/auth";
+
 import { adminAuth } from "@/lib/firebase-admin";
+import { SESSION_COOKIE_NAME } from "@/lib/session";
 
 const EXPIRES_IN_DAYS = 5;
 const EXPIRES_IN_MS = EXPIRES_IN_DAYS * 24 * 60 * 60 * 1000;
