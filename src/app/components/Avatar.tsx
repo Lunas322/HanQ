@@ -5,6 +5,7 @@ const SIZE_CLASS = {
   sm: "w-[26px] h-[26px] text-[11px]",
   md: "w-8 h-8 text-[13px]",
   lg: "w-[34px] h-[34px] text-[14px]",
+  xl: "w-[60px] h-[60px] text-[25px]",
 } as const;
 
 const COLOR_CLASS: Record<AvatarColor, string> = {
