@@ -11,7 +11,7 @@ type NavItem = {
 };
 
 const HOME: NavItem = { href: "/home", icon: "Home", label: "홈" };
-const PROFILE: NavItem = { href: "/profile", icon: "User", label: "내 정보" };
+const PROFILE: NavItem = { href: "/my", icon: "User", label: "내 정보" };
 
 // flex-1은 + 버튼을 정중앙에 고정하는 장치다. 빼면 양쪽 라벨 폭 차이만큼 + 가 밀린다.
 // 그래서 바깥쪽으로 붙이는 건 justify가 아니라 이 안쪽 정렬로 처리한다.

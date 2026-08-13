@@ -5,6 +5,7 @@ const SIZE_CLASS = {
   sm: "w-[26px] h-[26px] text-[11px]",
   md: "w-8 h-8 text-[13px]",
   lg: "w-[34px] h-[34px] text-[14px]",
+  xl: "w-[60px] h-[60px] text-[25px]",
 } as const;
 
 const COLOR_CLASS: Record<AvatarColor, string> = {
@@ -25,7 +26,7 @@ export function Avatar({ name, size, color = "blue" }: Props) {
     // 이름은 항상 옆에 텍스트로 같이 나오므로 스크린리더에는 숨긴다. 안 그러면 두 번 읽힌다.
     <div
       aria-hidden="true"
-      className={`shrink-0 rounded-2xl font-bold flex justify-center items-center ${SIZE_CLASS[size]} ${COLOR_CLASS[color]}`}
+      className={`shrink-0 rounded-full font-bold flex justify-center items-center ${SIZE_CLASS[size]} ${COLOR_CLASS[color]}`}
     >
       {name.slice(0, 1)}
     </div>
