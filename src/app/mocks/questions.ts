@@ -21,7 +21,7 @@ export type Question = {
 export const QUESTIONS: Question[] = [
   {
     id: "q1",
-    user: { id: "u1", name: "유리", languages: "ja" },
+    user: { id: "u1", name: "유리", languages: "ko" },
     title: "일본 대학생들은 보통 아르바이트를 하나요?",
     content:
       "한국은 대학생 대부분이 카페나 편의점에서 알바를 해요. 일본도 비슷한 분위기인지 궁금합니다. 주로 어떤 업종에서 많이 하는지, 시급은 어느 정도인지 알려주세요.",
