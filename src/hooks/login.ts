@@ -1,5 +1,9 @@
 import { FirebaseError } from "firebase/app";
-import { signInWithPopup } from "firebase/auth";
+import {
+  inMemoryPersistence,
+  setPersistence,
+  signInWithPopup,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -20,6 +24,8 @@ export function useLogin() {
     setError(null);
 
     try {
+      await setPersistence(auth, inMemoryPersistence);
+
       const credential = await signInWithPopup(auth, googleProvider);
       const idToken = await credential.user.getIdToken();
 
