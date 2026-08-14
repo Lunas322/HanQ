@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+
+import { getCurrentUser } from "@/lib/auth";
 import { BottomNavigation } from "../components/BottomNavigation";
 import Categories from "../components/Categories";
 import { QuestionCard } from "../components/QuestionCard";
@@ -23,6 +26,9 @@ function toArray(value: string | string[] | undefined): string[] {
 }
 
 export default async function Page({ searchParams }: Props) {
+  const user = await getCurrentUser();
+  if (!user) redirect("/logout");
+
   const { tab, category } = await searchParams;
 
   const selected = toArray(category);

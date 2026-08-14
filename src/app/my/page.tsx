@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+
+import { getCurrentUser } from "@/lib/auth";
 import { BottomNavigation } from "../components/BottomNavigation";
 import { QuestionCard } from "../components/QuestionCard";
 import { Tab, type TabItem } from "../components/Tab";
@@ -16,6 +19,9 @@ type Props = {
 };
 
 export default async function Page({ searchParams }: Props) {
+  const user = await getCurrentUser();
+  if (!user) redirect("/logout");
+
   const { tab } = await searchParams;
   const isAnswerTab = tab === "answers";
 
