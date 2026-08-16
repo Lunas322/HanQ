@@ -1,8 +1,9 @@
 import { cookies } from "next/headers";
 
-
 import { adminAuth } from "@/lib/firebase-admin";
+import { getCurrentLanguage } from "@/lib/locale";
 import { SESSION_COOKIE_NAME } from "@/lib/session";
+import { ensureUserDocument, resolveDisplayName } from "@/lib/user";
 
 const EXPIRES_IN_DAYS = 5;
 const EXPIRES_IN_MS = EXPIRES_IN_DAYS * 24 * 60 * 60 * 1000;
@@ -20,8 +21,16 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
-    const sessionCookie = await adminAuth.createSessionCookie(idToken, {
-      expiresIn: EXPIRES_IN_MS,
+    const [decoded, sessionCookie] = await Promise.all([
+      adminAuth.verifyIdToken(idToken),
+      adminAuth.createSessionCookie(idToken, { expiresIn: EXPIRES_IN_MS }),
+    ]);
+
+    await ensureUserDocument({
+      uid: decoded.uid,
+      name: resolveDisplayName(decoded.name),
+      email: decoded.email ?? null,
+      languages: await getCurrentLanguage(),
     });
 
     const cookieStore = await cookies();
