@@ -1,5 +1,7 @@
-import type { Category } from "../mocks/categories";
-import type { Question } from "../mocks/questions";
+import Link from "next/link";
+
+import type { Category } from "@/lib/categories";
+import type { Question } from "@/types/question";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
@@ -14,7 +16,10 @@ export function QuestionCard({ question, category }: Props) {
   const { user, likeCount, commentCount, time } = question;
 
   return (
-    <div className="mt-3 w-full h-auto p-5 rounded-2xl shadow-[0_2px_8px_0_rgba(25,31,40,0.06)] flex flex-col gap-3 bg-surface">
+    <Link
+      href={`/detail/${question.id}`}
+      className="mt-3 w-full h-auto p-5 rounded-2xl shadow-[0_2px_8px_0_rgba(25,31,40,0.06)] flex flex-col gap-3 bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+    >
       {category && <Badge emoji={category.emoji} label={category.label} />}
 
       <h3 className="text-[17px] font-bold">{question.title}</h3>
@@ -31,7 +36,6 @@ export function QuestionCard({ question, category }: Props) {
           </span>
         </div>
 
-        {/* 카드의 숫자는 보여주기만 한다. 카드 전체가 링크가 될 자리라 버튼을 겹치지 않는다. */}
         <div className="shrink-0 flex gap-3 text-[13px] font-bold text-tertiary items-center">
           <span className="flex items-center gap-1">
             <Icon icon="Heart" size="s" />
@@ -43,6 +47,6 @@ export function QuestionCard({ question, category }: Props) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
