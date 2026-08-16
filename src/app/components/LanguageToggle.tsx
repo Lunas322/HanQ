@@ -1,19 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useOptimistic, useTransition } from "react";
 
-type Language = "ko" | "ja";
-type Languages = {
-  code: Language
-  flag: string
-  label:string
+import {
+  LANGUAGE_COOKIE_MAX_AGE,
+  LANGUAGE_COOKIE_NAME,
+} from "@/lib/i18n";
+import { useDictionary, useLanguage } from "@/lib/i18n/context";
+import { LANGUAGES, type Language } from "@/types/language";
 
-}
-
-const LANGUAGES: Languages[] = [
-  { code: "ko", flag: "🇰🇷", label: "한국어" },
-  { code: "ja", flag: "🇯🇵", label: "日本語" },
-];
+const FLAG: Record<Language, string> = { ko: "🇰🇷", ja: "🇯🇵" };
 
 const PILL_BASE =
   "flex cursor-pointer items-center justify-center gap-[3px] rounded-full px-[10px] py-[6px] transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand";
@@ -23,18 +20,38 @@ const PILL_SELECTED =
 
 const PILL_IDLE = "text-tertiary";
 
+const IS_ENABLED = process.env.NODE_ENV !== "production";
 
 type Props = {
   showLabel?: boolean;
 };
 
 export function LanguageToggle({ showLabel = false }: Props) {
-  const [selected, setSelected] = useState<Language>("ko");
+  const router = useRouter();
+  const dictionary = useDictionary();
+  const language = useLanguage();
+
+  const [, startTransition] = useTransition();
+  const [optimisticLanguage, setOptimisticLanguage] = useOptimistic(language);
+
+  if (!IS_ENABLED) {
+    return null;
+  }
+
+  const select = (next: Language) => {
+    startTransition(() => {
+      setOptimisticLanguage(next);
+      document.cookie = `${LANGUAGE_COOKIE_NAME}=${next};path=/;max-age=${LANGUAGE_COOKIE_MAX_AGE};samesite=lax`;
+      router.refresh();
+    });
+  };
 
   return (
     <fieldset className="flex items-center gap-[2px] rounded-full bg-muted p-[3px] text-[12px] font-bold">
-      {LANGUAGES.map(({ code, flag, label }) => {
-        const isSelected = code === selected;
+      <legend className="sr-only">{dictionary.language.switcherLegend}</legend>
+
+      {LANGUAGES.map((code) => {
+        const isSelected = code === optimisticLanguage;
 
         return (
           <label
@@ -46,11 +63,13 @@ export function LanguageToggle({ showLabel = false }: Props) {
               name="language"
               value={code}
               checked={isSelected}
-              onChange={() => setSelected(code)}
+              onChange={() => select(code)}
               className="sr-only"
             />
-            <span>{flag}</span>
-            {showLabel && <span>{label}</span>}
+            <span aria-hidden="true">{FLAG[code]}</span>
+            <span className={showLabel ? undefined : "sr-only"}>
+              {dictionary.language[code]}
+            </span>
           </label>
         );
       })}
