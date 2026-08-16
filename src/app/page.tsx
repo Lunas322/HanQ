@@ -4,13 +4,14 @@ import { LanguageToggle } from "./components/LanguageToggle";
 import { Logo } from "./components/Logo";
 import { QuestionCard } from "./components/QuestionCard";
 import { findCategory } from "@/lib/categories";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { listQuestions } from "@/lib/questions";
-
-export const revalidate = 60;
 
 const PREVIEW_COUNT = 3;
 
 export default async function Page() {
+  const { landing } = await getServerDictionary();
+
   const questions = (await listQuestions())
     .toSorted((a, b) => b.likeCount - a.likeCount)
     .slice(0, PREVIEW_COUNT);
@@ -26,7 +27,7 @@ export default async function Page() {
 
       <section>
         <h2 className="text-[13px] text-tertiary font-bold mt-8">
-          지금 올라온 인기 질문
+          {landing.popularHeading}
         </h2>
         <ul>
           {questions.map((question) => (
@@ -43,7 +44,7 @@ export default async function Page() {
       <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-5.5">
         <GoogleLoginButton />
         <p className="mt-[10px] flex justify-center text-[12px] font-medium text-tertiary">
-          가입하면 이용약관과 개인정보 방침에 동의하게 돼요
+          {landing.terms}
         </p>
       </div>
     </main>
