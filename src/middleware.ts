@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { SESSION_COOKIE_NAME } from "@/lib/session";
 
-const PROTECTED_PATHS = ["/home", "/ask", "/my"] as const;
+const PROTECTED_PATHS = ["/home", "/ask", "/my", "/detail"] as const;
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -24,5 +24,11 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/home/:path*", "/ask/:path*", "/my/:path*"],
+  matcher: [
+    "/",
+    "/home/:path*",
+    "/ask/:path*",
+    "/my/:path*",
+    "/detail/:path*",
+  ],
 };
