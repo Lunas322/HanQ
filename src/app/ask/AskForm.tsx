@@ -1,28 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 
+import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
 import { Button } from "../components/Button";
 import { CategoryPicker } from "../components/CategoryPicker";
 import { Notice } from "../components/Notice";
 import { TextField } from "../components/TextField";
+import { type AskFormState, submitQuestion } from "./actions";
 
-const TITLE_MAX = 60;
-const CONTENT_MAX = 1000;
+const INITIAL_STATE: AskFormState = { error: null };
 
 export function AskForm() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
 
+  const [state, formAction, isPending] = useActionState(
+    submitQuestion,
+    INITIAL_STATE,
+  );
+
   const canSubmit =
     title.trim().length > 0 && content.trim().length > 0 && categoryId !== null;
 
   return (
-    <form
-      onSubmit={(event) => event.preventDefault()}
-      className="flex flex-1 flex-col"
-    >
+    <form action={formAction} className="flex flex-1 flex-col">
       <div className="flex flex-col gap-6 px-5 pb-5 pt-4">
         <TextField
           id="title"
@@ -52,11 +55,17 @@ export function AskForm() {
       </div>
 
       <div className="sticky bottom-0 mt-auto bg-surface px-5 pb-[18px] pt-3 shadow-[0_-4px_16px_0_rgba(25,31,40,0.06)]">
+        {state.error && (
+          <p role="alert" className="mb-2 text-[13px] text-like">
+            {state.error}
+          </p>
+        )}
+
         <Button
-          content="질문 등록하기"
+          content={isPending ? "등록 중..." : "질문 등록하기"}
           size="lg"
           type="submit"
-          disabled={!canSubmit}
+          disabled={!canSubmit || isPending}
           className="w-full"
         />
       </div>
