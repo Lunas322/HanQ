@@ -1,11 +1,14 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { AnswerInput } from "@/app/components/AnswerInput";
 import { AnswerItem } from "@/app/components/AnswerItem";
 import { QuestionDetail } from "@/app/components/QuestionDetail";
-import { findAnswers } from "@/app/mocks/answers";
-import { findCategory } from "@/app/mocks/categories";
-import { QUESTIONS } from "@/app/mocks/questions";
+import { findCategory } from "@/lib/categories";
+import { listAnswers } from "@/lib/answers";
+import { getCurrentUser } from "@/lib/auth";
+import { QUESTIONS_COLLECTION } from "@/lib/collections";
+import { hasLiked } from "@/lib/likes";
+import { getQuestion } from "@/lib/questions";
 
 interface DetailProps {
   params: Promise<{ id: string }>;
@@ -14,15 +17,22 @@ interface DetailProps {
 export default async function DetailPage({ params }: DetailProps) {
   const { id } = await params;
 
-  const question = QUESTIONS.find((question) => question.id === id);
+  const user = await getCurrentUser();
+  if (!user) redirect("/logout");
+
+  const [question, liked, answers] = await Promise.all([
+    getQuestion(id),
+    hasLiked(QUESTIONS_COLLECTION, id, user.uid),
+    listAnswers(id, user.uid),
+  ]);
+
   if (!question) notFound();
 
   const category = findCategory(question.categoryId);
-  const answers = findAnswers(id);
 
   return (
     <div className="min-h-dvh flex flex-col bg-surface">
-      <QuestionDetail question={question} category={category} />
+      <QuestionDetail question={question} category={category} liked={liked} />
 
       <div className="bg-muted w-full h-2 shrink-0" />
 
@@ -31,12 +41,18 @@ export default async function DetailPage({ params }: DetailProps) {
           답변 <span className="text-brand">{answers.length}</span>
         </h2>
 
-        {answers.map((answer) => (
-          <AnswerItem key={answer.id} answer={answer} />
-        ))}
+        {answers.length === 0 ? (
+          <p className="py-10 text-center text-[14px] text-tertiary">
+            아직 답변이 없어요. 첫 답변을 남겨보세요.
+          </p>
+        ) : (
+          answers.map((answer) => (
+            <AnswerItem key={answer.id} answer={answer} />
+          ))
+        )}
       </section>
 
-      <AnswerInput />
+      <AnswerInput questionId={id} />
     </div>
   );
 }

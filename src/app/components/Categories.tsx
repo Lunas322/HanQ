@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CATEGORIES } from "../mocks/categories";
+import { CATEGORIES } from "@/lib/categories";
 import { Chip } from "./Chip";
 
 const PARAM_KEY = "category";

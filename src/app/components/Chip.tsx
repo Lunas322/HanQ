@@ -10,6 +10,7 @@ type Props = {
   onToggle: () => void;
   type?: "checkbox" | "radio";
   name?: string;
+  value?: string;
 };
 
 export function Chip({
@@ -19,12 +20,14 @@ export function Chip({
   onToggle,
   type = "checkbox",
   name,
+  value,
 }: Props) {
   return (
     <label className={`${BASE} ${checked ? ON : OFF}`}>
       <input
         type={type}
         name={name}
+        value={value}
         checked={checked}
         onChange={onToggle}
         className="sr-only"

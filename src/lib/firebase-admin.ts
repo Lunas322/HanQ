@@ -2,6 +2,7 @@ import "server-only";
 
 import { cert, getApp, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 
 const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
@@ -14,3 +15,4 @@ const app = getApps().length
   : initializeApp({ credential: cert(JSON.parse(serviceAccountKey)) });
 
 export const adminAuth = getAuth(app);
+export const adminDb = getFirestore(app);

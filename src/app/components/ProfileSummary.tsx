@@ -1,4 +1,4 @@
-import type { Profile } from "../mocks/profile";
+import type { Profile } from "@/types/user";
 import { Avatar } from "./Avatar";
 import { Flag } from "./Flag";
 
