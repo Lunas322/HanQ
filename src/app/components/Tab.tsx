@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useOptimistic, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export type TabItem = {
@@ -27,19 +27,27 @@ export function Tab({ items, paramKey = "tab", className }: TabProps) {
   const searchParams = useSearchParams();
   const groupName = useId();
 
+  const [, startTransition] = useTransition();
+
   const selected = searchParams.get(paramKey) ?? items[0].value;
+
+  const [optimisticSelected, setOptimisticSelected] = useOptimistic(selected);
 
   const select = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set(paramKey, value);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+    startTransition(() => {
+      setOptimisticSelected(value);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    });
   };
 
   return (
     <div className={className}>
       <div className={TRACK_BASE}>
         {items.map((item) => {
-          const isActive = item.value === selected;
+          const isActive = item.value === optimisticSelected;
 
           return (
             <label
