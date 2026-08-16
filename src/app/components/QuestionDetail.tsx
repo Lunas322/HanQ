@@ -1,5 +1,6 @@
-import type { Category } from "../mocks/categories";
-import type { Question } from "../mocks/questions";
+import type { Category } from "@/lib/categories";
+import type { Question } from "@/types/question";
+import { toggleQuestionLikeAction } from "../detail/[id]/_actions/like";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
@@ -9,10 +10,11 @@ import { TranslateToggle } from "./TranslateToggle";
 type Props = {
   question: Question;
   category?: Category;
+  liked: boolean;
 };
 
-export function QuestionDetail({ question, category }: Props) {
-  const { user, title, content, likeCount, time } = question;
+export function QuestionDetail({ question, category, liked }: Props) {
+  const { id, user, title, content, likeCount, time } = question;
 
   return (
     <section className="px-5 pb-5 pt-[18px] flex flex-col items-start">
@@ -45,7 +47,12 @@ export function QuestionDetail({ question, category }: Props) {
         <TranslateToggle />
       </div>
 
-      <LikeButton count={likeCount} size="md" />
+      <LikeButton
+        count={likeCount}
+        liked={liked}
+        size="md"
+        onToggle={toggleQuestionLikeAction.bind(null, id)}
+      />
     </section>
   );
 }
