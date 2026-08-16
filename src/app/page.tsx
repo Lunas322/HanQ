@@ -3,10 +3,18 @@ import { HeroContent } from "./components/HeroContent";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { Logo } from "./components/Logo";
 import { QuestionCard } from "./components/QuestionCard";
-import { findCategory } from "./mocks/categories";
-import { QUESTIONS } from "./mocks/questions";
+import { findCategory } from "@/lib/categories";
+import { listQuestions } from "@/lib/questions";
 
-export default function Page() {
+export const revalidate = 60;
+
+const PREVIEW_COUNT = 3;
+
+export default async function Page() {
+  const questions = (await listQuestions())
+    .toSorted((a, b) => b.likeCount - a.likeCount)
+    .slice(0, PREVIEW_COUNT);
+
   return (
     <main className="min-h-dvh bg-surface px-6 py-5 pb-[114px]">
       <div className="w-full flex justify-end">
@@ -21,7 +29,7 @@ export default function Page() {
           지금 올라온 인기 질문
         </h2>
         <ul>
-          {QUESTIONS.map((question) => (
+          {questions.map((question) => (
             <li key={question.id}>
               <QuestionCard
                 question={question}
