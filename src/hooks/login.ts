@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { auth, googleProvider } from "@/lib/firebase";
+import { useDictionary } from "@/lib/i18n/context";
 
 const CANCELLED_CODES = new Set([
   "auth/popup-closed-by-user",
@@ -16,6 +17,7 @@ const CANCELLED_CODES = new Set([
 
 export function useLogin() {
   const router = useRouter();
+  const { landing } = useDictionary();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,7 +38,7 @@ export function useLogin() {
       });
 
       if (!response.ok) {
-        throw new Error("세션 생성에 실패했습니다.");
+        throw new Error(landing.sessionFailed);
       }
 
       router.replace("/home");
@@ -49,7 +51,7 @@ export function useLogin() {
         return;
       }
 
-      setError("로그인에 실패했어요. 다시 시도해 주세요.");
+      setError(landing.loginFailed);
     }
   };
 

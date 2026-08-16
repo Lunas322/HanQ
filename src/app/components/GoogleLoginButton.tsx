@@ -1,15 +1,17 @@
 "use client";
 
 import { useLogin } from "@/hooks/login";
+import { useDictionary } from "@/lib/i18n/context";
 import { Button } from "./Button";
 
 export function GoogleLoginButton() {
   const { login, isPending, error } = useLogin();
+  const { landing } = useDictionary();
 
   return (
     <>
       <Button
-        content={isPending ? "로그인 중..." : "Google로 3초 만에 시작하기"}
+        content={isPending ? landing.loggingIn : landing.login}
         size="lg"
         className="w-full"
         disabled={isPending}
