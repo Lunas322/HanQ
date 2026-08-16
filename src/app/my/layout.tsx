@@ -1,15 +1,39 @@
-import React from "react";
+import { redirect } from "next/navigation";
+import React, { Suspense } from "react";
+
+import { getCurrentUser } from "@/lib/auth";
+import { getUserProfile } from "@/lib/user";
 import { Header } from "../components/Header";
 import { Icon } from "../components/Icon";
 import { LanguageToggle } from "../components/LanguageToggle";
 import { ProfileSummary } from "../components/ProfileSummary";
-import { ME } from "../mocks/profile";
+import { ProfileSummarySkeleton } from "../components/ProfileSummarySkeleton";
+import type { Profile } from "@/types/user";
 
 type Props = {
   children: React.ReactNode;
 };
 
-export default function MyLayout({ children }: Props) {
+async function MyProfile({ uid, name }: { uid: string; name: string }) {
+  const profile: Profile = (await getUserProfile(uid)) ?? {
+    id: uid,
+    name,
+    languages: "ko",
+    questionCount: 0,
+    answerCount: 0,
+    receivedLikeCount: 0,
+  };
+
+  return <ProfileSummary profile={profile} />;
+}
+
+export default async function MyLayout({ children }: Props) {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/logout");
+  }
+
   return (
     <>
       <div className="sticky top-0 z-50">
@@ -20,7 +44,9 @@ export default function MyLayout({ children }: Props) {
       </div>
 
       <main className="flex-1 bg-muted">
-        <ProfileSummary profile={ME} />
+        <Suspense fallback={<ProfileSummarySkeleton />}>
+          <MyProfile uid={user.uid} name={user.name} />
+        </Suspense>
         {children}
       </main>
     </>
