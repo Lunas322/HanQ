@@ -5,10 +5,11 @@ import { redirect } from "next/navigation";
 import { validateAnswerContent } from "@/lib/answer-rules";
 import { createAnswer } from "@/lib/answers";
 import { getCurrentUser } from "@/lib/auth";
+import type { FormErrorCode } from "@/lib/form-errors";
 import { revalidateQuestion } from "./revalidate";
 
 export type AnswerFormState = {
-  error: string | null;
+  error: FormErrorCode | null;
 };
 
 export async function submitAnswer(
@@ -25,7 +26,7 @@ export async function submitAnswer(
   const content = String(formData.get("answer") ?? "").trim();
 
   if (!questionId) {
-    return { error: "질문을 찾을 수 없어요." };
+    return { error: "QUESTION_NOT_FOUND" };
   }
 
   const error = validateAnswerContent(content);
@@ -38,7 +39,7 @@ export async function submitAnswer(
     await createAnswer({ questionId, authorId: user.uid, content });
   } catch (e) {
     console.error("[submitAnswer]", e);
-    return { error: "답변 등록에 실패했어요. 다시 시도해 주세요." };
+    return { error: "ANSWER_SUBMIT_FAILED" };
   }
 
   revalidateQuestion(questionId);
