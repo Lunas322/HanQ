@@ -2,15 +2,20 @@ import "server-only";
 
 import { FieldValue } from "firebase-admin/firestore";
 
+import { getDictionary } from "@/lib/i18n";
 import type { Profile } from "@/types/user";
 import type { Language } from "@/types/language";
+import { getCurrentLanguage } from "./locale";
 import { USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
 
-const FALLBACK_NAME = "사용자";
-
-export function resolveDisplayName(name: unknown): string {
-  return typeof name === "string" && name.trim() !== "" ? name : FALLBACK_NAME;
+export function resolveDisplayName(
+  name: unknown,
+  language: Language = "ko",
+): string {
+  return typeof name === "string" && name.trim() !== ""
+    ? name
+    : getDictionary(language).common.fallbackUserName;
 }
 
 export function toLanguage(value: unknown): Language {
@@ -57,7 +62,7 @@ export async function getUserProfile(uid: string): Promise<Profile | null> {
 
   return {
     id: uid,
-    name: resolveDisplayName(data.name),
+    name: resolveDisplayName(data.name, await getCurrentLanguage()),
     languages: toLanguage(data.languages),
     questionCount: Number(data.questionCount ?? 0),
     answerCount: Number(data.answerCount ?? 0),

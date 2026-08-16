@@ -14,7 +14,9 @@ export type Author = {
   languages: Language;
 };
 
-export const FALLBACK_AUTHOR: Author = { name: "사용자", languages: "ko" };
+export function fallbackAuthor(language: Language): Author {
+  return { name: resolveDisplayName(null, language), languages: "ko" };
+}
 
 const AVATAR_COLORS: AvatarColor[] = ["blue", "purple", "red", "green"];
 
@@ -23,7 +25,10 @@ export function avatarColorFor(uid: string): AvatarColor {
   return AVATAR_COLORS[sum % AVATAR_COLORS.length];
 }
 
-async function loadAuthors(uids: string[]): Promise<Map<string, Author>> {
+async function loadAuthors(
+  uids: string[],
+  language: Language,
+): Promise<Map<string, Author>> {
   const authors = new Map<string, Author>();
 
   if (uids.length === 0) {
@@ -40,7 +45,7 @@ async function loadAuthors(uids: string[]): Promise<Map<string, Author>> {
     }
 
     authors.set(snapshot.id, {
-      name: resolveDisplayName(data.name),
+      name: resolveDisplayName(data.name, language),
       languages: toLanguage(data.languages),
     });
   }
@@ -50,10 +55,11 @@ async function loadAuthors(uids: string[]): Promise<Map<string, Author>> {
 
 export async function loadAuthorsFor(
   docs: DocumentSnapshot[],
+  language: Language,
 ): Promise<Map<string, Author>> {
   const uids = [
     ...new Set(docs.map((doc) => readString(doc.get("authorId")))),
   ].filter(Boolean);
 
-  return loadAuthors(uids);
+  return loadAuthors(uids, language);
 }
