@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useDictionary } from "@/lib/i18n/context";
 import { Icon } from "./Icon";
 
 export function TranslateToggle() {
+  const { detail } = useDictionary();
   const [showOriginal, setShowOriginal] = useState(false);
 
   return (
@@ -16,7 +18,7 @@ export function TranslateToggle() {
     >
       <Icon icon="Translate" size="s" />
       <span className="font-bold text-[13px]">
-        {showOriginal ? "번역 보기" : "원문 보기"}
+        {showOriginal ? detail.showTranslation : detail.showOriginal}
       </span>
     </button>
   );
