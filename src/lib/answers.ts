@@ -3,7 +3,7 @@ import "server-only";
 import { FieldValue } from "firebase-admin/firestore";
 
 import type { Answer } from "@/types/answer";
-import { avatarColorFor, FALLBACK_AUTHOR, loadAuthorsFor } from "./authors";
+import { avatarColorFor, fallbackAuthor, loadAuthorsFor } from "./authors";
 import {
   ANSWERS_COLLECTION,
   QUESTIONS_COLLECTION,
@@ -13,6 +13,7 @@ import { adminDb } from "./firebase-admin";
 import { readDate, readNumber, readString } from "./firestore-value";
 import { filterLiked } from "./likes";
 import { formatRelativeTime } from "./format";
+import { getCurrentLanguage } from "./locale";
 
 const LIST_LIMIT = 100;
 
@@ -60,8 +61,10 @@ export async function listAnswers(
     .limit(LIST_LIMIT)
     .get();
 
+  const language = await getCurrentLanguage();
+
   const [authors, likedIds] = await Promise.all([
-    loadAuthorsFor(snapshot.docs),
+    loadAuthorsFor(snapshot.docs, language),
     filterLiked(
       ANSWERS_COLLECTION,
       snapshot.docs.map((doc) => doc.id),
@@ -72,7 +75,7 @@ export async function listAnswers(
   return snapshot.docs.map((doc) => {
     const data = doc.data();
     const authorId = readString(data.authorId);
-    const author = authors.get(authorId) ?? FALLBACK_AUTHOR;
+    const author = authors.get(authorId) ?? fallbackAuthor(language);
 
     return {
       id: doc.id,
@@ -86,7 +89,7 @@ export async function listAnswers(
       content: readString(data.content),
       likeCount: readNumber(data.likeCount),
       liked: likedIds.has(doc.id),
-      time: formatRelativeTime(readDate(data.createdAt)),
+      time: formatRelativeTime(readDate(data.createdAt), language),
     };
   });
 }

@@ -7,11 +7,13 @@ import {
 } from "firebase-admin/firestore";
 
 import type { Question } from "@/types/question";
-import { type Author, FALLBACK_AUTHOR, loadAuthorsFor } from "./authors";
+import { type Author, fallbackAuthor, loadAuthorsFor } from "./authors";
 import { QUESTIONS_COLLECTION, USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
 import { readDate, readNumber, readString } from "./firestore-value";
 import { formatRelativeTime } from "./format";
+import { getCurrentLanguage } from "./locale";
+import type { Language } from "@/types/language";
 import type { QuestionDraft } from "./question-rules";
 
 const LIST_LIMIT = 50;
@@ -53,10 +55,11 @@ export async function createQuestion({
 function toQuestion(
   doc: DocumentSnapshot,
   authors: Map<string, Author>,
+  language: Language,
 ): Question {
   const data = doc.data() ?? {};
   const authorId = readString(data.authorId);
-  const author = authors.get(authorId) ?? FALLBACK_AUTHOR;
+  const author = authors.get(authorId) ?? fallbackAuthor(language);
 
   return {
     id: doc.id,
@@ -65,7 +68,7 @@ function toQuestion(
     content: readString(data.content),
     likeCount: readNumber(data.likeCount),
     commentCount: readNumber(data.answerCount),
-    time: formatRelativeTime(readDate(data.createdAt)),
+    time: formatRelativeTime(readDate(data.createdAt), language),
     categoryId: readString(data.categoryId),
   };
 }
@@ -82,14 +85,16 @@ export async function listQuestions({
     ? collection.where("authorId", "==", authorId)
     : collection;
 
+  const language = await getCurrentLanguage();
+
   const snapshot = await filtered
     .orderBy("createdAt", "desc")
     .limit(LIST_LIMIT)
     .get();
 
-  const authors = await loadAuthorsFor(snapshot.docs);
+  const authors = await loadAuthorsFor(snapshot.docs, language);
 
-  return snapshot.docs.map((doc) => toQuestion(doc, authors));
+  return snapshot.docs.map((doc) => toQuestion(doc, authors, language));
 }
 
 export async function getQuestionsByIds(ids: string[]): Promise<Question[]> {
@@ -102,9 +107,10 @@ export async function getQuestionsByIds(ids: string[]): Promise<Question[]> {
     (snapshot) => snapshot.exists,
   );
 
-  const authors = await loadAuthorsFor(snapshots);
+  const language = await getCurrentLanguage();
+  const authors = await loadAuthorsFor(snapshots, language);
 
-  return snapshots.map((snapshot) => toQuestion(snapshot, authors));
+  return snapshots.map((snapshot) => toQuestion(snapshot, authors, language));
 }
 
 export async function getQuestion(id: string): Promise<Question | null> {
@@ -114,7 +120,8 @@ export async function getQuestion(id: string): Promise<Question | null> {
     return null;
   }
 
-  const authors = await loadAuthorsFor([snapshot]);
+  const language = await getCurrentLanguage();
+  const authors = await loadAuthorsFor([snapshot], language);
 
-  return toQuestion(snapshot, authors);
+  return toQuestion(snapshot, authors, language);
 }
