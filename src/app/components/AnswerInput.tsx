@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 
 import { ANSWER_MAX } from "@/lib/answer-rules";
+import { useDictionary } from "@/lib/i18n/context";
 import {
   type AnswerFormState,
   submitAnswer,
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export function AnswerInput({ questionId }: Props) {
+  const dictionary = useDictionary();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, isPending] = useActionState(
     submitAnswer,
@@ -38,13 +40,13 @@ export function AnswerInput({ questionId }: Props) {
 
       {state.error && (
         <p role="alert" className="mb-2 text-[13px] text-like">
-          {state.error}
+          {dictionary.formError[state.error]}
         </p>
       )}
 
       <div className="flex gap-2 items-center">
         <label htmlFor="answer" className="sr-only">
-          답변 입력
+          {dictionary.detail.answerInputLabel}
         </label>
         <input
           id="answer"
@@ -52,11 +54,11 @@ export function AnswerInput({ questionId }: Props) {
           type="text"
           maxLength={ANSWER_MAX}
           disabled={isPending}
-          placeholder="따뜻한 답변을 남겨보세요"
+          placeholder={dictionary.detail.answerPlaceholder}
           className="h-11 min-w-0 flex-1 rounded-2xl bg-page px-4 text-[15px] text-primary outline-none placeholder:text-disabled disabled:opacity-60"
         />
         <Button
-          content={isPending ? "등록 중" : "등록"}
+          content={isPending ? dictionary.common.submitting : dictionary.common.submit}
           size="md"
           type="submit"
           disabled={isPending}
