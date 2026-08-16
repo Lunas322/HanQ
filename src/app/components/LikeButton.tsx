@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useOptimistic, useTransition } from "react";
+
 import { Icon } from "./Icon";
 
 const SIZE_CLASS = {
@@ -12,32 +13,46 @@ const ICON_SIZE = { sm: "m", md: "l" } as const;
 
 type Props = {
   count: number;
+  liked: boolean;
   size: keyof typeof SIZE_CLASS;
-  defaultLiked?: boolean;
+  onToggle: () => Promise<void>;
 };
 
-export function LikeButton({ count, size, defaultLiked = false }: Props) {
-  const [liked, setLiked] = useState(defaultLiked);
+export function LikeButton({ count, liked, size, onToggle }: Props) {
+  const [isPending, startTransition] = useTransition();
 
-  // count는 defaultLiked가 반영된 값이다. 지금 상태와의 차이만 더하고 뺀다.
-  const displayCount = count + (liked ? 1 : 0) - (defaultLiked ? 1 : 0);
+  const [optimistic, setOptimistic] = useOptimistic(
+    { liked, count },
+    (state, nextLiked: boolean) => ({
+      liked: nextLiked,
+      count: state.count + (nextLiked ? 1 : -1),
+    }),
+  );
+
+  const handleClick = () => {
+    startTransition(async () => {
+      setOptimistic(!optimistic.liked);
+      await onToggle();
+    });
+  };
 
   return (
     <button
       type="button"
-      aria-pressed={liked}
-      aria-label={`좋아요 ${displayCount}개`}
-      onClick={() => setLiked((liked) => !liked)}
-      className={`w-fit rounded-2xl font-bold flex items-center ${
+      aria-pressed={optimistic.liked}
+      aria-label={`좋아요 ${optimistic.count}개`}
+      onClick={handleClick}
+      disabled={isPending}
+      className={`w-fit rounded-2xl font-bold flex items-center disabled:opacity-70 ${
         SIZE_CLASS[size]
       } ${
-        liked
+        optimistic.liked
           ? "bg-like-subtle text-like"
           : "border-2 border-default bg-surface text-tertiary"
       }`}
     >
       <Icon icon="Heart" size={ICON_SIZE[size]} />
-      {displayCount}
+      {optimistic.count}
     </button>
   );
 }
