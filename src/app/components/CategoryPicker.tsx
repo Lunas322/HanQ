@@ -1,4 +1,4 @@
-import { CATEGORIES } from "../mocks/categories";
+import { CATEGORIES } from "@/lib/categories";
 import { Chip } from "./Chip";
 
 type Props = {
@@ -15,7 +15,8 @@ export function CategoryPicker({ value, onChange }: Props) {
           <Chip
             key={category.id}
             type="radio"
-            name="category"
+            name="categoryId"
+            value={category.id}
             label={category.label}
             emoji={category.emoji}
             checked={value === category.id}
