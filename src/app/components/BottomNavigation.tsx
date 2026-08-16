@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { useDictionary } from "@/lib/i18n/context";
 import { Icon, type IconName } from "./Icon";
 
 type NavItem = {
@@ -9,9 +11,6 @@ type NavItem = {
   icon: IconName;
   label: string;
 };
-
-const HOME: NavItem = { href: "/home", icon: "Home", label: "홈" };
-const PROFILE: NavItem = { href: "/my", icon: "User", label: "내 정보" };
 
 // flex-1은 + 버튼을 정중앙에 고정하는 장치다. 빼면 양쪽 라벨 폭 차이만큼 + 가 밀린다.
 // 그래서 바깥쪽으로 붙이는 건 justify가 아니라 이 안쪽 정렬로 처리한다.
@@ -47,20 +46,24 @@ function NavLink({ item, isActive, align }: NavLinkProps) {
 
 export function BottomNavigation() {
   const pathname = usePathname();
+  const { nav } = useDictionary();
+
+  const home: NavItem = { href: "/home", icon: "Home", label: nav.home };
+  const profile: NavItem = { href: "/my", icon: "User", label: nav.profile };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-10 flex h-19 items-center bg-surface px-8 py-3">
-      <NavLink item={HOME} isActive={pathname === HOME.href} align="start" />
+      <NavLink item={home} isActive={pathname === home.href} align="start" />
 
       <button
         type="button"
-        aria-label="질문 작성"
+        aria-label={nav.askAria}
         className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-brand text-white"
       >
         <Icon icon="Plus" size="plus" />
       </button>
 
-      <NavLink item={PROFILE} isActive={pathname === PROFILE.href} align="end" />
+      <NavLink item={profile} isActive={pathname === profile.href} align="end" />
     </nav>
   );
 }
