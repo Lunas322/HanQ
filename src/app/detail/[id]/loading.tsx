@@ -1,11 +1,10 @@
+import { LoadingAnnouncement } from "@/app/components/LoadingAnnouncement";
 import { Skeleton } from "@/app/components/Skeleton";
 
 export default function Loading() {
   return (
     <div className="min-h-dvh flex flex-col bg-surface">
-      <span role="status" className="sr-only">
-        질문을 불러오는 중
-      </span>
+      <LoadingAnnouncement />
 
       <section className="px-5 pb-5 pt-[18px] flex flex-col items-start">
         <Skeleton className="mb-3 h-[26px] w-24 rounded-full" />
