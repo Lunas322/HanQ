@@ -1,4 +1,5 @@
 import type { Category } from "@/lib/categories";
+import { getServerDictionary } from "@/lib/i18n/server";
 import type { Question } from "@/types/question";
 import { toggleQuestionLikeAction } from "../detail/[id]/_actions/like";
 import { Avatar } from "./Avatar";
@@ -13,14 +14,15 @@ type Props = {
   liked: boolean;
 };
 
-export function QuestionDetail({ question, category, liked }: Props) {
+export async function QuestionDetail({ question, category, liked }: Props) {
   const { id, user, title, content, likeCount, time } = question;
+  const dictionary = await getServerDictionary();
 
   return (
     <section className="px-5 pb-5 pt-[18px] flex flex-col items-start">
       {category && (
         <div className="mb-3">
-          <Badge emoji={category.emoji} label={category.label} />
+          <Badge emoji={category.emoji} label={dictionary.category[category.id]} />
         </div>
       )}
 
