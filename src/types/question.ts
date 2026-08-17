@@ -1,3 +1,4 @@
+import type { Language } from "./language";
 import type { User } from "./user";
 
 export type Question = {
@@ -9,4 +10,6 @@ export type Question = {
   commentCount: number;
   time: string;
   categoryId: string;
+  sourceLanguage: Language;
+  translationPending: boolean;
 };

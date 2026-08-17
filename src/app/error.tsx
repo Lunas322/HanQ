@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { useDictionary } from "@/lib/i18n/context";
 import { Button } from "./components/Button";
 
 type Props = {
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export default function Error({ error, reset }: Props) {
+  const dictionary = useDictionary();
+
   useEffect(() => {
     console.error("[error boundary]", error.digest, error);
   }, [error]);
@@ -22,17 +25,19 @@ export default function Error({ error, reset }: Props) {
 
       <div className="flex flex-col gap-1.5">
         <h2 className="text-[17px] font-bold text-ink">
-          화면을 불러오지 못했어요
+          {dictionary.error.pageTitle}
         </h2>
         <p className="text-[14px] text-tertiary">
-          잠시 후 다시 시도해 주세요. 계속 안 되면 새로고침해 주세요.
+          {dictionary.error.pageDescription}
         </p>
       </div>
 
-      <Button content="다시 시도" size="md" onClick={reset} />
+      <Button content={dictionary.common.retry} size="md" onClick={reset} />
 
       {error.digest && (
-        <p className="text-[12px] text-disabled">오류 코드 {error.digest}</p>
+        <p className="text-[12px] text-disabled">
+          {dictionary.error.digest(error.digest)}
+        </p>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Logo } from "./Logo";
 import React from "react";
-import { Icon } from "./Icon";
+import { BackButton } from "./BackButton";
 
 type MainIcon = 'Logo'|'ChevronLeft'|'My'
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 const LeftIcon: Record<MainIcon,React.ReactNode> = {
   Logo: <Logo size="lg"/>,
-  ChevronLeft: <Icon icon="ChevronLeft" size="l" className="text-icon" />,
+  ChevronLeft: <BackButton fallback="/home" />,
   My: <div className=" font-black text-[20px]">MY</div>
 
 }

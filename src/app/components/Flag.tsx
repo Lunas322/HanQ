@@ -1,16 +1,16 @@
+"use client";
+
+import { useDictionary } from "@/lib/i18n/context";
 import type { Language } from "@/types/language";
 
-const FLAG: Record<Language, { emoji: string; label: string }> = {
-  ko: { emoji: "🇰🇷", label: "한국" },
-  ja: { emoji: "🇯🇵", label: "일본" },
-};
+const EMOJI: Record<Language, string> = { ko: "🇰🇷", ja: "🇯🇵" };
 
 export function Flag({ language }: { language: Language }) {
-  const { emoji, label } = FLAG[language];
+  const dictionary = useDictionary();
 
   return (
-    <span className="shrink-0" role="img" aria-label={label}>
-      {emoji}
+    <span className="shrink-0" role="img" aria-label={dictionary.country[language]}>
+      {EMOJI[language]}
     </span>
   );
 }

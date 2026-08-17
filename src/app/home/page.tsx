@@ -3,17 +3,13 @@ import { Suspense } from "react";
 
 import { getCurrentUser } from "@/lib/auth";
 import { findCategory } from "@/lib/categories";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { listQuestions } from "@/lib/questions";
 import { BottomNavigation } from "../components/BottomNavigation";
 import Categories from "../components/Categories";
 import { QuestionCard } from "../components/QuestionCard";
 import { QuestionListSkeleton } from "../components/QuestionListSkeleton";
 import { Tab, type TabItem } from "../components/Tab";
-
-const TABS: TabItem[] = [
-  { value: "latest", label: "최신" },
-  { value: "popular", label: "인기" },
-];
 
 type Props = {
   searchParams: Promise<{
@@ -34,7 +30,10 @@ async function QuestionList({
   isPopular: boolean;
   selected: string[];
 }) {
-  const all = await listQuestions();
+  const [all, dictionary] = await Promise.all([
+    listQuestions(),
+    getServerDictionary(),
+  ]);
 
   const filtered =
     selected.length === 0
@@ -49,8 +48,8 @@ async function QuestionList({
     return (
       <p className="py-16 text-center text-[14px] text-tertiary">
         {selected.length === 0
-          ? "아직 등록된 질문이 없어요."
-          : "선택한 카테고리에 아직 질문이 없어요."}
+          ? dictionary.home.emptyAll
+          : dictionary.home.emptyFiltered}
       </p>
     );
   }
@@ -73,14 +72,20 @@ export default async function Page({ searchParams }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect("/logout");
 
+  const { home } = await getServerDictionary();
   const { tab, category } = await searchParams;
+
+  const tabs: TabItem[] = [
+    { value: "latest", label: home.tabLatest },
+    { value: "popular", label: home.tabPopular },
+  ];
 
   const selected = toArray(category);
   const isPopular = tab === "popular";
 
   return (
     <div className="px-5 py-4 mb-[76px]">
-      <Tab items={TABS} className="w-full" />
+      <Tab items={tabs} className="w-full" />
       <Categories />
 
       <Suspense

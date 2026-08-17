@@ -8,6 +8,7 @@ import { listAnswers } from "@/lib/answers";
 import { getCurrentUser } from "@/lib/auth";
 import { QUESTIONS_COLLECTION } from "@/lib/collections";
 import { hasLiked } from "@/lib/likes";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { getQuestion } from "@/lib/questions";
 
 interface DetailProps {
@@ -20,10 +21,11 @@ export default async function DetailPage({ params }: DetailProps) {
   const user = await getCurrentUser();
   if (!user) redirect("/logout");
 
-  const [question, liked, answers] = await Promise.all([
+  const [question, liked, answers, dictionary] = await Promise.all([
     getQuestion(id),
     hasLiked(QUESTIONS_COLLECTION, id, user.uid),
     listAnswers(id, user.uid),
+    getServerDictionary(),
   ]);
 
   if (!question) notFound();
@@ -38,12 +40,13 @@ export default async function DetailPage({ params }: DetailProps) {
 
       <section className="flex-1 px-5 pb-6 pt-[18px] flex flex-col gap-[18px]">
         <h2 className="font-black text-[16px] text-primary">
-          답변 <span className="text-brand">{answers.length}</span>
+          {dictionary.detail.answersHeading}{" "}
+          <span className="text-brand">{answers.length}</span>
         </h2>
 
         {answers.length === 0 ? (
           <p className="py-10 text-center text-[14px] text-tertiary">
-            아직 답변이 없어요. 첫 답변을 남겨보세요.
+            {dictionary.detail.emptyAnswers}
           </p>
         ) : (
           answers.map((answer) => (

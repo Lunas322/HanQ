@@ -9,7 +9,8 @@
 }
 
 @theme {
-  --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-pretendard), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", "Meiryo", ui-sans-serif, system-ui, sans-serif;
 
   /* HanQ Design System (Figma) — 색 토큰 */
   /* 텍스트 */

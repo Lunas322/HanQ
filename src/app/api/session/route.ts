@@ -21,6 +21,8 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
+    const language = await getCurrentLanguage();
+
     const [decoded, sessionCookie] = await Promise.all([
       adminAuth.verifyIdToken(idToken),
       adminAuth.createSessionCookie(idToken, { expiresIn: EXPIRES_IN_MS }),
@@ -28,9 +30,9 @@ export async function POST(request: Request): Promise<Response> {
 
     await ensureUserDocument({
       uid: decoded.uid,
-      name: resolveDisplayName(decoded.name),
+      name: resolveDisplayName(decoded.name, language),
       email: decoded.email ?? null,
-      languages: await getCurrentLanguage(),
+      languages: language,
     });
 
     const cookieStore = await cookies();

@@ -13,5 +13,8 @@ export type Answer = {
   content: string;
   likeCount: number;
   liked: boolean;
+  isMine: boolean;
   time: string;
+  sourceLanguage: Language;
+  translationPending: boolean;
 };

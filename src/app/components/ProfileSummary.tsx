@@ -1,3 +1,4 @@
+import { getServerDictionary } from "@/lib/i18n/server";
 import type { Profile } from "@/types/user";
 import { Avatar } from "./Avatar";
 import { Flag } from "./Flag";
@@ -6,9 +7,10 @@ type Props = {
   profile: Profile;
 };
 
-export function ProfileSummary({ profile }: Props) {
+export async function ProfileSummary({ profile }: Props) {
   const { name, languages, questionCount, answerCount, receivedLikeCount } =
     profile;
+  const dictionary = await getServerDictionary();
 
   return (
     <section className="flex w-full items-center gap-3.5 bg-surface px-5 pt-4 pb-6">
@@ -23,8 +25,7 @@ export function ProfileSummary({ profile }: Props) {
         </div>
 
         <p className="text-[13px] font-medium text-tertiary">
-          질문 {questionCount} · 답변 {answerCount} · 받은 좋아요{" "}
-          {receivedLikeCount}
+          {dictionary.my.stats(questionCount, answerCount, receivedLikeCount)}
         </p>
       </div>
     </section>

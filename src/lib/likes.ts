@@ -18,6 +18,7 @@ export type LikeableCollection =
 export type ToggleLikeResult = {
   liked: boolean;
   likeCount: number;
+  authorId: string;
 };
 
 function likeRefFor(
@@ -102,6 +103,6 @@ export async function toggleLike(
 
     const likeCount = readNumber(targetSnapshot.get("likeCount")) + delta;
 
-    return { liked: !wasLiked, likeCount: Math.max(0, likeCount) };
+    return { liked: !wasLiked, likeCount: Math.max(0, likeCount), authorId };
   });
 }

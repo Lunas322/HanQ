@@ -1,19 +1,22 @@
 import React from "react";
 import { Header } from "../components/Header";
-import { Icon } from "../components/Icon";
 import { LanguageToggle } from "../components/LanguageToggle";
+import { NotificationBell } from "../components/NotificationBell";
+import { getCurrentUser } from "@/lib/auth";
 
 type Props = {
   children: React.ReactNode;
 };
 
-export default function HomeLayout({ children }: Props) {
+export default async function HomeLayout({ children }: Props) {
+  const user = await getCurrentUser();
+
   return (
     <>
       <div className="sticky top-0 z-50">
         <Header mainIcon="Logo">
           <LanguageToggle />
-          <Icon size="l" icon="Bell" className="text-icon" />
+          {user && <NotificationBell uid={user.uid} />}
         </Header>
       </div>
 

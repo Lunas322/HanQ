@@ -2,6 +2,7 @@
 
 import { useOptimistic, useTransition } from "react";
 
+import { useDictionary } from "@/lib/i18n/context";
 import { Icon } from "./Icon";
 
 const SIZE_CLASS = {
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export function LikeButton({ count, liked, size, onToggle }: Props) {
+  const { detail } = useDictionary();
   const [isPending, startTransition] = useTransition();
 
   const [optimistic, setOptimistic] = useOptimistic(
@@ -40,7 +42,7 @@ export function LikeButton({ count, liked, size, onToggle }: Props) {
     <button
       type="button"
       aria-pressed={optimistic.liked}
-      aria-label={`좋아요 ${optimistic.count}개`}
+      aria-label={detail.likeAria(optimistic.count)}
       onClick={handleClick}
       disabled={isPending}
       className={`w-fit rounded-2xl font-bold flex items-center disabled:opacity-70 ${

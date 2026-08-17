@@ -1,26 +1,31 @@
 import Link from "next/link";
 
 import type { Category } from "@/lib/categories";
+import { getServerDictionary } from "@/lib/i18n/server";
 import type { Question } from "@/types/question";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { Icon } from "./Icon";
+import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
   question: Question;
   category?: Category;
 };
 
-export function QuestionCard({ question, category }: Props) {
-  const { user, likeCount, commentCount, time } = question;
+export async function QuestionCard({ question, category }: Props) {
+  const { user, likeCount, commentCount, time, translationPending } = question;
+  const dictionary = await getServerDictionary();
 
   return (
     <Link
       href={`/detail/${question.id}`}
       className="mt-3 w-full h-auto p-5 rounded-2xl shadow-[0_2px_8px_0_rgba(25,31,40,0.06)] flex flex-col gap-3 bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
     >
-      {category && <Badge emoji={category.emoji} label={category.label} />}
+      {category && (
+        <Badge emoji={category.emoji} label={dictionary.category[category.id]} />
+      )}
 
       <h3 className="text-[17px] font-bold">{question.title}</h3>
 
@@ -34,6 +39,7 @@ export function QuestionCard({ question, category }: Props) {
           <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
             · {time}
           </span>
+          {translationPending && <TranslatingBadge />}
         </div>
 
         <div className="shrink-0 flex gap-3 text-[13px] font-bold text-tertiary items-center">

@@ -1,4 +1,5 @@
 import type { Category } from "@/lib/categories";
+import { getServerDictionary } from "@/lib/i18n/server";
 import type { Question } from "@/types/question";
 import { toggleQuestionLikeAction } from "../detail/[id]/_actions/like";
 import { Avatar } from "./Avatar";
@@ -6,6 +7,7 @@ import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
 import { TranslateToggle } from "./TranslateToggle";
+import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
   question: Question;
@@ -13,14 +15,16 @@ type Props = {
   liked: boolean;
 };
 
-export function QuestionDetail({ question, category, liked }: Props) {
-  const { id, user, title, content, likeCount, time } = question;
+export async function QuestionDetail({ question, category, liked }: Props) {
+  const { id, user, title, content, likeCount, time, translationPending } =
+    question;
+  const dictionary = await getServerDictionary();
 
   return (
     <section className="px-5 pb-5 pt-[18px] flex flex-col items-start">
       {category && (
         <div className="mb-3">
-          <Badge emoji={category.emoji} label={category.label} />
+          <Badge emoji={category.emoji} label={dictionary.category[category.id]} />
         </div>
       )}
 
@@ -37,15 +41,18 @@ export function QuestionDetail({ question, category, liked }: Props) {
         <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
           · {time}
         </span>
+        {translationPending && <TranslatingBadge />}
       </div>
 
       <p className="font-medium text-[16px] leading-[1.65] text-body mb-3">
         {content}
       </p>
 
-      <div className="mb-[18px]">
-        <TranslateToggle />
-      </div>
+      {!translationPending && (
+        <div className="mb-[18px]">
+          <TranslateToggle />
+        </div>
+      )}
 
       <LikeButton
         count={likeCount}
