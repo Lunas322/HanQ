@@ -1,6 +1,5 @@
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
 import { HeroContent } from "@/app/components/HeroContent";
-import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { Logo } from "@/app/components/Logo";
 import { QuestionCard } from "@/app/components/QuestionCard";
 import { findCategory } from "@/lib/categories";
@@ -32,10 +31,6 @@ export default async function Page({ params }: Props) {
 
   return (
     <main className="min-h-dvh bg-surface px-6 py-5 pb-[114px]">
-      <div className="w-full flex justify-end">
-        <LanguageToggle showLabel={true} />
-      </div>
-
       <Logo size="xl" />
       <HeroContent language={lang} />
 

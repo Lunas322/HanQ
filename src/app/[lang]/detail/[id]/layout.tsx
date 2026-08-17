@@ -1,5 +1,4 @@
 import { Header } from "@/app/components/Header";
-import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { DeleteMenu } from "@/app/components/DeleteMenu";
 import { getCurrentUser } from "@/lib/auth";
 import { getServerDictionary } from "@/lib/i18n/server";
@@ -29,7 +28,6 @@ export default async function detailLayout ({children, params}:Props) {
   <>
       <div className="sticky top-0 z-50">
         <Header mainIcon="ChevronLeft" title={detail.headerTitle}>
-          <LanguageToggle />
           {isAuthor && (
             <DeleteMenu
               target="question"

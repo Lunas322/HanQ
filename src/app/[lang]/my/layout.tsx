@@ -10,7 +10,6 @@ import React, { Suspense } from "react";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserProfile } from "@/lib/user";
 import { Header } from "@/app/components/Header";
-import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { ProfileMenu } from "@/app/components/ProfileMenu";
 import { ProfileSummary } from "@/app/components/ProfileSummary";
 import { ProfileSummarySkeleton } from "@/app/components/ProfileSummarySkeleton";
@@ -57,7 +56,6 @@ export default async function MyLayout({ children, params }: Props) {
     <>
       <div className="sticky top-0 z-50">
         <Header mainIcon="My">
-          <LanguageToggle />
           <ProfileMenu />
         </Header>
       </div>
