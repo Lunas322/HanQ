@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 
@@ -22,6 +22,13 @@ type Props = {
   params: Promise<{ lang: string }>;
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0064ff",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export function generateStaticParams() {
   return LANGUAGES.map((lang) => ({ lang }));
 }
@@ -43,6 +50,11 @@ export async function generateMetadata({
     description: meta.description,
     keywords: meta.keywords,
     applicationName: meta.title,
+    appleWebApp: {
+      capable: true,
+      title: "HanQ",
+      statusBarStyle: "default",
+    },
     alternates: {
       canonical: `/${lang}`,
       languages: Object.fromEntries(
