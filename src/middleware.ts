@@ -7,7 +7,13 @@ import {
 import { SESSION_COOKIE_NAME } from "@/lib/session";
 import { isLanguage } from "@/types/language";
 
-const PROTECTED_PATHS = ["/home", "/ask", "/my", "/detail"] as const;
+const PROTECTED_PATHS = [
+  "/home",
+  "/ask",
+  "/my",
+  "/detail",
+  "/notifications",
+] as const;
 
 const COUNTRY_HEADER = "x-vercel-ip-country";
 
@@ -57,5 +63,6 @@ export const config = {
     "/ask/:path*",
     "/my/:path*",
     "/detail/:path*",
+    "/notifications/:path*",
   ],
 };
