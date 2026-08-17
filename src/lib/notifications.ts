@@ -8,7 +8,6 @@ import {
   QUESTIONS_COLLECTION,
   USERS_COLLECTION,
 } from "./collections";
-import { formatRelativeTime } from "./format";
 import { adminDb } from "./firebase-admin";
 import {
   readDate,
@@ -229,7 +228,7 @@ export async function listNotifications(
         ),
         questionId,
         preview,
-        time: formatRelativeTime(readDate(doc.get("createdAt")), language),
+        createdAt: readDate(doc.get("createdAt")).toISOString(),
         read: doc.get("read") === true,
       },
     ];

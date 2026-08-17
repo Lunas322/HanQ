@@ -8,6 +8,7 @@ import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
+import { RelativeTime } from "./RelativeTime";
 import { TranslatableQuestion } from "./TranslatableQuestion";
 import { TranslatingBadge } from "./TranslatingBadge";
 
@@ -26,7 +27,7 @@ export function QuestionDetail({
   language,
   loginHref,
 }: Props) {
-  const { id, user, title, content, likeCount, time, translationPending, original } =
+  const { id, user, title, content, likeCount, createdAt, translationPending, original } =
     question;
   const dictionary = getDictionary(language);
 
@@ -48,7 +49,7 @@ export function QuestionDetail({
           </AuthorLink>
           <Flag language={user.languages} />
           <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
-            · {time}
+            · <RelativeTime iso={createdAt} />
           </span>
           {translationPending && <TranslatingBadge language={language} />}
         </div>

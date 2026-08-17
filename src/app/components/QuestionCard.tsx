@@ -9,6 +9,7 @@ import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { Icon } from "./Icon";
+import { RelativeTime } from "./RelativeTime";
 import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
 };
 
 export function QuestionCard({ question, category, language }: Props) {
-  const { user, likeCount, commentCount, time, translationPending } =
+  const { user, likeCount, commentCount, createdAt, translationPending } =
     question;
   const dictionary = getDictionary(language);
 
@@ -41,7 +42,7 @@ export function QuestionCard({ question, category, language }: Props) {
           </span>
           <Flag language={user.languages} />
           <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
-            · {time}
+            · <RelativeTime iso={createdAt} />
           </span>
           {translationPending && <TranslatingBadge language={language} />}
         </div>

@@ -15,7 +15,6 @@ export type Answer = {
   likeCount: number;
   liked: boolean;
   isMine: boolean;
-  time: string;
   createdAt: string;
   sourceLanguage: Language;
   translationPending: boolean;

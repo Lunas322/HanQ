@@ -7,6 +7,7 @@ import { Avatar } from "./Avatar";
 import { DeleteMenu } from "./DeleteMenu";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
+import { RelativeTime } from "./RelativeTime";
 import { TranslatableAnswer } from "./TranslatableAnswer";
 import { TranslatingBadge } from "./TranslatingBadge";
 
@@ -25,7 +26,7 @@ export function AnswerItem({ answer, language, loginHref }: Props) {
     likeCount,
     liked,
     isMine,
-    time,
+    createdAt,
     translationPending,
     original,
   } = answer;
@@ -48,7 +49,7 @@ export function AnswerItem({ answer, language, loginHref }: Props) {
           </AuthorLink>
           <Flag language={author.language} />
           <span className="whitespace-nowrap text-[12px] text-tertiary">
-            · {time}
+            · <RelativeTime iso={createdAt} />
           </span>
           {translationPending && <TranslatingBadge language={language} />}
 

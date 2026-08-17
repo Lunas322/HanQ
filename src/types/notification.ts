@@ -17,6 +17,6 @@ export type Notification = {
   actorPhotoUrl: string | null;
   questionId: string;
   preview: string;
-  time: string;
+  createdAt: string;
   read: boolean;
 };

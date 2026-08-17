@@ -20,7 +20,6 @@ import {
   readTranslationStatus,
 } from "./firestore-value";
 import { detectLanguage } from "./detect-language";
-import { formatRelativeTime } from "./format";
 import { isLanguage, type Language } from "@/types/language";
 import { filterLiked } from "./likes";
 import { getCurrentLanguage } from "./locale";
@@ -156,7 +155,6 @@ export async function listAnswers(
       likeCount: raw.likeCount,
       liked: likedIds.has(raw.id),
       isMine: viewerId !== "" && raw.authorId === viewerId,
-      time: formatRelativeTime(new Date(raw.createdAt), language),
       createdAt: raw.createdAt,
       sourceLanguage,
       translationPending: pending,

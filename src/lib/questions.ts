@@ -21,7 +21,6 @@ import {
   readTranslationStatus,
 } from "./firestore-value";
 import { detectLanguage } from "./detect-language";
-import { formatRelativeTime } from "./format";
 import { getCurrentLanguage } from "./locale";
 import { isLanguage, type Language } from "@/types/language";
 import type { QuestionDraft } from "./question-rules";
@@ -141,7 +140,6 @@ function toQuestion(
       : null,
     likeCount: data.likeCount,
     commentCount: data.answerCount,
-    time: formatRelativeTime(new Date(data.createdAt), language),
     createdAt: data.createdAt,
     categoryId: data.categoryId,
   };

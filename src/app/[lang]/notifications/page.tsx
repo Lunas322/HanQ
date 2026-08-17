@@ -7,6 +7,7 @@ import { isLanguage } from "@/types/language";
 import { listNotifications } from "@/lib/notifications";
 import { localePath } from "@/lib/routes";
 import { Avatar } from "@/app/components/Avatar";
+import { RelativeTime } from "@/app/components/RelativeTime";
 import { MarkNotificationsRead } from "@/app/components/MarkNotificationsRead";
 
 type Props = {
@@ -57,7 +58,7 @@ export default async function Page({ params }: Props) {
                 <p className="truncate text-[13px] text-secondary">
                   {item.preview}
                 </p>
-                <span className="text-[12px] text-tertiary">{item.time}</span>
+                <span className="text-[12px] text-tertiary"><RelativeTime iso={item.createdAt} /></span>
               </div>
             </Link>
           </li>
