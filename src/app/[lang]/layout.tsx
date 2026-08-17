@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { LanguageProvider } from "@/lib/i18n/context";
 import { getDictionary } from "@/lib/i18n";
@@ -109,6 +111,8 @@ export default async function RootLayout({ children, params }: Props) {
       </head>
       <body className="min-h-full flex flex-col">
         <LanguageProvider language={lang}>{children}</LanguageProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
