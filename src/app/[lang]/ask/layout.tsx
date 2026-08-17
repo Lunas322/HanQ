@@ -6,7 +6,6 @@ export const metadata: Metadata = {
 
 import { Header } from "@/app/components/Header";
 import { Icon } from "@/app/components/Icon";
-import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { getServerDictionary } from "@/lib/i18n/server";
 import { getCurrentLanguage } from "@/lib/locale";
 import { localePath } from "@/lib/routes";
@@ -25,7 +24,6 @@ export default async function askLayout ({children}:Props) {
   <>
       <div className="sticky top-0 z-50">
         <Header mainIcon="ChevronLeft" title={ask.headerTitle}>
-          <LanguageToggle />
           <Link href={localePath(language, "/home")} aria-label={nav.close} className="flex items-center text-icon">
             <Icon size="l" icon="Close" />
           </Link>
