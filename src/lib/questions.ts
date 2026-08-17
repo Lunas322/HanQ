@@ -327,3 +327,20 @@ export async function deleteQuestion(
   return "ok";
 }
 
+export type SitemapEntry = {
+  id: string;
+  updatedAt: Date;
+};
+
+export async function listQuestionSitemapEntries(): Promise<SitemapEntry[]> {
+  const snapshot = await adminDb
+    .collection(QUESTIONS_COLLECTION)
+    .orderBy("createdAt", "desc")
+    .limit(5000)
+    .get();
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    updatedAt: readDate(doc.get("createdAt")),
+  }));
+}
