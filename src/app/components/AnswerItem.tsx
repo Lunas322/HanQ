@@ -25,7 +25,12 @@ export function AnswerItem({ answer }: { answer: Answer }) {
 
   return (
     <article className="flex gap-[10px] items-start">
-      <Avatar name={author.name} size="lg" color={author.avatarColor} />
+      <Avatar
+        name={author.name}
+        size="lg"
+        color={author.avatarColor}
+        photoUrl={author.photoUrl}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col gap-[6px] items-start">
         <div className="flex w-full gap-[5px] items-center">

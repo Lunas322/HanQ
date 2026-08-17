@@ -32,7 +32,7 @@ export async function QuestionDetail({ question, category, liked }: Props) {
       <TranslatableQuestion title={title} content={content} original={original}>
         <div className="flex min-w-0 gap-2 items-center mb-[14px]">
           <AuthorLink userId={user.id} name={user.name}>
-            <Avatar name={user.name} size="md" />
+            <Avatar name={user.name} size="md" photoUrl={user.photoUrl} />
             <span className="truncate text-[14px] font-bold text-strong">
               {user.name}
             </span>
