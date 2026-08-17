@@ -14,6 +14,12 @@ export const FORM_ERROR_CODES = [
   "ANSWER_NOT_FOUND",
   "ANSWER_DELETE_FORBIDDEN",
   "ANSWER_DELETE_FAILED",
+  "NAME_REQUIRED",
+  "NAME_TOO_SHORT",
+  "NAME_TOO_LONG",
+  "IMAGE_TYPE_INVALID",
+  "IMAGE_TOO_LARGE",
+  "PROFILE_UPDATE_FAILED",
 ] as const;
 
 export type FormErrorCode = (typeof FORM_ERROR_CODES)[number];
