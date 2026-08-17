@@ -9,6 +9,7 @@ export type Question = {
   likeCount: number;
   commentCount: number;
   time: string;
+  createdAt: string;
   categoryId: string;
   sourceLanguage: Language;
   translationPending: boolean;
