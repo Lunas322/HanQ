@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { cacheLife, cacheTag } from "next/cache";
+
+import { QUESTIONS_TAG } from "@/lib/cache-tags";
 
 import { listQuestionSitemapEntries } from "@/lib/questions";
 import { SITE_URL } from "@/lib/site";
 import { LANGUAGES } from "@/types/language";
-
-export const revalidate = 3600;
 
 function alternates(path: string) {
   return {
@@ -15,6 +16,10 @@ function alternates(path: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(QUESTIONS_TAG);
+
   const questions = await listQuestionSitemapEntries();
 
   const landing = LANGUAGES.map((lang) => ({
