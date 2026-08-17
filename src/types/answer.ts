@@ -9,6 +9,7 @@ export type Answer = {
     name: string;
     language: Language;
     avatarColor: AvatarColor;
+    photoUrl: string | null;
   };
   content: string;
   likeCount: number;
@@ -17,4 +18,5 @@ export type Answer = {
   time: string;
   sourceLanguage: Language;
   translationPending: boolean;
+  original: { content: string } | null;
 };

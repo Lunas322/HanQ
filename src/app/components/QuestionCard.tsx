@@ -31,7 +31,7 @@ export async function QuestionCard({ question, category }: Props) {
 
       <div className="flex justify-between items-center gap-3">
         <div className="flex min-w-0 gap-2 items-center">
-          <Avatar name={user.name} size="sm" />
+          <Avatar name={user.name} size="sm" photoUrl={user.photoUrl} />
           <span className="truncate text-[13px] font-medium text-secondary">
             {user.name}
           </span>

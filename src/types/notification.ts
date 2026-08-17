@@ -14,6 +14,7 @@ export type Notification = {
   id: string;
   type: NotificationType;
   actorName: string;
+  actorPhotoUrl: string | null;
   questionId: string;
   preview: string;
   time: string;

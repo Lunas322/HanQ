@@ -13,6 +13,8 @@ const PROTECTED_PATHS = [
   "/my",
   "/detail",
   "/notifications",
+  "/users",
+  "/profile",
 ] as const;
 
 const COUNTRY_HEADER = "x-vercel-ip-country";
@@ -64,5 +66,7 @@ export const config = {
     "/my/:path*",
     "/detail/:path*",
     "/notifications/:path*",
+    "/users/:path*",
+    "/profile/:path*",
   ],
 };

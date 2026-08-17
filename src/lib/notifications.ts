@@ -16,7 +16,7 @@ import {
 } from "./firestore-value";
 import { formatRelativeTime } from "./format";
 import { getCurrentLanguage } from "./locale";
-import { resolveDisplayName } from "./user";
+import { readPhotoUrl, resolveDisplayName } from "./user";
 import { isLanguage, type Language } from "@/types/language";
 import {
   isNotificationType,
@@ -222,6 +222,9 @@ export async function listNotifications(uid: string): Promise<Notification[]> {
         actorName: resolveDisplayName(
           actors.get(readString(doc.get("actorId")))?.get("name"),
           language,
+        ),
+        actorPhotoUrl: readPhotoUrl(
+          actors.get(readString(doc.get("actorId")))?.get("photoUrl"),
         ),
         questionId,
         preview,

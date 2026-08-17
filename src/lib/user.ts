@@ -1,6 +1,7 @@
 import "server-only";
 
 import { FieldValue } from "firebase-admin/firestore";
+import { cache } from "react";
 
 import { getDictionary } from "@/lib/i18n";
 import type { Profile } from "@/types/user";
@@ -16,6 +17,10 @@ export function resolveDisplayName(
   return typeof name === "string" && name.trim() !== ""
     ? name
     : getDictionary(language).common.fallbackUserName;
+}
+
+export function readPhotoUrl(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
 }
 
 export function toLanguage(value: unknown): Language {
@@ -52,7 +57,7 @@ export async function ensureUserDocument({
     );
 }
 
-export async function getUserProfile(uid: string): Promise<Profile | null> {
+export const getUserProfile = cache(async (uid: string): Promise<Profile | null> => {
   const snapshot = await adminDb.collection(USERS_COLLECTION).doc(uid).get();
   const data = snapshot.data();
 
@@ -64,8 +69,27 @@ export async function getUserProfile(uid: string): Promise<Profile | null> {
     id: uid,
     name: resolveDisplayName(data.name, await getCurrentLanguage()),
     languages: toLanguage(data.languages),
+    photoUrl: readPhotoUrl(data.photoUrl),
     questionCount: Number(data.questionCount ?? 0),
     answerCount: Number(data.answerCount ?? 0),
     receivedLikeCount: Number(data.receivedLikeCount ?? 0),
   };
+});
+
+type ProfileUpdate = {
+  name: string;
+  photoUrl?: string | null;
+};
+
+export async function updateUserProfile(
+  uid: string,
+  update: ProfileUpdate,
+): Promise<void> {
+  await adminDb
+    .collection(USERS_COLLECTION)
+    .doc(uid)
+    .update({
+      name: update.name,
+      ...(update.photoUrl === undefined ? {} : { photoUrl: update.photoUrl }),
+    });
 }

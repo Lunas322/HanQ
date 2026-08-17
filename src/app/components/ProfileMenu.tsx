@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useDictionary } from "@/lib/i18n/context";
@@ -40,6 +41,14 @@ export function ProfileMenu() {
             role="menu"
             className="absolute right-0 top-full z-50 mt-1 w-32 overflow-hidden rounded-xl bg-surface py-1 shadow-[0_4px_16px_0_rgba(25,31,40,0.14)]"
           >
+            <Link
+              href="/profile/edit"
+              role="menuitem"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2.5 text-[14px] font-medium text-secondary"
+            >
+              {my.editProfile}
+            </Link>
             <a
               href="/logout"
               role="menuitem"

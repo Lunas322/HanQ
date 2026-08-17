@@ -12,4 +12,5 @@ export type Question = {
   categoryId: string;
   sourceLanguage: Language;
   translationPending: boolean;
+  original: { title: string; content: string } | null;
 };

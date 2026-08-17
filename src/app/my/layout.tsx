@@ -19,6 +19,7 @@ async function MyProfile({ uid, name }: { uid: string; name: string }) {
     id: uid,
     name,
     languages: "ko",
+    photoUrl: null,
     questionCount: 0,
     answerCount: 0,
     receivedLikeCount: 0,
