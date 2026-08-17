@@ -5,10 +5,15 @@ import {
   FieldValue,
   type Query,
 } from "firebase-admin/firestore";
+import { cache } from "react";
 
 import type { Question } from "@/types/question";
 import { type Author, fallbackAuthor, loadAuthorsFor } from "./authors";
-import { QUESTIONS_COLLECTION, USERS_COLLECTION } from "./collections";
+import {
+  ANSWERS_COLLECTION,
+  QUESTIONS_COLLECTION,
+  USERS_COLLECTION,
+} from "./collections";
 import { adminDb } from "./firebase-admin";
 import {
   readDate,
@@ -135,7 +140,7 @@ export async function getQuestionsByIds(ids: string[]): Promise<Question[]> {
   return snapshots.map((snapshot) => toQuestion(snapshot, authors, language));
 }
 
-export async function getQuestion(id: string): Promise<Question | null> {
+export const getQuestion = cache(async (id: string): Promise<Question | null> => {
   const snapshot = await adminDb.collection(QUESTIONS_COLLECTION).doc(id).get();
 
   if (!snapshot.exists) {
@@ -146,4 +151,84 @@ export async function getQuestion(id: string): Promise<Question | null> {
   const authors = await loadAuthorsFor([snapshot], language);
 
   return toQuestion(snapshot, authors, language);
+});
+
+type CountDelta = {
+  questions: number;
+  answers: number;
+  likes: number;
+};
+
+export type DeleteQuestionResult = "ok" | "not-found" | "forbidden";
+
+export async function deleteQuestion(
+  questionId: string,
+  requesterId: string,
+): Promise<DeleteQuestionResult> {
+  const questionRef = adminDb.collection(QUESTIONS_COLLECTION).doc(questionId);
+  const snapshot = await questionRef.get();
+
+  if (!snapshot.exists) {
+    return "not-found";
+  }
+
+  const authorId = readString(snapshot.get("authorId"));
+
+  if (authorId !== requesterId) {
+    return "forbidden";
+  }
+
+  const answers = await adminDb
+    .collection(ANSWERS_COLLECTION)
+    .where("questionId", "==", questionId)
+    .get();
+
+  const deltas = new Map<string, CountDelta>();
+
+  const addDelta = (uid: string, delta: Partial<CountDelta>) => {
+    if (!uid) return;
+
+    const current = deltas.get(uid) ?? { questions: 0, answers: 0, likes: 0 };
+
+    deltas.set(uid, {
+      questions: current.questions + (delta.questions ?? 0),
+      answers: current.answers + (delta.answers ?? 0),
+      likes: current.likes + (delta.likes ?? 0),
+    });
+  };
+
+  addDelta(authorId, {
+    questions: 1,
+    likes: readNumber(snapshot.get("likeCount")),
+  });
+
+  for (const answer of answers.docs) {
+    addDelta(readString(answer.get("authorId")), {
+      answers: 1,
+      likes: readNumber(answer.get("likeCount")),
+    });
+  }
+
+  await Promise.all([
+    adminDb.recursiveDelete(questionRef),
+    ...answers.docs.map((answer) => adminDb.recursiveDelete(answer.ref)),
+  ]);
+
+  const batch = adminDb.batch();
+
+  for (const [uid, delta] of deltas) {
+    batch.update(adminDb.collection(USERS_COLLECTION).doc(uid), {
+      questionCount: FieldValue.increment(-delta.questions),
+      answerCount: FieldValue.increment(-delta.answers),
+      receivedLikeCount: FieldValue.increment(-delta.likes),
+    });
+  }
+
+  try {
+    await batch.commit();
+  } catch (e) {
+    console.error("[deleteQuestion] 카운터 정리 실패", questionId, e);
+  }
+
+  return "ok";
 }
