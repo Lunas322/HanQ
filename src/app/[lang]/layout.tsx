@@ -39,8 +39,10 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(SITE_URL),
-    title: { default: meta.title, template: `%s | HanQ` },
+    title: { default: meta.title, template: `%s | ${meta.title}` },
     description: meta.description,
+    keywords: meta.keywords,
+    applicationName: meta.title,
     alternates: {
       canonical: `/${lang}`,
       languages: Object.fromEntries(
@@ -50,7 +52,7 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       siteName: "HanQ",
-      title: meta.title,
+      title: meta.socialTitle,
       description: meta.description,
       locale: lang === "ko" ? "ko_KR" : "ja_JP",
       alternateLocale: lang === "ko" ? "ja_JP" : "ko_KR",
@@ -58,7 +60,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: meta.title,
+      title: meta.socialTitle,
       description: meta.description,
     },
   };

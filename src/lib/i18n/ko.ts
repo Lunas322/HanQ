@@ -7,9 +7,22 @@ import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
 
 export const ko = {
   meta: {
-    title: "HanQ — 언어 걱정 없이 한국과 일본에 물어보세요",
+    title: "HanQ",
+    socialTitle: "HanQ — 한국과 일본, 언어 걱정 없이",
     description:
-      "내 언어로 쓰면 상대 언어로 자동 번역되는 한일 Q&A 커뮤니티",
+      "한국어로 물으면 일본어로, 일본어 답변은 한국어로 자동 번역되는 한일 Q&A 커뮤니티. 문화·여행·취업·연애까지 현지 사람에게 직접 물어보세요.",
+    keywords: [
+      "한일 커뮤니티",
+      "한국 일본 질문",
+      "실시간 번역",
+      "자동 번역 Q&A",
+      "일본 문화",
+      "일본 여행",
+      "일본 유학",
+      "일본 취업",
+      "일본어 질문",
+      "한일 교류",
+    ],
   },
 
   common: {
