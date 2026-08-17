@@ -108,6 +108,7 @@ export async function listAnswers(
       content: readLocalizedText(data.content, language, sourceLanguage),
       likeCount: readNumber(data.likeCount),
       liked: likedIds.has(doc.id),
+      isMine: authorId === viewerId,
       time: formatRelativeTime(readDate(data.createdAt), language),
       sourceLanguage,
       translationPending:
@@ -132,3 +133,48 @@ export async function listAnsweredQuestionIds(
   ].filter(Boolean);
 }
 
+export type DeleteAnswerResult = "ok" | "not-found" | "forbidden";
+
+export async function deleteAnswer(
+  answerId: string,
+  requesterId: string,
+): Promise<DeleteAnswerResult> {
+  const answerRef = adminDb.collection(ANSWERS_COLLECTION).doc(answerId);
+  const snapshot = await answerRef.get();
+
+  if (!snapshot.exists) {
+    return "not-found";
+  }
+
+  const authorId = readString(snapshot.get("authorId"));
+
+  if (authorId !== requesterId) {
+    return "forbidden";
+  }
+
+  const questionId = readString(snapshot.get("questionId"));
+  const likeCount = readNumber(snapshot.get("likeCount"));
+
+  await adminDb.recursiveDelete(answerRef);
+
+  const batch = adminDb.batch();
+
+  batch.update(adminDb.collection(USERS_COLLECTION).doc(authorId), {
+    answerCount: FieldValue.increment(-1),
+    receivedLikeCount: FieldValue.increment(-likeCount),
+  });
+
+  if (questionId) {
+    batch.update(adminDb.collection(QUESTIONS_COLLECTION).doc(questionId), {
+      answerCount: FieldValue.increment(-1),
+    });
+  }
+
+  try {
+    await batch.commit();
+  } catch (e) {
+    console.error("[deleteAnswer] 카운터 정리 실패", answerId, e);
+  }
+
+  return "ok";
+}
