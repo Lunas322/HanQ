@@ -3,6 +3,7 @@
 import { createContext, use, type ReactNode } from "react";
 
 import type { Language } from "@/types/language";
+import { localePath } from "@/lib/routes";
 import { getDictionary, type Dictionary } from "./index";
 
 const LanguageContext = createContext<Language | null>(null);
@@ -28,4 +29,10 @@ export function useLanguage(): Language {
 
 export function useDictionary(): Dictionary {
   return getDictionary(useLanguage());
+}
+
+export function useLocalePath(): (path: string) => string {
+  const language = useLanguage();
+
+  return (path: string) => localePath(language, path);
 }
