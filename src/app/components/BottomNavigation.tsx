@@ -55,13 +55,13 @@ export function BottomNavigation() {
     <nav className="fixed bottom-0 left-0 right-0 z-10 flex h-19 items-center bg-surface px-8 py-3">
       <NavLink item={home} isActive={pathname === home.href} align="start" />
 
-      <button
-        type="button"
+      <Link
+        href="/ask"
         aria-label={nav.askAria}
         className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-brand text-white"
       >
         <Icon icon="Plus" size="plus" />
-      </button>
+      </Link>
 
       <NavLink item={profile} isActive={pathname === profile.href} align="end" />
     </nav>
