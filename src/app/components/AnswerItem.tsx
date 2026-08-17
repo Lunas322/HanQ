@@ -5,6 +5,7 @@ import { Avatar } from "./Avatar";
 import { DeleteMenu } from "./DeleteMenu";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
+import { TranslatableAnswer } from "./TranslatableAnswer";
 import { TranslatingBadge } from "./TranslatingBadge";
 
 export function AnswerItem({ answer }: { answer: Answer }) {
@@ -18,6 +19,7 @@ export function AnswerItem({ answer }: { answer: Answer }) {
     isMine,
     time,
     translationPending,
+    original,
   } = answer;
 
   return (
@@ -45,7 +47,7 @@ export function AnswerItem({ answer }: { answer: Answer }) {
           )}
         </div>
 
-        <p className="text-[15px] leading-[1.6] text-body">{content}</p>
+        <TranslatableAnswer content={content} original={original} />
 
         <LikeButton
           count={likeCount}
