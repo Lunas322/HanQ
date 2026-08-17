@@ -6,7 +6,6 @@ export const metadata: Metadata = {
 
 import React from "react";
 import { Header } from "@/app/components/Header";
-import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { NotificationBell } from "@/app/components/NotificationBell";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -21,7 +20,6 @@ export default async function HomeLayout({ children }: Props) {
     <>
       <div className="sticky top-0 z-50">
         <Header mainIcon="Logo">
-          <LanguageToggle />
           {user && <NotificationBell uid={user.uid} />}
         </Header>
       </div>
