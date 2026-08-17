@@ -84,15 +84,29 @@ function toQuestion(
     ? data.sourceLanguage
     : language;
 
+  const translationPending =
+    language !== sourceLanguage &&
+    readTranslationStatus(data.translationStatus) !== "done";
+
+  const isTranslated = language !== sourceLanguage && !translationPending;
+
   return {
     id: doc.id,
     user: { id: authorId, name: author.name, languages: author.languages },
     title: readLocalizedText(data.title, language, sourceLanguage),
     content: readLocalizedText(data.content, language, sourceLanguage),
     sourceLanguage,
-    translationPending:
-      language !== sourceLanguage &&
-      readTranslationStatus(data.translationStatus) !== "done",
+    translationPending,
+    original: isTranslated
+      ? {
+          title: readLocalizedText(data.title, sourceLanguage, sourceLanguage),
+          content: readLocalizedText(
+            data.content,
+            sourceLanguage,
+            sourceLanguage,
+          ),
+        }
+      : null,
     likeCount: readNumber(data.likeCount),
     commentCount: readNumber(data.answerCount),
     time: formatRelativeTime(readDate(data.createdAt), language),

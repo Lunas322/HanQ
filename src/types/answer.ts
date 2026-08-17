@@ -17,4 +17,5 @@ export type Answer = {
   time: string;
   sourceLanguage: Language;
   translationPending: boolean;
+  original: { content: string } | null;
 };

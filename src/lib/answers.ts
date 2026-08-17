@@ -96,6 +96,10 @@ export async function listAnswers(
       ? data.sourceLanguage
       : language;
 
+    const pending =
+      language !== sourceLanguage &&
+      readTranslationStatus(data.translationStatus) !== "done";
+
     return {
       id: doc.id,
       questionId: readString(data.questionId),
@@ -111,9 +115,17 @@ export async function listAnswers(
       isMine: authorId === viewerId,
       time: formatRelativeTime(readDate(data.createdAt), language),
       sourceLanguage,
-      translationPending:
-        language !== sourceLanguage &&
-        readTranslationStatus(data.translationStatus) !== "done",
+      translationPending: pending,
+      original:
+        language !== sourceLanguage && !pending
+          ? {
+              content: readLocalizedText(
+                data.content,
+                sourceLanguage,
+                sourceLanguage,
+              ),
+            }
+          : null,
     };
   });
 }
