@@ -2,21 +2,25 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { getCurrentUser } from "@/lib/auth";
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import { isLanguage } from "@/types/language";
 import { AuthoredQuestionList } from "@/app/components/AuthoredQuestionList";
 import { BottomNavigation } from "@/app/components/BottomNavigation";
 import { QuestionListSkeleton } from "@/app/components/QuestionListSkeleton";
 import { Tab, type TabItem } from "@/app/components/Tab";
 
 type Props = {
+  params: Promise<{ lang: string }>;
   searchParams: Promise<{ tab?: string }>;
 };
 
-export default async function Page({ searchParams }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect("/logout");
 
-  const { my } = await getServerDictionary();
+  const { lang } = await params;
+  const language = isLanguage(lang) ? lang : "ko";
+  const { my } = getDictionary(language);
   const { tab } = await searchParams;
   const isAnswerTab = tab === "answers";
 
@@ -33,7 +37,11 @@ export default async function Page({ searchParams }: Props) {
 
       <div className="px-5 pb-19">
         <Suspense key={isAnswerTab ? "answers" : "questions"} fallback={<QuestionListSkeleton count={2} />}>
-          <AuthoredQuestionList uid={user.uid} isAnswerTab={isAnswerTab} />
+          <AuthoredQuestionList
+            uid={user.uid}
+            isAnswerTab={isAnswerTab}
+            language={language}
+          />
         </Suspense>
       </div>
 

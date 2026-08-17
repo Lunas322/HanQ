@@ -12,11 +12,12 @@ import { findCategory } from "@/lib/categories";
 import { listAnswers } from "@/lib/answers";
 import { getCurrentUser } from "@/lib/auth";
 import { QUESTIONS_COLLECTION } from "@/lib/collections";
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
 import { hasLiked } from "@/lib/likes";
 import { getQuestion } from "@/lib/questions";
 import { SITE_URL } from "@/lib/site";
-import { isLanguage, LANGUAGES } from "@/types/language";
+import { isLanguage, LANGUAGES, type Language } from "@/types/language";
+import type { Question } from "@/types/question";
 
 interface DetailProps {
   params: Promise<{ lang: string; id: string }>;
@@ -33,7 +34,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const question = await getQuestion(id);
+  const question = await getQuestion(id, lang);
 
   if (!question) {
     return {};
@@ -74,19 +75,18 @@ export async function generateMetadata({
 async function AnswerList({
   question,
   viewerId,
+  language,
   loginHref,
   url,
 }: {
-  question: Awaited<ReturnType<typeof getQuestion>> & object;
+  question: Question;
   viewerId: string;
+  language: Language;
   loginHref?: string;
   url: string;
 }) {
-  const questionId = question.id;
-  const [answers, dictionary] = await Promise.all([
-    listAnswers(questionId, viewerId),
-    getServerDictionary(),
-  ]);
+  const answers = await listAnswers(question.id, viewerId, language);
+  const dictionary = getDictionary(language);
 
   return (
     <>
@@ -103,7 +103,12 @@ async function AnswerList({
         </p>
       ) : (
         answers.map((answer) => (
-          <AnswerItem key={answer.id} answer={answer} loginHref={loginHref} />
+          <AnswerItem
+            key={answer.id}
+            answer={answer}
+            language={language}
+            loginHref={loginHref}
+          />
         ))
       )}
     </>
@@ -113,11 +118,14 @@ async function AnswerList({
 export default async function DetailPage({ params }: DetailProps) {
   const { lang, id } = await params;
 
+  if (!isLanguage(lang)) notFound();
+
+  const language = lang;
   const user = await getCurrentUser();
   const loginHref = user ? undefined : `/${lang}`;
 
   const [question, liked] = await Promise.all([
-    getQuestion(id),
+    getQuestion(id, language),
     user ? hasLiked(QUESTIONS_COLLECTION, id, user.uid) : false,
   ]);
 
@@ -131,6 +139,7 @@ export default async function DetailPage({ params }: DetailProps) {
         question={question}
         category={category}
         liked={liked}
+        language={language}
         loginHref={loginHref}
       />
 
@@ -141,8 +150,9 @@ export default async function DetailPage({ params }: DetailProps) {
           <AnswerList
             question={question}
             viewerId={user?.uid ?? ""}
+            language={language}
             loginHref={loginHref}
-            url={`${SITE_URL}/${lang}/detail/${id}`}
+            url={`${SITE_URL}/${language}/detail/${id}`}
           />
         </Suspense>
       </section>
@@ -150,7 +160,7 @@ export default async function DetailPage({ params }: DetailProps) {
       {user ? (
         <AnswerInput questionId={id} />
       ) : (
-        <LoginToAnswer href={`/${lang}`} />
+        <LoginToAnswer href={`/${language}`} language={language} />
       )}
     </div>
   );

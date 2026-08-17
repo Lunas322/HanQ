@@ -4,6 +4,7 @@ import { DeleteMenu } from "@/app/components/DeleteMenu";
 import { getCurrentUser } from "@/lib/auth";
 import { getServerDictionary } from "@/lib/i18n/server";
 import { getQuestion } from "@/lib/questions";
+import { isLanguage } from "@/types/language";
 import { deleteQuestionAction } from "./_actions/delete";
 import React from "react";
 
@@ -13,12 +14,13 @@ type Props = {
 }
 
 export default async function detailLayout ({children, params}:Props) {
-    const { id } = await params;
+    const { lang, id } = await params;
+    const language = isLanguage(lang) ? lang : "ko";
 
     const [{ detail }, user, question] = await Promise.all([
       getServerDictionary(),
       getCurrentUser(),
-      getQuestion(id),
+      getQuestion(id, language),
     ]);
 
     const isAuthor = user !== null && question?.user.id === user.uid;

@@ -3,7 +3,8 @@ import { Suspense } from "react";
 
 import { getCurrentUser } from "@/lib/auth";
 import { findCategory } from "@/lib/categories";
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import { isLanguage, type Language } from "@/types/language";
 import { listQuestions } from "@/lib/questions";
 import { BottomNavigation } from "@/app/components/BottomNavigation";
 import Categories from "@/app/components/Categories";
@@ -12,6 +13,7 @@ import { QuestionListSkeleton } from "@/app/components/QuestionListSkeleton";
 import { Tab, type TabItem } from "@/app/components/Tab";
 
 type Props = {
+  params: Promise<{ lang: string }>;
   searchParams: Promise<{
     tab?: string;
     category?: string | string[];
@@ -26,14 +28,14 @@ function toArray(value: string | string[] | undefined): string[] {
 async function QuestionList({
   isPopular,
   selected,
+  language,
 }: {
   isPopular: boolean;
   selected: string[];
+  language: Language;
 }) {
-  const [all, dictionary] = await Promise.all([
-    listQuestions(),
-    getServerDictionary(),
-  ]);
+  const all = await listQuestions(language);
+  const dictionary = getDictionary(language);
 
   const filtered =
     selected.length === 0
@@ -61,6 +63,7 @@ async function QuestionList({
           <QuestionCard
             question={question}
             category={findCategory(question.categoryId)}
+            language={language}
           />
         </li>
       ))}
@@ -68,11 +71,13 @@ async function QuestionList({
   );
 }
 
-export default async function Page({ searchParams }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const user = await getCurrentUser();
   if (!user) redirect("/logout");
 
-  const { home } = await getServerDictionary();
+  const { lang } = await params;
+  const language = isLanguage(lang) ? lang : "ko";
+  const { home } = getDictionary(language);
   const { tab, category } = await searchParams;
 
   const tabs: TabItem[] = [
@@ -92,7 +97,11 @@ export default async function Page({ searchParams }: Props) {
         key={`${tab ?? "latest"}|${selected.join(",")}`}
         fallback={<QuestionListSkeleton />}
       >
-        <QuestionList isPopular={isPopular} selected={selected} />
+        <QuestionList
+          isPopular={isPopular}
+          selected={selected}
+          language={language}
+        />
       </Suspense>
 
       <BottomNavigation />

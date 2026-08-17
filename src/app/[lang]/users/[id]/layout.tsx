@@ -2,6 +2,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 
 import { getUserProfile } from "@/lib/user";
+import { isLanguage } from "@/types/language";
 import { Header } from "@/app/components/Header";
 
 type Props = {
@@ -10,8 +11,8 @@ type Props = {
 };
 
 export default async function UserLayout({ children, params }: Props) {
-  const { id } = await params;
-  const profile = await getUserProfile(id);
+  const { lang, id } = await params;
+  const profile = await getUserProfile(id, isLanguage(lang) ? lang : "ko");
 
   if (!profile) {
     notFound();

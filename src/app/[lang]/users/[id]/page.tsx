@@ -2,7 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { getCurrentUser } from "@/lib/auth";
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import { isLanguage } from "@/types/language";
 import { getUserProfile } from "@/lib/user";
 import { AuthoredQuestionList } from "@/app/components/AuthoredQuestionList";
 import { ProfileSummary } from "@/app/components/ProfileSummary";
@@ -21,9 +22,11 @@ export default async function Page({ params, searchParams }: Props) {
   if (!viewer) redirect("/logout");
   if (viewer.uid === id) redirect(`/${lang}/my`);
 
-  const [profile, { profile: copy }, { tab }] = await Promise.all([
-    getUserProfile(id),
-    getServerDictionary(),
+  const language = isLanguage(lang) ? lang : "ko";
+  const copy = getDictionary(language).profile;
+
+  const [profile, { tab }] = await Promise.all([
+    getUserProfile(id, language),
     searchParams,
   ]);
 
@@ -38,7 +41,7 @@ export default async function Page({ params, searchParams }: Props) {
 
   return (
     <>
-      <ProfileSummary profile={profile} />
+      <ProfileSummary profile={profile} language={language} />
 
       <div className="px-5 pt-4">
         <Tab items={tabs} className="w-full" />
@@ -49,7 +52,11 @@ export default async function Page({ params, searchParams }: Props) {
           key={isAnswerTab ? "answers" : "questions"}
           fallback={<QuestionListSkeleton count={2} />}
         >
-          <AuthoredQuestionList uid={id} isAnswerTab={isAnswerTab} />
+          <AuthoredQuestionList
+            uid={id}
+            isAnswerTab={isAnswerTab}
+            language={language}
+          />
         </Suspense>
       </div>
     </>

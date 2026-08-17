@@ -2,22 +2,26 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
-import { getServerDictionary } from "@/lib/i18n/server";
-import { getCurrentLanguage } from "@/lib/locale";
+import { getDictionary } from "@/lib/i18n";
+import { isLanguage } from "@/types/language";
 import { listNotifications } from "@/lib/notifications";
 import { localePath } from "@/lib/routes";
 import { Avatar } from "@/app/components/Avatar";
 import { MarkNotificationsRead } from "@/app/components/MarkNotificationsRead";
 
-export default async function Page() {
+type Props = {
+  params: Promise<{ lang: string }>;
+};
+
+export default async function Page({ params }: Props) {
+  const { lang } = await params;
+  const language = isLanguage(lang) ? lang : "ko";
+
   const user = await getCurrentUser();
   if (!user) redirect("/logout");
 
-  const [{ notification }, notifications, language] = await Promise.all([
-    getServerDictionary(),
-    listNotifications(user.uid),
-    getCurrentLanguage(),
-  ]);
+  const notifications = await listNotifications(user.uid, language);
+  const { notification } = getDictionary(language);
 
   if (notifications.length === 0) {
     return (

@@ -4,15 +4,29 @@ import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { Logo } from "@/app/components/Logo";
 import { QuestionCard } from "@/app/components/QuestionCard";
 import { findCategory } from "@/lib/categories";
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
 import { listQuestions } from "@/lib/questions";
+import { isLanguage, LANGUAGES } from "@/types/language";
+import { notFound } from "next/navigation";
 
 const PREVIEW_COUNT = 3;
 
-export default async function Page() {
-  const { landing } = await getServerDictionary();
+type Props = {
+  params: Promise<{ lang: string }>;
+};
 
-  const questions = (await listQuestions())
+export function generateStaticParams() {
+  return LANGUAGES.map((lang) => ({ lang }));
+}
+
+export default async function Page({ params }: Props) {
+  const { lang } = await params;
+
+  if (!isLanguage(lang)) notFound();
+
+  const { landing } = getDictionary(lang);
+
+  const questions = (await listQuestions(lang))
     .toSorted((a, b) => b.likeCount - a.likeCount)
     .slice(0, PREVIEW_COUNT);
 
@@ -23,7 +37,7 @@ export default async function Page() {
       </div>
 
       <Logo size="xl" />
-      <HeroContent />
+      <HeroContent language={lang} />
 
       <section>
         <h2 className="text-[13px] text-tertiary font-bold mt-8">
@@ -35,6 +49,7 @@ export default async function Page() {
               <QuestionCard
                 question={question}
                 category={findCategory(question.categoryId)}
+                language={lang}
               />
             </li>
           ))}
