@@ -1,6 +1,7 @@
 import { ANSWER_MAX } from "@/lib/answer-rules";
 import type { CategoryId } from "@/lib/categories";
 import type { FormErrorCode } from "@/lib/form-errors";
+import type { NotificationType } from "@/types/notification";
 import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
 
 export const ko = {
@@ -12,9 +13,13 @@ export const ko = {
 
   common: {
     retry: "다시 시도",
+    cancel: "취소",
+    delete: "삭제",
+    deleting: "삭제 중",
     submit: "등록",
     submitting: "등록 중",
     loadingQuestions: "질문을 불러오는 중",
+    translating: "번역 중",
     fallbackUserName: "사용자",
   },
 
@@ -22,6 +27,8 @@ export const ko = {
     home: "홈",
     profile: "내 정보",
     askAria: "질문 작성",
+    back: "뒤로",
+    close: "닫기",
   },
 
   language: {
@@ -58,6 +65,8 @@ export const ko = {
   },
 
   my: {
+    menuAria: "내 정보 메뉴",
+    logout: "로그아웃",
     tabQuestions: "내 질문",
     tabAnswers: "내 답변",
     emptyQuestions: "아직 작성한 질문이 없어요.",
@@ -89,6 +98,32 @@ export const ko = {
     showOriginal: "원문 보기",
     showTranslation: "번역 보기",
     likeAria: (count: number) => `좋아요 ${count}개`,
+
+  },
+
+  deletion: {
+    question: {
+      menuAria: "질문 메뉴",
+      title: "이 질문을 삭제할까요?",
+      description: "달린 답변과 좋아요도 함께 사라져요. 되돌릴 수 없어요.",
+    },
+    answer: {
+      menuAria: "답변 메뉴",
+      title: "이 답변을 삭제할까요?",
+      description: "되돌릴 수 없어요.",
+    },
+  },
+
+  notification: {
+    title: "알림",
+    bellAria: "알림",
+    unreadAria: "읽지 않은 알림 있음",
+    empty: "아직 알림이 없어요.",
+    message: {
+      answer: (name: string) => `${name}님이 답변을 남겼어요`,
+      "question-like": (name: string) => `${name}님이 내 질문을 좋아해요`,
+      "answer-like": (name: string) => `${name}님이 내 답변을 좋아해요`,
+    } satisfies Record<NotificationType, (name: string) => string>,
   },
 
   error: {
@@ -109,7 +144,12 @@ export const ko = {
     ANSWER_TOO_LONG: `답변은 ${ANSWER_MAX}자까지 쓸 수 있어요.`,
     QUESTION_NOT_FOUND: "질문을 찾을 수 없어요.",
     QUESTION_SUBMIT_FAILED: "질문 등록에 실패했어요. 다시 시도해 주세요.",
+    QUESTION_DELETE_FORBIDDEN: "내가 쓴 질문만 삭제할 수 있어요.",
+    QUESTION_DELETE_FAILED: "삭제에 실패했어요. 다시 시도해 주세요.",
     ANSWER_SUBMIT_FAILED: "답변 등록에 실패했어요. 다시 시도해 주세요.",
+    ANSWER_NOT_FOUND: "답변을 찾을 수 없어요.",
+    ANSWER_DELETE_FORBIDDEN: "내가 쓴 답변만 삭제할 수 있어요.",
+    ANSWER_DELETE_FAILED: "삭제에 실패했어요. 다시 시도해 주세요.",
   } satisfies Record<FormErrorCode, string>,
 
   category: {

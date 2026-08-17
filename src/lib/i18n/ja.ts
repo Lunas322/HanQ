@@ -11,9 +11,13 @@ export const ja: Dictionary = {
 
   common: {
     retry: "再試行",
+    cancel: "キャンセル",
+    delete: "削除",
+    deleting: "削除中",
     submit: "送信",
     submitting: "送信中",
     loadingQuestions: "質問を読み込み中",
+    translating: "翻訳中",
     fallbackUserName: "ユーザー",
   },
 
@@ -21,6 +25,8 @@ export const ja: Dictionary = {
     home: "ホーム",
     profile: "マイページ",
     askAria: "質問を書く",
+    back: "戻る",
+    close: "閉じる",
   },
 
   language: {
@@ -58,6 +64,8 @@ export const ja: Dictionary = {
   },
 
   my: {
+    menuAria: "マイページメニュー",
+    logout: "ログアウト",
     tabQuestions: "自分の質問",
     tabAnswers: "自分の回答",
     emptyQuestions: "まだ質問を書いていません。",
@@ -89,6 +97,32 @@ export const ja: Dictionary = {
     showOriginal: "原文を見る",
     showTranslation: "翻訳を見る",
     likeAria: (count: number) => `いいね ${count}件`,
+
+  },
+
+  deletion: {
+    question: {
+      menuAria: "質問メニュー",
+      title: "この質問を削除しますか？",
+      description: "ついた回答といいねも一緒に消えます。元に戻せません。",
+    },
+    answer: {
+      menuAria: "回答メニュー",
+      title: "この回答を削除しますか？",
+      description: "元に戻せません。",
+    },
+  },
+
+  notification: {
+    title: "お知らせ",
+    bellAria: "お知らせ",
+    unreadAria: "未読のお知らせあり",
+    empty: "まだお知らせがありません。",
+    message: {
+      answer: (name: string) => `${name}さんが回答しました`,
+      "question-like": (name: string) => `${name}さんがあなたの質問にいいねしました`,
+      "answer-like": (name: string) => `${name}さんがあなたの回答にいいねしました`,
+    },
   },
 
   error: {
@@ -110,7 +144,12 @@ export const ja: Dictionary = {
     ANSWER_TOO_LONG: `回答は${ANSWER_MAX}文字まで入力できます。`,
     QUESTION_NOT_FOUND: "質問が見つかりませんでした。",
     QUESTION_SUBMIT_FAILED: "質問の投稿に失敗しました。もう一度お試しください。",
+    QUESTION_DELETE_FORBIDDEN: "自分が書いた質問だけ削除できます。",
+    QUESTION_DELETE_FAILED: "削除に失敗しました。もう一度お試しください。",
     ANSWER_SUBMIT_FAILED: "回答の投稿に失敗しました。もう一度お試しください。",
+    ANSWER_NOT_FOUND: "回答が見つかりませんでした。",
+    ANSWER_DELETE_FORBIDDEN: "自分が書いた回答だけ削除できます。",
+    ANSWER_DELETE_FAILED: "削除に失敗しました。もう一度お試しください。",
   },
 
   category: {
