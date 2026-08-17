@@ -1,12 +1,12 @@
 import "server-only";
 
-import type { DocumentSnapshot } from "firebase-admin/firestore";
+import { unstable_cache } from "next/cache";
 
 import type { Language } from "@/types/language";
 import type { AvatarColor } from "@/types/user";
+import { USERS_TAG } from "./cache-tags";
 import { USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
-import { readString } from "./firestore-value";
 import { readPhotoUrl, resolveDisplayName, toLanguage } from "./user";
 
 export type Author = {
@@ -30,42 +30,44 @@ export function avatarColorFor(uid: string): AvatarColor {
   return AVATAR_COLORS[sum % AVATAR_COLORS.length];
 }
 
-async function loadAuthors(
+const fetchUserDocs = unstable_cache(
+  async (uids: string[]) => {
+    if (uids.length === 0) {
+      return [];
+    }
+
+    const refs = uids.map((uid) =>
+      adminDb.collection(USERS_COLLECTION).doc(uid),
+    );
+
+    return (await adminDb.getAll(...refs)).map((snapshot) => ({
+      id: snapshot.id,
+      name: snapshot.get("name") ?? null,
+      languages: snapshot.get("languages") ?? null,
+      photoUrl: snapshot.get("photoUrl") ?? null,
+    }));
+  },
+  ["author-docs"],
+  { tags: [USERS_TAG], revalidate: 300 },
+);
+
+export async function loadAuthors(
   uids: string[],
   language: Language,
 ): Promise<Map<string, Author>> {
-  const authors = new Map<string, Author>();
+  const docs = await fetchUserDocs([...new Set(uids)].filter(Boolean).sort());
 
-  if (uids.length === 0) {
-    return authors;
-  }
-
-  const refs = uids.map((uid) => adminDb.collection(USERS_COLLECTION).doc(uid));
-
-  for (const snapshot of await adminDb.getAll(...refs)) {
-    const data = snapshot.data();
-
-    if (!data) {
-      continue;
-    }
-
-    authors.set(snapshot.id, {
-      name: resolveDisplayName(data.name, language),
-      languages: toLanguage(data.languages),
-      photoUrl: readPhotoUrl(data.photoUrl),
-    });
-  }
-
-  return authors;
+  return new Map(
+    docs
+      .filter((doc) => doc.name !== null || doc.languages !== null)
+      .map((doc) => [
+        doc.id,
+        {
+          name: resolveDisplayName(doc.name, language),
+          languages: toLanguage(doc.languages),
+          photoUrl: readPhotoUrl(doc.photoUrl),
+        },
+      ]),
+  );
 }
 
-export async function loadAuthorsFor(
-  docs: DocumentSnapshot[],
-  language: Language,
-): Promise<Map<string, Author>> {
-  const uids = [
-    ...new Set(docs.map((doc) => readString(doc.get("authorId")))),
-  ].filter(Boolean);
-
-  return loadAuthors(uids, language);
-}
