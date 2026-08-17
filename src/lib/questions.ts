@@ -10,10 +10,17 @@ import type { Question } from "@/types/question";
 import { type Author, fallbackAuthor, loadAuthorsFor } from "./authors";
 import { QUESTIONS_COLLECTION, USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
-import { readDate, readNumber, readString } from "./firestore-value";
+import {
+  readDate,
+  readLocalizedText,
+  readNumber,
+  readString,
+  readTranslationStatus,
+} from "./firestore-value";
+import { detectLanguage } from "./detect-language";
 import { formatRelativeTime } from "./format";
 import { getCurrentLanguage } from "./locale";
-import type { Language } from "@/types/language";
+import { isLanguage, type Language } from "@/types/language";
 import type { QuestionDraft } from "./question-rules";
 
 const LIST_LIMIT = 50;
@@ -31,12 +38,19 @@ export async function createQuestion({
   const questionRef = adminDb.collection(QUESTIONS_COLLECTION).doc();
   const authorRef = adminDb.collection(USERS_COLLECTION).doc(authorId);
 
+  const { language: sourceLanguage } = detectLanguage(
+    `${title}\n${content}`,
+    await getCurrentLanguage(),
+  );
+
   const batch = adminDb.batch();
 
   batch.set(questionRef, {
     authorId,
-    title,
-    content,
+    title: { [sourceLanguage]: title },
+    content: { [sourceLanguage]: content },
+    sourceLanguage,
+    translationStatus: "pending",
     categoryId,
     likeCount: 0,
     answerCount: 0,
@@ -61,11 +75,19 @@ function toQuestion(
   const authorId = readString(data.authorId);
   const author = authors.get(authorId) ?? fallbackAuthor(language);
 
+  const sourceLanguage = isLanguage(data.sourceLanguage)
+    ? data.sourceLanguage
+    : language;
+
   return {
     id: doc.id,
     user: { id: authorId, name: author.name, languages: author.languages },
-    title: readString(data.title),
-    content: readString(data.content),
+    title: readLocalizedText(data.title, language, sourceLanguage),
+    content: readLocalizedText(data.content, language, sourceLanguage),
+    sourceLanguage,
+    translationPending:
+      language !== sourceLanguage &&
+      readTranslationStatus(data.translationStatus) !== "done",
     likeCount: readNumber(data.likeCount),
     commentCount: readNumber(data.answerCount),
     time: formatRelativeTime(readDate(data.createdAt), language),
