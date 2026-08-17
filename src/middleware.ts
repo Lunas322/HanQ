@@ -6,13 +6,19 @@ import {
 } from "@/lib/i18n";
 import { localePath } from "@/lib/routes";
 import { SESSION_COOKIE_NAME } from "@/lib/session";
-import { isLanguage, type Language } from "@/types/language";
+import {
+  DEFAULT_LANGUAGE,
+  isLanguage,
+  type Language,
+} from "@/types/language";
 
 export const LANGUAGE_HEADER = "x-hanq-lang";
 
 const COUNTRY_HEADER = "x-vercel-ip-country";
 
 const COUNTRY_TO_LANGUAGE: Record<string, Language> = { KR: "ko", JP: "ja" };
+
+const LOCALE_SEGMENT = /^[a-z]{2}(-[a-z]{2})?$/i;
 
 const PROTECTED_PATHS = [
   "/home",
@@ -31,7 +37,7 @@ function detectLanguage(request: NextRequest): Language {
 
   const country = request.headers.get(COUNTRY_HEADER)?.toUpperCase();
 
-  return COUNTRY_TO_LANGUAGE[country ?? ""] ?? "ko";
+  return COUNTRY_TO_LANGUAGE[country ?? ""] ?? DEFAULT_LANGUAGE;
 }
 
 export function middleware(request: NextRequest) {
@@ -39,6 +45,10 @@ export function middleware(request: NextRequest) {
   const [, first, ...rest] = pathname.split("/");
 
   if (!isLanguage(first)) {
+    if (LOCALE_SEGMENT.test(first)) {
+      return NextResponse.next();
+    }
+
     const language = detectLanguage(request);
     const target = localePath(language, pathname === "/" ? "/" : pathname);
 
@@ -84,6 +94,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|api/|logout|favicon.ico|robots.txt|sitemap.xml|llms.txt|icon|apple-icon|manifest|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?)$).*)",
+    "/((?!_next/static|_next/image|api/|logout|favicon.ico|robots.txt|sitemap.xml|llms.txt|icon|apple-icon|manifest|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?|html)$).*)",
   ],
 };

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { LanguageProvider } from "@/lib/i18n/context";
 import { getDictionary } from "@/lib/i18n";
-import { isLanguage, LANGUAGES } from "@/types/language";
+import { DEFAULT_LANGUAGE, isLanguage, LANGUAGES } from "@/types/language";
 import "@/app/globals.css";
 
 const pretendard = localFont({
@@ -57,9 +57,17 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: `/${lang}`,
-      languages: Object.fromEntries(
-        LANGUAGES.map((code) => [code, `/${code}`]),
-      ),
+      languages: {
+        ...Object.fromEntries(LANGUAGES.map((code) => [code, `/${code}`])),
+        "x-default": `/${DEFAULT_LANGUAGE}`,
+      },
+    },
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+      other: {
+        "naver-site-verification": process.env.NAVER_SITE_VERIFICATION ?? [],
+        "msvalidate.01": process.env.BING_SITE_VERIFICATION ?? [],
+      },
     },
     openGraph: {
       type: "website",
