@@ -14,9 +14,15 @@ type Props = {
   question: Question;
   category?: Category;
   liked: boolean;
+  loginHref?: string;
 };
 
-export async function QuestionDetail({ question, category, liked }: Props) {
+export async function QuestionDetail({
+  question,
+  category,
+  liked,
+  loginHref,
+}: Props) {
   const { id, user, title, content, likeCount, time, translationPending, original } =
     question;
   const dictionary = await getServerDictionary();
@@ -50,6 +56,7 @@ export async function QuestionDetail({ question, category, liked }: Props) {
         liked={liked}
         size="md"
         onToggle={toggleQuestionLikeAction.bind(null, id)}
+        loginHref={loginHref}
       />
     </section>
   );

@@ -96,6 +96,7 @@ export const ja: Dictionary = {
     emptyAnswers: "まだ回答がありません。最初の回答を残してみましょう。",
     answerInputLabel: "回答を入力",
     answerPlaceholder: "あたたかい回答を残してみましょう",
+    loginToAnswer: "ログインして回答する",
     showOriginal: "原文を見る",
     showTranslation: "翻訳を見る",
     likeAria: (count: number) => `いいね ${count}件`,

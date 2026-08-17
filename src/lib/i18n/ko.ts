@@ -97,6 +97,7 @@ export const ko = {
     emptyAnswers: "아직 답변이 없어요. 첫 답변을 남겨보세요.",
     answerInputLabel: "답변 입력",
     answerPlaceholder: "따뜻한 답변을 남겨보세요",
+    loginToAnswer: "로그인하고 답변 남기기",
     showOriginal: "원문 보기",
     showTranslation: "번역 보기",
     likeAria: (count: number) => `좋아요 ${count}개`,

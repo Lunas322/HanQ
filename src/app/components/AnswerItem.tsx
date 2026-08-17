@@ -9,7 +9,12 @@ import { LikeButton } from "./LikeButton";
 import { TranslatableAnswer } from "./TranslatableAnswer";
 import { TranslatingBadge } from "./TranslatingBadge";
 
-export function AnswerItem({ answer }: { answer: Answer }) {
+type Props = {
+  answer: Answer;
+  loginHref?: string;
+};
+
+export function AnswerItem({ answer, loginHref }: Props) {
   const {
     id,
     questionId,
@@ -62,6 +67,7 @@ export function AnswerItem({ answer }: { answer: Answer }) {
           liked={liked}
           size="sm"
           onToggle={toggleAnswerLikeAction.bind(null, id, questionId)}
+          loginHref={loginHref}
         />
       </div>
     </article>

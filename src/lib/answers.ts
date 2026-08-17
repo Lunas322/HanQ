@@ -80,11 +80,13 @@ export async function listAnswers(
 
   const [authors, likedIds] = await Promise.all([
     loadAuthorsFor(snapshot.docs, language),
-    filterLiked(
-      ANSWERS_COLLECTION,
-      snapshot.docs.map((doc) => doc.id),
-      viewerId,
-    ),
+    viewerId
+      ? filterLiked(
+          ANSWERS_COLLECTION,
+          snapshot.docs.map((doc) => doc.id),
+          viewerId,
+        )
+      : new Set<string>(),
   ]);
 
   return snapshot.docs.map((doc) => {
@@ -113,7 +115,7 @@ export async function listAnswers(
       content: readLocalizedText(data.content, language, sourceLanguage),
       likeCount: readNumber(data.likeCount),
       liked: likedIds.has(doc.id),
-      isMine: authorId === viewerId,
+      isMine: viewerId !== "" && authorId === viewerId,
       time: formatRelativeTime(readDate(data.createdAt), language),
       sourceLanguage,
       translationPending: pending,

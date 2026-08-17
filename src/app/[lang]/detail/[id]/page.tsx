@@ -1,7 +1,8 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { AnswerInput } from "@/app/components/AnswerInput";
+import { LoginToAnswer } from "@/app/components/LoginToAnswer";
 import { AnswerItem } from "@/app/components/AnswerItem";
 import { AnswerListSkeleton } from "@/app/components/AnswerListSkeleton";
 import { QuestionDetail } from "@/app/components/QuestionDetail";
@@ -45,7 +46,7 @@ async function AnswerList({
         </p>
       ) : (
         answers.map((answer) => (
-          <AnswerItem key={answer.id} answer={answer} />
+          <AnswerItem key={answer.id} answer={answer} loginHref={loginHref} />
         ))
       )}
     </>
@@ -56,11 +57,11 @@ export default async function DetailPage({ params }: DetailProps) {
   const { lang, id } = await params;
 
   const user = await getCurrentUser();
-  if (!user) redirect(`/${lang}`);
+  const loginHref = user ? undefined : `/${lang}`;
 
   const [question, liked] = await Promise.all([
     getQuestion(id),
-    hasLiked(QUESTIONS_COLLECTION, id, user.uid),
+    user ? hasLiked(QUESTIONS_COLLECTION, id, user.uid) : false,
   ]);
 
   if (!question) notFound();
@@ -73,6 +74,7 @@ export default async function DetailPage({ params }: DetailProps) {
         question={question}
         category={category}
         liked={liked}
+        loginHref={loginHref}
       />
 
       <div className="bg-muted w-full h-2 shrink-0" />
@@ -81,12 +83,17 @@ export default async function DetailPage({ params }: DetailProps) {
         <Suspense fallback={<AnswerListSkeleton />}>
           <AnswerList
             question={question}
-            viewerId={user.uid}
+            viewerId={user?.uid ?? ""}
+            loginHref={loginHref}
           />
         </Suspense>
       </section>
 
-      <AnswerInput questionId={id} />
+      {user ? (
+        <AnswerInput questionId={id} />
+      ) : (
+        <LoginToAnswer href={`/${lang}`} />
+      )}
     </div>
   );
 }
