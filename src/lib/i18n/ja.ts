@@ -1,4 +1,5 @@
 import { ANSWER_MAX } from "@/lib/answer-rules";
+import { NAME_MAX, NAME_MIN } from "@/lib/profile-rules";
 import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
 import type { Dictionary } from "./ko";
 
@@ -66,6 +67,7 @@ export const ja: Dictionary = {
   my: {
     menuAria: "マイページメニュー",
     logout: "ログアウト",
+    editProfile: "プロフィール編集",
     tabQuestions: "自分の質問",
     tabAnswers: "自分の回答",
     emptyQuestions: "まだ質問を書いていません。",
@@ -98,6 +100,20 @@ export const ja: Dictionary = {
     showTranslation: "翻訳を見る",
     likeAria: (count: number) => `いいね ${count}件`,
 
+  },
+
+  profile: {
+    editTitle: "プロフィール編集",
+    photoLabel: "プロフィール写真",
+    photoChange: "写真を変更",
+    photoRemove: "写真を削除",
+    nameLabel: "ニックネーム",
+    namePlaceholder: "2〜20文字で入力してください",
+    save: "保存",
+    saving: "保存中...",
+    tabQuestions: "書いた質問",
+    tabAnswers: "書いた回答",
+    linkAria: (name: string) => `${name}さんのプロフィールを見る`,
   },
 
   deletion: {
@@ -150,6 +166,12 @@ export const ja: Dictionary = {
     ANSWER_NOT_FOUND: "回答が見つかりませんでした。",
     ANSWER_DELETE_FORBIDDEN: "自分が書いた回答だけ削除できます。",
     ANSWER_DELETE_FAILED: "削除に失敗しました。もう一度お試しください。",
+    NAME_REQUIRED: "ニックネームを入力してください。",
+    NAME_TOO_SHORT: `ニックネームは${NAME_MIN}文字以上にしてください。`,
+    NAME_TOO_LONG: `ニックネームは${NAME_MAX}文字まで入力できます。`,
+    IMAGE_TYPE_INVALID: "JPG、PNG、WebP画像のみアップロードできます。",
+    IMAGE_TOO_LARGE: "画像は2MBまでアップロードできます。",
+    PROFILE_UPDATE_FAILED: "プロフィールの保存に失敗しました。もう一度お試しください。",
   },
 
   category: {

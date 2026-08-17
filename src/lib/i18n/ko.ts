@@ -2,6 +2,7 @@ import { ANSWER_MAX } from "@/lib/answer-rules";
 import type { CategoryId } from "@/lib/categories";
 import type { FormErrorCode } from "@/lib/form-errors";
 import type { NotificationType } from "@/types/notification";
+import { NAME_MAX, NAME_MIN } from "@/lib/profile-rules";
 import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
 
 export const ko = {
@@ -67,6 +68,7 @@ export const ko = {
   my: {
     menuAria: "내 정보 메뉴",
     logout: "로그아웃",
+    editProfile: "프로필 수정",
     tabQuestions: "내 질문",
     tabAnswers: "내 답변",
     emptyQuestions: "아직 작성한 질문이 없어요.",
@@ -99,6 +101,20 @@ export const ko = {
     showTranslation: "번역 보기",
     likeAria: (count: number) => `좋아요 ${count}개`,
 
+  },
+
+  profile: {
+    editTitle: "프로필 수정",
+    photoLabel: "프로필 사진",
+    photoChange: "사진 변경",
+    photoRemove: "사진 삭제",
+    nameLabel: "닉네임",
+    namePlaceholder: "2~20자로 입력해 주세요",
+    save: "저장",
+    saving: "저장 중...",
+    tabQuestions: "작성한 질문",
+    tabAnswers: "작성한 답변",
+    linkAria: (name: string) => `${name}님의 프로필 보기`,
   },
 
   deletion: {
@@ -150,6 +166,12 @@ export const ko = {
     ANSWER_NOT_FOUND: "답변을 찾을 수 없어요.",
     ANSWER_DELETE_FORBIDDEN: "내가 쓴 답변만 삭제할 수 있어요.",
     ANSWER_DELETE_FAILED: "삭제에 실패했어요. 다시 시도해 주세요.",
+    NAME_REQUIRED: "닉네임을 입력해 주세요.",
+    NAME_TOO_SHORT: `닉네임은 ${NAME_MIN}자 이상이어야 해요.`,
+    NAME_TOO_LONG: `닉네임은 ${NAME_MAX}자까지 쓸 수 있어요.`,
+    IMAGE_TYPE_INVALID: "JPG, PNG, WebP 이미지만 올릴 수 있어요.",
+    IMAGE_TOO_LARGE: "이미지는 2MB까지 올릴 수 있어요.",
+    PROFILE_UPDATE_FAILED: "프로필 저장에 실패했어요. 다시 시도해 주세요.",
   } satisfies Record<FormErrorCode, string>,
 
   category: {
