@@ -1,4 +1,5 @@
 import type { Answer } from "@/types/answer";
+import type { Language } from "@/types/language";
 import { deleteAnswerAction } from "@/app/[lang]/detail/[id]/_actions/delete";
 import { toggleAnswerLikeAction } from "@/app/[lang]/detail/[id]/_actions/like";
 import { AuthorLink } from "./AuthorLink";
@@ -11,10 +12,11 @@ import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
   answer: Answer;
+  language: Language;
   loginHref?: string;
 };
 
-export function AnswerItem({ answer, loginHref }: Props) {
+export function AnswerItem({ answer, language, loginHref }: Props) {
   const {
     id,
     questionId,
@@ -39,7 +41,7 @@ export function AnswerItem({ answer, loginHref }: Props) {
 
       <div className="flex min-w-0 flex-1 flex-col gap-[6px] items-start">
         <div className="flex w-full gap-[5px] items-center">
-          <AuthorLink userId={author.id} name={author.name}>
+          <AuthorLink userId={author.id} name={author.name} language={language}>
             <span className="text-[13px] font-bold text-strong">
               {author.name}
             </span>
@@ -48,7 +50,7 @@ export function AnswerItem({ answer, loginHref }: Props) {
           <span className="whitespace-nowrap text-[12px] text-tertiary">
             · {time}
           </span>
-          {translationPending && <TranslatingBadge />}
+          {translationPending && <TranslatingBadge language={language} />}
 
           {isMine && (
             <span className="ml-auto">

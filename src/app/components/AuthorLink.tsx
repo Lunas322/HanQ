@@ -1,22 +1,26 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { getServerDictionary } from "@/lib/i18n/server";
-import { getCurrentLanguage } from "@/lib/locale";
+import { getDictionary } from "@/lib/i18n";
 import { localePath } from "@/lib/routes";
+import type { Language } from "@/types/language";
 
 type Props = {
   userId: string;
   name: string;
+  language: Language;
   className?: string;
   children: ReactNode;
 };
 
-export async function AuthorLink({ userId, name, className, children }: Props) {
-  const [{ profile }, language] = await Promise.all([
-    getServerDictionary(),
-    getCurrentLanguage(),
-  ]);
+export function AuthorLink({
+  userId,
+  name,
+  language,
+  className,
+  children,
+}: Props) {
+  const { profile } = getDictionary(language);
 
   return (
     <Link

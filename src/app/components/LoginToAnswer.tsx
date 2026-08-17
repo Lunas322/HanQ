@@ -1,9 +1,16 @@
 import Link from "next/link";
 
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import type { Language } from "@/types/language";
 
-export async function LoginToAnswer({ href }: { href: string }) {
-  const { detail } = await getServerDictionary();
+export function LoginToAnswer({
+  href,
+  language,
+}: {
+  href: string;
+  language: Language;
+}) {
+  const { detail } = getDictionary(language);
 
   return (
     <div className="sticky bottom-0 border-t border-muted bg-surface px-4 pb-[14px] pt-[10px]">

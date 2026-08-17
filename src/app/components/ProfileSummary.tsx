@@ -1,13 +1,15 @@
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import type { Language } from "@/types/language";
 import type { Profile } from "@/types/user";
 import { Avatar } from "./Avatar";
 import { Flag } from "./Flag";
 
 type Props = {
   profile: Profile;
+  language: Language;
 };
 
-export async function ProfileSummary({ profile }: Props) {
+export function ProfileSummary({ profile, language }: Props) {
   const {
     name,
     languages,
@@ -16,7 +18,7 @@ export async function ProfileSummary({ profile }: Props) {
     answerCount,
     receivedLikeCount,
   } = profile;
-  const dictionary = await getServerDictionary();
+  const dictionary = getDictionary(language);
 
   return (
     <section className="flex w-full items-center gap-3.5 bg-surface px-5 pt-4 pb-6">

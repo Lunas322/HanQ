@@ -1,7 +1,8 @@
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import type { Language } from "@/types/language";
 
-export async function HeroContent() {
-  const { landing } = await getServerDictionary();
+export function HeroContent({ language }: { language: Language }) {
+  const { landing } = getDictionary(language);
 
   return (
     <div>

@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import type { Category } from "@/lib/categories";
-import { getServerDictionary } from "@/lib/i18n/server";
-import { getCurrentLanguage } from "@/lib/locale";
+import { getDictionary } from "@/lib/i18n";
 import { localePath } from "@/lib/routes";
+import type { Language } from "@/types/language";
 import type { Question } from "@/types/question";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
@@ -14,14 +14,13 @@ import { TranslatingBadge } from "./TranslatingBadge";
 type Props = {
   question: Question;
   category?: Category;
+  language: Language;
 };
 
-export async function QuestionCard({ question, category }: Props) {
-  const { user, likeCount, commentCount, time, translationPending } = question;
-  const [dictionary, language] = await Promise.all([
-    getServerDictionary(),
-    getCurrentLanguage(),
-  ]);
+export function QuestionCard({ question, category, language }: Props) {
+  const { user, likeCount, commentCount, time, translationPending } =
+    question;
+  const dictionary = getDictionary(language);
 
   return (
     <Link
@@ -44,7 +43,7 @@ export async function QuestionCard({ question, category }: Props) {
           <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
             · {time}
           </span>
-          {translationPending && <TranslatingBadge />}
+          {translationPending && <TranslatingBadge language={language} />}
         </div>
 
         <div className="shrink-0 flex gap-3 text-[13px] font-bold text-tertiary items-center">
