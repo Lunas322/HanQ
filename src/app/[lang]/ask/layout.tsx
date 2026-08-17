@@ -1,3 +1,9 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
+
 import { Header } from "@/app/components/Header";
 import { Icon } from "@/app/components/Icon";
 import { LanguageToggle } from "@/app/components/LanguageToggle";
