@@ -37,7 +37,11 @@ export default async function Page() {
                 item.read ? "bg-surface" : "bg-brand-subtle"
               }`}
             >
-              <Avatar name={item.actorName} size="md" />
+              <Avatar
+                name={item.actorName}
+                size="md"
+                photoUrl={item.actorPhotoUrl}
+              />
 
               <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <p className="text-[14px] font-bold text-ink">
