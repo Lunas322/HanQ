@@ -8,14 +8,13 @@ import {
   QUESTIONS_COLLECTION,
   USERS_COLLECTION,
 } from "./collections";
+import { formatRelativeTime } from "./format";
 import { adminDb } from "./firebase-admin";
 import {
   readDate,
   readLocalizedText,
   readString,
 } from "./firestore-value";
-import { formatRelativeTime } from "./format";
-import { getCurrentLanguage } from "./locale";
 import { readPhotoUrl, resolveDisplayName } from "./user";
 import { isLanguage, type Language } from "@/types/language";
 import {
@@ -171,8 +170,10 @@ function previewFor(
   return truncate(readLocalizedText(snapshot.get(field), language, source));
 }
 
-export async function listNotifications(uid: string): Promise<Notification[]> {
-  const language = await getCurrentLanguage();
+export async function listNotifications(
+  uid: string,
+  language: Language,
+): Promise<Notification[]> {
 
   const snapshot = await notificationsRef(uid)
     .orderBy("createdAt", "desc")

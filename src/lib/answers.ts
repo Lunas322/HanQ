@@ -20,9 +20,9 @@ import {
   readTranslationStatus,
 } from "./firestore-value";
 import { detectLanguage } from "./detect-language";
-import { isLanguage } from "@/types/language";
-import { filterLiked } from "./likes";
 import { formatRelativeTime } from "./format";
+import { isLanguage, type Language } from "@/types/language";
+import { filterLiked } from "./likes";
 import { getCurrentLanguage } from "./locale";
 
 const LIST_LIMIT = 100;
@@ -109,14 +109,13 @@ const fetchAnswers = unstable_cache(
 export async function listAnswers(
   questionId: string,
   viewerId: string,
+  language: Language,
 ): Promise<Answer[]> {
-  const [raws, language] = await Promise.all([
-    unstable_cache(() => fetchAnswers(questionId), ["answers", questionId], {
-      tags: [answersTag(questionId)],
-      revalidate: 300,
-    })(),
-    getCurrentLanguage(),
-  ]);
+  const raws = await unstable_cache(
+    () => fetchAnswers(questionId),
+    ["answers", questionId],
+    { tags: [answersTag(questionId)], revalidate: 300 },
+  )();
 
   const [authors, likedIds] = await Promise.all([
     loadAuthors(

@@ -6,7 +6,6 @@ import { cache } from "react";
 import { getDictionary } from "@/lib/i18n";
 import type { Profile } from "@/types/user";
 import type { Language } from "@/types/language";
-import { getCurrentLanguage } from "./locale";
 import { USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
 
@@ -57,7 +56,8 @@ export async function ensureUserDocument({
     );
 }
 
-export const getUserProfile = cache(async (uid: string): Promise<Profile | null> => {
+export const getUserProfile = cache(
+  async (uid: string, language: Language): Promise<Profile | null> => {
   const snapshot = await adminDb.collection(USERS_COLLECTION).doc(uid).get();
   const data = snapshot.data();
 
@@ -67,7 +67,7 @@ export const getUserProfile = cache(async (uid: string): Promise<Profile | null>
 
   return {
     id: uid,
-    name: resolveDisplayName(data.name, await getCurrentLanguage()),
+    name: resolveDisplayName(data.name, language),
     languages: toLanguage(data.languages),
     photoUrl: readPhotoUrl(data.photoUrl),
     questionCount: Number(data.questionCount ?? 0),

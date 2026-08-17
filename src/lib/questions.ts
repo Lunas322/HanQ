@@ -199,24 +199,18 @@ type ListQuestionsOptions = {
   authorId?: string;
 };
 
-export async function listQuestions({
-  authorId,
-}: ListQuestionsOptions = {}): Promise<Question[]> {
-  const [raws, language] = await Promise.all([
-    fetchQuestionList(authorId ?? null),
-    getCurrentLanguage(),
-  ]);
-
-  return hydrate(raws, language);
+export async function listQuestions(
+  language: Language,
+  { authorId }: ListQuestionsOptions = {},
+): Promise<Question[]> {
+  return hydrate(await fetchQuestionList(authorId ?? null), language);
 }
 
-export async function getQuestionsByIds(ids: string[]): Promise<Question[]> {
-  const [raws, language] = await Promise.all([
-    fetchQuestionsByIds(ids),
-    getCurrentLanguage(),
-  ]);
-
-  return hydrate(raws, language);
+export async function getQuestionsByIds(
+  ids: string[],
+  language: Language,
+): Promise<Question[]> {
+  return hydrate(await fetchQuestionsByIds(ids), language);
 }
 
 const fetchQuestion = unstable_cache(
@@ -233,11 +227,8 @@ const fetchQuestion = unstable_cache(
 );
 
 export const getQuestion = cache(
-  async (id: string): Promise<Question | null> => {
-    const [raw, language] = await Promise.all([
-      fetchQuestion(id),
-      getCurrentLanguage(),
-    ]);
+  async (id: string, language: Language): Promise<Question | null> => {
+    const raw = await fetchQuestion(id);
 
     if (!raw) {
       return null;
