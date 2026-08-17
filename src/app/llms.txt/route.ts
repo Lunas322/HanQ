@@ -1,7 +1,5 @@
 import { SITE_URL } from "@/lib/site";
 
-export const dynamic = "force-static";
-
 const BODY = `# HanQ
 
 > 한국과 일본 사람이 언어 장벽 없이 서로에게 직접 묻고 답하는 Q&A 커뮤니티입니다.
