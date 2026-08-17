@@ -2,6 +2,7 @@ import type { Category } from "@/lib/categories";
 import { getServerDictionary } from "@/lib/i18n/server";
 import type { Question } from "@/types/question";
 import { toggleQuestionLikeAction } from "../detail/[id]/_actions/like";
+import { AuthorLink } from "./AuthorLink";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
@@ -30,10 +31,12 @@ export async function QuestionDetail({ question, category, liked }: Props) {
 
       <TranslatableQuestion title={title} content={content} original={original}>
         <div className="flex min-w-0 gap-2 items-center mb-[14px]">
-          <Avatar name={user.name} size="md" />
-          <span className="truncate text-[14px] font-bold text-strong">
-            {user.name}
-          </span>
+          <AuthorLink userId={user.id} name={user.name}>
+            <Avatar name={user.name} size="md" />
+            <span className="truncate text-[14px] font-bold text-strong">
+              {user.name}
+            </span>
+          </AuthorLink>
           <Flag language={user.languages} />
           <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
             · {time}
