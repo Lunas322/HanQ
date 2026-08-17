@@ -108,6 +108,7 @@ export async function listAnswers(
         name: author.name,
         language: author.languages,
         avatarColor: avatarColorFor(authorId),
+        photoUrl: author.photoUrl,
       },
       content: readLocalizedText(data.content, language, sourceLanguage),
       likeCount: readNumber(data.likeCount),

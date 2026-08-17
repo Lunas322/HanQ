@@ -7,15 +7,20 @@ import type { AvatarColor } from "@/types/user";
 import { USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
 import { readString } from "./firestore-value";
-import { resolveDisplayName, toLanguage } from "./user";
+import { readPhotoUrl, resolveDisplayName, toLanguage } from "./user";
 
 export type Author = {
   name: string;
   languages: Language;
+  photoUrl: string | null;
 };
 
 export function fallbackAuthor(language: Language): Author {
-  return { name: resolveDisplayName(null, language), languages: "ko" };
+  return {
+    name: resolveDisplayName(null, language),
+    languages: "ko",
+    photoUrl: null,
+  };
 }
 
 const AVATAR_COLORS: AvatarColor[] = ["blue", "purple", "red", "green"];
@@ -47,6 +52,7 @@ async function loadAuthors(
     authors.set(snapshot.id, {
       name: resolveDisplayName(data.name, language),
       languages: toLanguage(data.languages),
+      photoUrl: readPhotoUrl(data.photoUrl),
     });
   }
 

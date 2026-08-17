@@ -6,6 +6,7 @@ export type User = {
   id: string;
   name: string;
   languages: Language;
+  photoUrl: string | null;
 };
 
 export type Profile = User & {

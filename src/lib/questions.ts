@@ -92,7 +92,12 @@ function toQuestion(
 
   return {
     id: doc.id,
-    user: { id: authorId, name: author.name, languages: author.languages },
+    user: {
+      id: authorId,
+      name: author.name,
+      languages: author.languages,
+      photoUrl: author.photoUrl,
+    },
     title: readLocalizedText(data.title, language, sourceLanguage),
     content: readLocalizedText(data.content, language, sourceLanguage),
     sourceLanguage,
