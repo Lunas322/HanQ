@@ -2,6 +2,8 @@
 
 import { useOptimistic, useTransition } from "react";
 
+import Link from "next/link";
+
 import { useDictionary } from "@/lib/i18n/context";
 import { Icon } from "./Icon";
 
@@ -17,9 +19,10 @@ type Props = {
   liked: boolean;
   size: keyof typeof SIZE_CLASS;
   onToggle: () => Promise<void>;
+  loginHref?: string;
 };
 
-export function LikeButton({ count, liked, size, onToggle }: Props) {
+export function LikeButton({ count, liked, size, onToggle, loginHref }: Props) {
   const { detail } = useDictionary();
   const [isPending, startTransition] = useTransition();
 
@@ -38,6 +41,23 @@ export function LikeButton({ count, liked, size, onToggle }: Props) {
     });
   };
 
+  const className = `w-fit rounded-2xl font-bold flex items-center disabled:opacity-70 ${
+    SIZE_CLASS[size]
+  } ${
+    optimistic.liked
+      ? "bg-like-subtle text-like"
+      : "border-2 border-default bg-surface text-tertiary"
+  }`;
+
+  if (loginHref) {
+    return (
+      <Link href={loginHref} aria-label={detail.likeAria(count)} className={className}>
+        <Icon icon="Heart" size={ICON_SIZE[size]} />
+        {count}
+      </Link>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -45,13 +65,7 @@ export function LikeButton({ count, liked, size, onToggle }: Props) {
       aria-label={detail.likeAria(optimistic.count)}
       onClick={handleClick}
       disabled={isPending}
-      className={`w-fit rounded-2xl font-bold flex items-center disabled:opacity-70 ${
-        SIZE_CLASS[size]
-      } ${
-        optimistic.liked
-          ? "bg-like-subtle text-like"
-          : "border-2 border-default bg-surface text-tertiary"
-      }`}
+      className={className}
     >
       <Icon icon="Heart" size={ICON_SIZE[size]} />
       {optimistic.count}

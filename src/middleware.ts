@@ -4,69 +4,86 @@ import {
   LANGUAGE_COOKIE_MAX_AGE,
   LANGUAGE_COOKIE_NAME,
 } from "@/lib/i18n";
+import { localePath } from "@/lib/routes";
 import { SESSION_COOKIE_NAME } from "@/lib/session";
-import { isLanguage } from "@/types/language";
+import { isLanguage, type Language } from "@/types/language";
+
+export const LANGUAGE_HEADER = "x-hanq-lang";
+
+const COUNTRY_HEADER = "x-vercel-ip-country";
+
+const COUNTRY_TO_LANGUAGE: Record<string, Language> = { KR: "ko", JP: "ja" };
 
 const PROTECTED_PATHS = [
   "/home",
   "/ask",
   "/my",
-  "/detail",
   "/notifications",
-  "/users",
   "/profile",
 ] as const;
 
-const COUNTRY_HEADER = "x-vercel-ip-country";
+function detectLanguage(request: NextRequest): Language {
+  const saved = request.cookies.get(LANGUAGE_COOKIE_NAME)?.value;
 
-const COUNTRY_TO_LANGUAGE: Record<string, "ko" | "ja"> = {
-  KR: "ko",
-  JP: "ja",
-};
-
-function ensureLanguageCookie(request: NextRequest, response: NextResponse) {
-  if (isLanguage(request.cookies.get(LANGUAGE_COOKIE_NAME)?.value)) {
-    return;
+  if (isLanguage(saved)) {
+    return saved;
   }
 
   const country = request.headers.get(COUNTRY_HEADER)?.toUpperCase();
 
-  response.cookies.set(LANGUAGE_COOKIE_NAME, COUNTRY_TO_LANGUAGE[country ?? ""] ?? "ko", {
-    path: "/",
-    maxAge: LANGUAGE_COOKIE_MAX_AGE,
-    sameSite: "lax",
-  });
+  return COUNTRY_TO_LANGUAGE[country ?? ""] ?? "ko";
 }
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
+  const [, first, ...rest] = pathname.split("/");
+
+  if (!isLanguage(first)) {
+    const language = detectLanguage(request);
+    const target = localePath(language, pathname === "/" ? "/" : pathname);
+
+    return NextResponse.redirect(new URL(`${target}${search}`, request.url));
+  }
+
+  const language = first;
+  const path = rest.length === 0 ? "/" : `/${rest.join("/")}`;
   const hasSession = request.cookies.has(SESSION_COOKIE_NAME);
 
   const isProtected = PROTECTED_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`),
+    (protectedPath) =>
+      path === protectedPath || path.startsWith(`${protectedPath}/`),
   );
 
-  const response =
-    isProtected && !hasSession
-      ? NextResponse.redirect(new URL("/", request.url))
-      : pathname === "/" && hasSession
-        ? NextResponse.redirect(new URL("/home", request.url))
-        : NextResponse.next();
+  if (isProtected && !hasSession) {
+    return NextResponse.redirect(
+      new URL(localePath(language, "/"), request.url),
+    );
+  }
 
-  ensureLanguageCookie(request, response);
+  if (path === "/" && hasSession) {
+    return NextResponse.redirect(
+      new URL(localePath(language, "/home"), request.url),
+    );
+  }
+
+  const headers = new Headers(request.headers);
+  headers.set(LANGUAGE_HEADER, language);
+
+  const response = NextResponse.next({ request: { headers } });
+
+  if (request.cookies.get(LANGUAGE_COOKIE_NAME)?.value !== language) {
+    response.cookies.set(LANGUAGE_COOKIE_NAME, language, {
+      path: "/",
+      maxAge: LANGUAGE_COOKIE_MAX_AGE,
+      sameSite: "lax",
+    });
+  }
 
   return response;
 }
 
 export const config = {
   matcher: [
-    "/",
-    "/home/:path*",
-    "/ask/:path*",
-    "/my/:path*",
-    "/detail/:path*",
-    "/notifications/:path*",
-    "/users/:path*",
-    "/profile/:path*",
+    "/((?!_next/static|_next/image|api/|logout|favicon.ico|robots.txt|sitemap.xml|llms.txt|icon|apple-icon|manifest|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff2?)$).*)",
   ],
 };

@@ -35,7 +35,11 @@ export function formatRelativeTime(
     return time.daysAgo(days);
   }
 
-  return date.toLocaleDateString(time.locale, {
+  return formatAbsoluteDate(date, language);
+}
+
+export function formatAbsoluteDate(date: Date, language: Language): string {
+  return date.toLocaleDateString(getDictionary(language).time.locale, {
     year: "numeric",
     month: "long",
     day: "numeric",

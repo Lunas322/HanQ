@@ -5,9 +5,22 @@ import type { Dictionary } from "./ko";
 
 export const ja: Dictionary = {
   meta: {
-    title: "HanQ — 言葉の心配なく、韓国と日本に聞いてみよう",
+    title: "HanQ",
+    socialTitle: "HanQ — 韓国と日本を、言葉の壁なく",
     description:
-      "自分の言葉で書けば相手の言葉に自動翻訳される、日韓Q&Aコミュニティ",
+      "日本語で質問すれば韓国語に、韓国語の回答は日本語に自動翻訳される日韓Q&Aコミュニティ。文化・旅行・就職・恋愛まで、現地の人に直接聞けます。",
+    keywords: [
+      "日韓コミュニティ",
+      "韓国 日本 質問",
+      "リアルタイム翻訳",
+      "自動翻訳 Q&A",
+      "韓国文化",
+      "韓国旅行",
+      "韓国留学",
+      "韓国就職",
+      "韓国語 質問",
+      "日韓交流",
+    ],
   },
 
   common: {
@@ -96,6 +109,7 @@ export const ja: Dictionary = {
     emptyAnswers: "まだ回答がありません。最初の回答を残してみましょう。",
     answerInputLabel: "回答を入力",
     answerPlaceholder: "あたたかい回答を残してみましょう",
+    loginToAnswer: "ログインして回答する",
     showOriginal: "原文を見る",
     showTranslation: "翻訳を見る",
     likeAria: (count: number) => `いいね ${count}件`,

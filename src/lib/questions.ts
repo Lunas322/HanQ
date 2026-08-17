@@ -1,19 +1,17 @@
 import "server-only";
 
-import {
-  type DocumentSnapshot,
-  FieldValue,
-  type Query,
-} from "firebase-admin/firestore";
+import { FieldValue, type DocumentSnapshot, type Query } from "firebase-admin/firestore";
+import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
 import type { Question } from "@/types/question";
-import { type Author, fallbackAuthor, loadAuthorsFor } from "./authors";
+import { type Author, fallbackAuthor, loadAuthors } from "./authors";
 import {
   ANSWERS_COLLECTION,
   QUESTIONS_COLLECTION,
   USERS_COLLECTION,
 } from "./collections";
+import { QUESTIONS_TAG } from "./cache-tags";
 import { adminDb } from "./firebase-admin";
 import {
   readDate,
@@ -23,7 +21,6 @@ import {
   readTranslationStatus,
 } from "./firestore-value";
 import { detectLanguage } from "./detect-language";
-import { formatRelativeTime } from "./format";
 import { getCurrentLanguage } from "./locale";
 import { isLanguage, type Language } from "@/types/language";
 import type { QuestionDraft } from "./question-rules";
@@ -71,13 +68,42 @@ export async function createQuestion({
   return questionRef.id;
 }
 
+type RawQuestion = {
+  id: string;
+  authorId: string;
+  title: unknown;
+  content: unknown;
+  categoryId: string;
+  likeCount: number;
+  answerCount: number;
+  sourceLanguage: string;
+  translationStatus: string;
+  createdAt: string;
+};
+
+function toRaw(doc: DocumentSnapshot): RawQuestion {
+  const data = doc.data() ?? {};
+
+  return {
+    id: doc.id,
+    authorId: readString(data.authorId),
+    title: data.title ?? null,
+    content: data.content ?? null,
+    categoryId: readString(data.categoryId),
+    likeCount: readNumber(data.likeCount),
+    answerCount: readNumber(data.answerCount),
+    sourceLanguage: readString(data.sourceLanguage),
+    translationStatus: readString(data.translationStatus),
+    createdAt: readDate(data.createdAt).toISOString(),
+  };
+}
+
 function toQuestion(
-  doc: DocumentSnapshot,
+  data: RawQuestion,
   authors: Map<string, Author>,
   language: Language,
 ): Question {
-  const data = doc.data() ?? {};
-  const authorId = readString(data.authorId);
+  const authorId = data.authorId;
   const author = authors.get(authorId) ?? fallbackAuthor(language);
 
   const sourceLanguage = isLanguage(data.sourceLanguage)
@@ -91,7 +117,7 @@ function toQuestion(
   const isTranslated = language !== sourceLanguage && !translationPending;
 
   return {
-    id: doc.id,
+    id: data.id,
     user: {
       id: authorId,
       name: author.name,
@@ -112,65 +138,103 @@ function toQuestion(
           ),
         }
       : null,
-    likeCount: readNumber(data.likeCount),
-    commentCount: readNumber(data.answerCount),
-    time: formatRelativeTime(readDate(data.createdAt), language),
-    categoryId: readString(data.categoryId),
+    likeCount: data.likeCount,
+    commentCount: data.answerCount,
+    createdAt: data.createdAt,
+    categoryId: data.categoryId,
   };
+}
+
+const fetchQuestionList = unstable_cache(
+  async (authorId: string | null): Promise<RawQuestion[]> => {
+    const collection = adminDb.collection(QUESTIONS_COLLECTION);
+    const filtered: Query = authorId
+      ? collection.where("authorId", "==", authorId)
+      : collection;
+
+    const snapshot = await filtered
+      .orderBy("createdAt", "desc")
+      .limit(LIST_LIMIT)
+      .get();
+
+    return snapshot.docs.map(toRaw);
+  },
+  ["question-list"],
+  { tags: [QUESTIONS_TAG], revalidate: 300 },
+);
+
+const fetchQuestionsByIds = unstable_cache(
+  async (ids: string[]): Promise<RawQuestion[]> => {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const refs = ids.map((id) =>
+      adminDb.collection(QUESTIONS_COLLECTION).doc(id),
+    );
+
+    return (await adminDb.getAll(...refs))
+      .filter((snapshot) => snapshot.exists)
+      .map(toRaw);
+  },
+  ["question-by-ids"],
+  { tags: [QUESTIONS_TAG], revalidate: 300 },
+);
+
+async function hydrate(
+  raws: RawQuestion[],
+  language: Language,
+): Promise<Question[]> {
+  const authors = await loadAuthors(
+    raws.map((raw) => raw.authorId),
+    language,
+  );
+
+  return raws.map((raw) => toQuestion(raw, authors, language));
 }
 
 type ListQuestionsOptions = {
   authorId?: string;
 };
 
-export async function listQuestions({
-  authorId,
-}: ListQuestionsOptions = {}): Promise<Question[]> {
-  const collection = adminDb.collection(QUESTIONS_COLLECTION);
-  const filtered: Query = authorId
-    ? collection.where("authorId", "==", authorId)
-    : collection;
-
-  const language = await getCurrentLanguage();
-
-  const snapshot = await filtered
-    .orderBy("createdAt", "desc")
-    .limit(LIST_LIMIT)
-    .get();
-
-  const authors = await loadAuthorsFor(snapshot.docs, language);
-
-  return snapshot.docs.map((doc) => toQuestion(doc, authors, language));
+export async function listQuestions(
+  language: Language,
+  { authorId }: ListQuestionsOptions = {},
+): Promise<Question[]> {
+  return hydrate(await fetchQuestionList(authorId ?? null), language);
 }
 
-export async function getQuestionsByIds(ids: string[]): Promise<Question[]> {
-  if (ids.length === 0) {
-    return [];
-  }
-
-  const refs = ids.map((id) => adminDb.collection(QUESTIONS_COLLECTION).doc(id));
-  const snapshots = (await adminDb.getAll(...refs)).filter(
-    (snapshot) => snapshot.exists,
-  );
-
-  const language = await getCurrentLanguage();
-  const authors = await loadAuthorsFor(snapshots, language);
-
-  return snapshots.map((snapshot) => toQuestion(snapshot, authors, language));
+export async function getQuestionsByIds(
+  ids: string[],
+  language: Language,
+): Promise<Question[]> {
+  return hydrate(await fetchQuestionsByIds(ids), language);
 }
 
-export const getQuestion = cache(async (id: string): Promise<Question | null> => {
-  const snapshot = await adminDb.collection(QUESTIONS_COLLECTION).doc(id).get();
+const fetchQuestion = unstable_cache(
+  async (id: string): Promise<RawQuestion | null> => {
+    const snapshot = await adminDb
+      .collection(QUESTIONS_COLLECTION)
+      .doc(id)
+      .get();
 
-  if (!snapshot.exists) {
-    return null;
-  }
+    return snapshot.exists ? toRaw(snapshot) : null;
+  },
+  ["question"],
+  { tags: [QUESTIONS_TAG], revalidate: 300 },
+);
 
-  const language = await getCurrentLanguage();
-  const authors = await loadAuthorsFor([snapshot], language);
+export const getQuestion = cache(
+  async (id: string, language: Language): Promise<Question | null> => {
+    const raw = await fetchQuestion(id);
 
-  return toQuestion(snapshot, authors, language);
-});
+    if (!raw) {
+      return null;
+    }
+
+    return (await hydrate([raw], language))[0];
+  },
+);
 
 type CountDelta = {
   questions: number;
@@ -250,4 +314,22 @@ export async function deleteQuestion(
   }
 
   return "ok";
+}
+
+export type SitemapEntry = {
+  id: string;
+  updatedAt: Date;
+};
+
+export async function listQuestionSitemapEntries(): Promise<SitemapEntry[]> {
+  const snapshot = await adminDb
+    .collection(QUESTIONS_COLLECTION)
+    .orderBy("createdAt", "desc")
+    .limit(5000)
+    .get();
+
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    updatedAt: readDate(doc.get("createdAt")),
+  }));
 }

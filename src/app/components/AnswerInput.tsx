@@ -7,7 +7,7 @@ import { useDictionary } from "@/lib/i18n/context";
 import {
   type AnswerFormState,
   submitAnswer,
-} from "../detail/[id]/_actions/answer";
+} from "@/app/[lang]/detail/[id]/_actions/answer";
 import { Button } from "./Button";
 
 const INITIAL_STATE: AnswerFormState = { error: null };

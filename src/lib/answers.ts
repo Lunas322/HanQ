@@ -1,14 +1,16 @@
 import "server-only";
 
 import { FieldValue } from "firebase-admin/firestore";
+import { unstable_cache } from "next/cache";
 
 import type { Answer } from "@/types/answer";
-import { avatarColorFor, fallbackAuthor, loadAuthorsFor } from "./authors";
+import { avatarColorFor, fallbackAuthor, loadAuthors } from "./authors";
 import {
   ANSWERS_COLLECTION,
   QUESTIONS_COLLECTION,
   USERS_COLLECTION,
 } from "./collections";
+import { answersTag } from "./cache-tags";
 import { adminDb } from "./firebase-admin";
 import {
   readDate,
@@ -18,9 +20,8 @@ import {
   readTranslationStatus,
 } from "./firestore-value";
 import { detectLanguage } from "./detect-language";
-import { isLanguage } from "@/types/language";
+import { isLanguage, type Language } from "@/types/language";
 import { filterLiked } from "./likes";
-import { formatRelativeTime } from "./format";
 import { getCurrentLanguage } from "./locale";
 
 const LIST_LIMIT = 100;
@@ -65,63 +66,103 @@ export async function createAnswer({
   return answerRef.id;
 }
 
+type RawAnswer = {
+  id: string;
+  questionId: string;
+  authorId: string;
+  content: unknown;
+  likeCount: number;
+  sourceLanguage: string;
+  translationStatus: string;
+  createdAt: string;
+};
+
+const fetchAnswers = unstable_cache(
+  async (questionId: string): Promise<RawAnswer[]> => {
+    const snapshot = await adminDb
+      .collection(ANSWERS_COLLECTION)
+      .where("questionId", "==", questionId)
+      .orderBy("createdAt", "asc")
+      .limit(LIST_LIMIT)
+      .get();
+
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+
+      return {
+        id: doc.id,
+        questionId: readString(data.questionId),
+        authorId: readString(data.authorId),
+        content: data.content ?? null,
+        likeCount: readNumber(data.likeCount),
+        sourceLanguage: readString(data.sourceLanguage),
+        translationStatus: readString(data.translationStatus),
+        createdAt: readDate(data.createdAt).toISOString(),
+      };
+    });
+  },
+  ["answer-list"],
+  { tags: [], revalidate: 300 },
+);
+
 export async function listAnswers(
   questionId: string,
   viewerId: string,
+  language: Language,
 ): Promise<Answer[]> {
-  const snapshot = await adminDb
-    .collection(ANSWERS_COLLECTION)
-    .where("questionId", "==", questionId)
-    .orderBy("createdAt", "asc")
-    .limit(LIST_LIMIT)
-    .get();
-
-  const language = await getCurrentLanguage();
+  const raws = await unstable_cache(
+    () => fetchAnswers(questionId),
+    ["answers", questionId],
+    { tags: [answersTag(questionId)], revalidate: 300 },
+  )();
 
   const [authors, likedIds] = await Promise.all([
-    loadAuthorsFor(snapshot.docs, language),
-    filterLiked(
-      ANSWERS_COLLECTION,
-      snapshot.docs.map((doc) => doc.id),
-      viewerId,
+    loadAuthors(
+      raws.map((raw) => raw.authorId),
+      language,
     ),
+    viewerId
+      ? filterLiked(
+          ANSWERS_COLLECTION,
+          raws.map((raw) => raw.id),
+          viewerId,
+        )
+      : new Set<string>(),
   ]);
 
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
-    const authorId = readString(data.authorId);
-    const author = authors.get(authorId) ?? fallbackAuthor(language);
+  return raws.map((raw) => {
+    const author = authors.get(raw.authorId) ?? fallbackAuthor(language);
 
-    const sourceLanguage = isLanguage(data.sourceLanguage)
-      ? data.sourceLanguage
+    const sourceLanguage = isLanguage(raw.sourceLanguage)
+      ? raw.sourceLanguage
       : language;
 
     const pending =
       language !== sourceLanguage &&
-      readTranslationStatus(data.translationStatus) !== "done";
+      readTranslationStatus(raw.translationStatus) !== "done";
 
     return {
-      id: doc.id,
-      questionId: readString(data.questionId),
+      id: raw.id,
+      questionId: raw.questionId,
       author: {
-        id: authorId,
+        id: raw.authorId,
         name: author.name,
         language: author.languages,
-        avatarColor: avatarColorFor(authorId),
+        avatarColor: avatarColorFor(raw.authorId),
         photoUrl: author.photoUrl,
       },
-      content: readLocalizedText(data.content, language, sourceLanguage),
-      likeCount: readNumber(data.likeCount),
-      liked: likedIds.has(doc.id),
-      isMine: authorId === viewerId,
-      time: formatRelativeTime(readDate(data.createdAt), language),
+      content: readLocalizedText(raw.content, language, sourceLanguage),
+      likeCount: raw.likeCount,
+      liked: likedIds.has(raw.id),
+      isMine: viewerId !== "" && raw.authorId === viewerId,
+      createdAt: raw.createdAt,
       sourceLanguage,
       translationPending: pending,
       original:
         language !== sourceLanguage && !pending
           ? {
               content: readLocalizedText(
-                data.content,
+                raw.content,
                 sourceLanguage,
                 sourceLanguage,
               ),

@@ -1,5 +1,8 @@
 import "server-only";
 
+import { revalidateTag } from "next/cache";
+
+import { answersTag, questionTag, QUESTIONS_TAG } from "./cache-tags";
 import { ANSWERS_COLLECTION, QUESTIONS_COLLECTION } from "./collections";
 import { detectLanguage, hasTranslatableText } from "./detect-language";
 import { adminDb } from "./firebase-admin";
@@ -90,8 +93,13 @@ async function translateDocument(
 
 export async function translateQuestion(id: string): Promise<void> {
   await translateDocument(QUESTIONS_COLLECTION, id, ["title", "content"]);
+
+  revalidateTag(QUESTIONS_TAG, "max");
+  revalidateTag(questionTag(id), "max");
 }
 
-export async function translateAnswer(id: string): Promise<void> {
+export async function translateAnswer(id: string, questionId: string): Promise<void> {
   await translateDocument(ANSWERS_COLLECTION, id, ["content"]);
+
+  revalidateTag(answersTag(questionId), "max");
 }

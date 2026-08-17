@@ -1,20 +1,26 @@
 import { listAnsweredQuestionIds } from "@/lib/answers";
 import { findCategory } from "@/lib/categories";
-import { getServerDictionary } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n";
+import type { Language } from "@/types/language";
 import { getQuestionsByIds, listQuestions } from "@/lib/questions";
 import { QuestionCard } from "./QuestionCard";
 
 type Props = {
   uid: string;
   isAnswerTab: boolean;
+  language: Language;
 };
 
-export async function AuthoredQuestionList({ uid, isAnswerTab }: Props) {
-  const dictionary = await getServerDictionary();
+export async function AuthoredQuestionList({
+  uid,
+  isAnswerTab,
+  language,
+}: Props) {
+  const dictionary = getDictionary(language);
 
   const questions = isAnswerTab
-    ? await getQuestionsByIds(await listAnsweredQuestionIds(uid))
-    : await listQuestions({ authorId: uid });
+    ? await getQuestionsByIds(await listAnsweredQuestionIds(uid), language)
+    : await listQuestions(language, { authorId: uid });
 
   if (questions.length === 0) {
     return (
@@ -33,6 +39,7 @@ export async function AuthoredQuestionList({ uid, isAnswerTab }: Props) {
           <QuestionCard
             question={question}
             category={findCategory(question.categoryId)}
+            language={language}
           />
         </li>
       ))}
