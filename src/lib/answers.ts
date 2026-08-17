@@ -10,7 +10,15 @@ import {
   USERS_COLLECTION,
 } from "./collections";
 import { adminDb } from "./firebase-admin";
-import { readDate, readNumber, readString } from "./firestore-value";
+import {
+  readDate,
+  readLocalizedText,
+  readNumber,
+  readString,
+  readTranslationStatus,
+} from "./firestore-value";
+import { detectLanguage } from "./detect-language";
+import { isLanguage } from "@/types/language";
 import { filterLiked } from "./likes";
 import { formatRelativeTime } from "./format";
 import { getCurrentLanguage } from "./locale";
@@ -32,12 +40,19 @@ export async function createAnswer({
   const questionRef = adminDb.collection(QUESTIONS_COLLECTION).doc(questionId);
   const authorRef = adminDb.collection(USERS_COLLECTION).doc(authorId);
 
+  const { language: sourceLanguage } = detectLanguage(
+    content,
+    await getCurrentLanguage(),
+  );
+
   const batch = adminDb.batch();
 
   batch.set(answerRef, {
     questionId,
     authorId,
-    content,
+    content: { [sourceLanguage]: content },
+    sourceLanguage,
+    translationStatus: "pending",
     likeCount: 0,
     createdAt: FieldValue.serverTimestamp(),
   });
@@ -77,6 +92,10 @@ export async function listAnswers(
     const authorId = readString(data.authorId);
     const author = authors.get(authorId) ?? fallbackAuthor(language);
 
+    const sourceLanguage = isLanguage(data.sourceLanguage)
+      ? data.sourceLanguage
+      : language;
+
     return {
       id: doc.id,
       questionId: readString(data.questionId),
@@ -86,10 +105,14 @@ export async function listAnswers(
         language: author.languages,
         avatarColor: avatarColorFor(authorId),
       },
-      content: readString(data.content),
+      content: readLocalizedText(data.content, language, sourceLanguage),
       likeCount: readNumber(data.likeCount),
       liked: likedIds.has(doc.id),
       time: formatRelativeTime(readDate(data.createdAt), language),
+      sourceLanguage,
+      translationPending:
+        language !== sourceLanguage &&
+        readTranslationStatus(data.translationStatus) !== "done",
     };
   });
 }
@@ -108,3 +131,4 @@ export async function listAnsweredQuestionIds(
     ...new Set(snapshot.docs.map((doc) => readString(doc.get("questionId")))),
   ].filter(Boolean);
 }
+

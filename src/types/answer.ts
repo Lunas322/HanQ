@@ -14,4 +14,6 @@ export type Answer = {
   likeCount: number;
   liked: boolean;
   time: string;
+  sourceLanguage: Language;
+  translationPending: boolean;
 };
