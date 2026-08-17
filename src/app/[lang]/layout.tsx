@@ -17,6 +17,8 @@ const pretendard = localFont({
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+const ADSENSE_CLIENT = "ca-pub-1883892838715528";
+
 type Props = {
   children: React.ReactNode;
   params: Promise<{ lang: string }>;
@@ -98,6 +100,13 @@ export default async function RootLayout({ children, params }: Props) {
       lang={lang}
       className={`${pretendard.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <LanguageProvider language={lang}>{children}</LanguageProvider>
       </body>
