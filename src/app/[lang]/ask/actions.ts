@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 
@@ -8,6 +9,7 @@ import { getCurrentLanguage } from "@/lib/locale";
 import { localePath } from "@/lib/routes";
 import type { FormErrorCode } from "@/lib/form-errors";
 import { validateQuestionDraft } from "@/lib/question-rules";
+import { QUESTIONS_TAG } from "@/lib/cache-tags";
 import { createQuestion } from "@/lib/questions";
 import { translateQuestion } from "@/lib/translations";
 
@@ -45,6 +47,8 @@ export async function submitQuestion(
     console.error("[submitQuestion]", e);
     return { error: "QUESTION_SUBMIT_FAILED" };
   }
+
+  updateTag(QUESTIONS_TAG);
 
   after(() => translateQuestion(questionId));
 

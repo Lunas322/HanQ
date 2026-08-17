@@ -1,7 +1,9 @@
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
+
+import { answersTag, questionTag, QUESTIONS_TAG } from "@/lib/cache-tags";
 
 export function revalidateQuestion(questionId: string): void {
-  revalidatePath(`/detail/${questionId}`);
-  revalidatePath("/home");
-  revalidatePath("/my");
+  updateTag(QUESTIONS_TAG);
+  updateTag(questionTag(questionId));
+  updateTag(answersTag(questionId));
 }

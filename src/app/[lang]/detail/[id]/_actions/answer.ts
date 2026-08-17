@@ -48,7 +48,7 @@ export async function submitAnswer(
   }
 
   after(async () => {
-    await translateAnswer(answerId);
+    await translateAnswer(answerId, questionId);
     await notifyAnswer({ questionId, answerId, actorId: user.uid });
   });
 

@@ -1,8 +1,10 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
+import { USERS_TAG } from "@/lib/cache-tags";
 import { getCurrentLanguage } from "@/lib/locale";
 import { localePath } from "@/lib/routes";
 import type { FormErrorCode } from "@/lib/form-errors";
@@ -61,6 +63,7 @@ export async function submitProfile(
     return { error: "PROFILE_UPDATE_FAILED" };
   }
 
+  updateTag(USERS_TAG);
 
   redirect(localePath(await getCurrentLanguage(), "/my"));
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
@@ -7,6 +8,7 @@ import { getCurrentLanguage } from "@/lib/locale";
 import { localePath } from "@/lib/routes";
 import type { FormErrorCode } from "@/lib/form-errors";
 import { deleteAnswer } from "@/lib/answers";
+import { QUESTIONS_TAG } from "@/lib/cache-tags";
 import { deleteQuestion } from "@/lib/questions";
 import { revalidateQuestion } from "./revalidate";
 
@@ -36,6 +38,7 @@ export async function deleteQuestionAction(
     return "QUESTION_DELETE_FORBIDDEN";
   }
 
+  updateTag(QUESTIONS_TAG);
   revalidateQuestion(questionId);
 
   redirect(localePath(await getCurrentLanguage(), "/home"));
