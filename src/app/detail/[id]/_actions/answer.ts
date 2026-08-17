@@ -5,6 +5,7 @@ import { after } from "next/server";
 
 import { validateAnswerContent } from "@/lib/answer-rules";
 import { createAnswer } from "@/lib/answers";
+import { notifyAnswer } from "@/lib/notifications";
 import { translateAnswer } from "@/lib/translations";
 import { getCurrentUser } from "@/lib/auth";
 import type { FormErrorCode } from "@/lib/form-errors";
@@ -46,7 +47,10 @@ export async function submitAnswer(
     return { error: "ANSWER_SUBMIT_FAILED" };
   }
 
-  after(() => translateAnswer(answerId));
+  after(async () => {
+    await translateAnswer(answerId);
+    await notifyAnswer({ questionId, answerId, actorId: user.uid });
+  });
 
   revalidateQuestion(questionId);
 
