@@ -1,9 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
 import { validateAnswerContent } from "@/lib/answer-rules";
 import { createAnswer } from "@/lib/answers";
+import { translateAnswer } from "@/lib/translations";
 import { getCurrentUser } from "@/lib/auth";
 import type { FormErrorCode } from "@/lib/form-errors";
 import { revalidateQuestion } from "./revalidate";
@@ -35,12 +37,16 @@ export async function submitAnswer(
     return { error };
   }
 
+  let answerId: string;
+
   try {
-    await createAnswer({ questionId, authorId: user.uid, content });
+    answerId = await createAnswer({ questionId, authorId: user.uid, content });
   } catch (e) {
     console.error("[submitAnswer]", e);
     return { error: "ANSWER_SUBMIT_FAILED" };
   }
+
+  after(() => translateAnswer(answerId));
 
   revalidateQuestion(questionId);
 
