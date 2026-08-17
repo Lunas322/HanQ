@@ -6,7 +6,7 @@ import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
-import { TranslateToggle } from "./TranslateToggle";
+import { TranslatableQuestion } from "./TranslatableQuestion";
 import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export async function QuestionDetail({ question, category, liked }: Props) {
-  const { id, user, title, content, likeCount, time, translationPending } =
+  const { id, user, title, content, likeCount, time, translationPending, original } =
     question;
   const dictionary = await getServerDictionary();
 
@@ -28,31 +28,19 @@ export async function QuestionDetail({ question, category, liked }: Props) {
         </div>
       )}
 
-      <h1 className="font-black text-[22px] leading-[1.35] text-primary mb-[14px]">
-        {title}
-      </h1>
-
-      <div className="flex min-w-0 gap-2 items-center mb-[14px]">
-        <Avatar name={user.name} size="md" />
-        <span className="truncate text-[14px] font-bold text-strong">
-          {user.name}
-        </span>
-        <Flag language={user.languages} />
-        <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
-          · {time}
-        </span>
-        {translationPending && <TranslatingBadge />}
-      </div>
-
-      <p className="font-medium text-[16px] leading-[1.65] text-body mb-3">
-        {content}
-      </p>
-
-      {!translationPending && (
-        <div className="mb-[18px]">
-          <TranslateToggle />
+      <TranslatableQuestion title={title} content={content} original={original}>
+        <div className="flex min-w-0 gap-2 items-center mb-[14px]">
+          <Avatar name={user.name} size="md" />
+          <span className="truncate text-[14px] font-bold text-strong">
+            {user.name}
+          </span>
+          <Flag language={user.languages} />
+          <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
+            · {time}
+          </span>
+          {translationPending && <TranslatingBadge />}
         </div>
-      )}
+      </TranslatableQuestion>
 
       <LikeButton
         count={likeCount}
