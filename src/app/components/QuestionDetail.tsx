@@ -7,6 +7,7 @@ import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
 import { TranslateToggle } from "./TranslateToggle";
+import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
   question: Question;
@@ -15,7 +16,8 @@ type Props = {
 };
 
 export async function QuestionDetail({ question, category, liked }: Props) {
-  const { id, user, title, content, likeCount, time } = question;
+  const { id, user, title, content, likeCount, time, translationPending } =
+    question;
   const dictionary = await getServerDictionary();
 
   return (
@@ -39,15 +41,18 @@ export async function QuestionDetail({ question, category, liked }: Props) {
         <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
           · {time}
         </span>
+        {translationPending && <TranslatingBadge />}
       </div>
 
       <p className="font-medium text-[16px] leading-[1.65] text-body mb-3">
         {content}
       </p>
 
-      <div className="mb-[18px]">
-        <TranslateToggle />
-      </div>
+      {!translationPending && (
+        <div className="mb-[18px]">
+          <TranslateToggle />
+        </div>
+      )}
 
       <LikeButton
         count={likeCount}

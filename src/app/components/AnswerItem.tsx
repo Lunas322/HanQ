@@ -3,9 +3,19 @@ import { toggleAnswerLikeAction } from "../detail/[id]/_actions/like";
 import { Avatar } from "./Avatar";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
+import { TranslatingBadge } from "./TranslatingBadge";
 
 export function AnswerItem({ answer }: { answer: Answer }) {
-  const { id, questionId, author, content, likeCount, liked, time } = answer;
+  const {
+    id,
+    questionId,
+    author,
+    content,
+    likeCount,
+    liked,
+    time,
+    translationPending,
+  } = answer;
 
   return (
     <article className="flex gap-[10px] items-start">
@@ -20,6 +30,7 @@ export function AnswerItem({ answer }: { answer: Answer }) {
           <span className="whitespace-nowrap text-[12px] text-tertiary">
             · {time}
           </span>
+          {translationPending && <TranslatingBadge />}
         </div>
 
         <p className="text-[15px] leading-[1.6] text-body">{content}</p>

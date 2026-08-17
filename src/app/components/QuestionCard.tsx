@@ -7,6 +7,7 @@ import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { Icon } from "./Icon";
+import { TranslatingBadge } from "./TranslatingBadge";
 
 type Props = {
   question: Question;
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export async function QuestionCard({ question, category }: Props) {
-  const { user, likeCount, commentCount, time } = question;
+  const { user, likeCount, commentCount, time, translationPending } = question;
   const dictionary = await getServerDictionary();
 
   return (
@@ -38,6 +39,7 @@ export async function QuestionCard({ question, category }: Props) {
           <span className="shrink-0 whitespace-nowrap text-[12px] text-tertiary">
             · {time}
           </span>
+          {translationPending && <TranslatingBadge />}
         </div>
 
         <div className="shrink-0 flex gap-3 text-[13px] font-bold text-tertiary items-center">
