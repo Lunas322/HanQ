@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { auth, googleProvider } from "@/lib/firebase";
-import { useDictionary } from "@/lib/i18n/context";
+import { useDictionary, useLocalePath } from "@/lib/i18n/context";
 
 const CANCELLED_CODES = new Set([
   "auth/popup-closed-by-user",
@@ -18,6 +18,7 @@ const CANCELLED_CODES = new Set([
 export function useLogin() {
   const router = useRouter();
   const { landing } = useDictionary();
+  const path = useLocalePath();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +42,7 @@ export function useLogin() {
         throw new Error(landing.sessionFailed);
       }
 
-      router.replace("/home");
+      router.replace(path("/home"));
       router.refresh();
     } catch (e) {
       console.error("[login]", e);

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useDictionary } from "@/lib/i18n/context";
+import { useDictionary, useLocalePath } from "@/lib/i18n/context";
 import { Icon, type IconName } from "./Icon";
 
 type NavItem = {
@@ -47,16 +47,17 @@ function NavLink({ item, isActive, align }: NavLinkProps) {
 export function BottomNavigation() {
   const pathname = usePathname();
   const { nav } = useDictionary();
+  const path = useLocalePath();
 
-  const home: NavItem = { href: "/home", icon: "Home", label: nav.home };
-  const profile: NavItem = { href: "/my", icon: "User", label: nav.profile };
+  const home: NavItem = { href: path("/home"), icon: "Home", label: nav.home };
+  const profile: NavItem = { href: path("/my"), icon: "User", label: nav.profile };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-10 flex h-19 items-center bg-surface px-8 py-3">
       <NavLink item={home} isActive={pathname === home.href} align="start" />
 
       <Link
-        href="/ask"
+        href={path("/ask")}
         aria-label={nav.askAria}
         className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-brand text-white"
       >

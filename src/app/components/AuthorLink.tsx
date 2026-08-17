@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { getServerDictionary } from "@/lib/i18n/server";
+import { getCurrentLanguage } from "@/lib/locale";
+import { localePath } from "@/lib/routes";
 
 type Props = {
   userId: string;
@@ -11,11 +13,14 @@ type Props = {
 };
 
 export async function AuthorLink({ userId, name, className, children }: Props) {
-  const { profile } = await getServerDictionary();
+  const [{ profile }, language] = await Promise.all([
+    getServerDictionary(),
+    getCurrentLanguage(),
+  ]);
 
   return (
     <Link
-      href={`/users/${userId}`}
+      href={localePath(language, `/users/${userId}`)}
       aria-label={profile.linkAria(name)}
       className={`flex min-w-0 items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${className ?? ""}`}
     >

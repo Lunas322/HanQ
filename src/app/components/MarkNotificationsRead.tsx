@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { markNotificationsReadAction } from "../notifications/_actions/read";
+import { markNotificationsReadAction } from "@/app/[lang]/notifications/_actions/read";
 
 export function MarkNotificationsRead() {
   useEffect(() => {

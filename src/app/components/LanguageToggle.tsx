@@ -1,13 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 
-import {
-  LANGUAGE_COOKIE_MAX_AGE,
-  LANGUAGE_COOKIE_NAME,
-} from "@/lib/i18n";
 import { useDictionary, useLanguage } from "@/lib/i18n/context";
+import { localePath, stripLocale } from "@/lib/routes";
 import { LANGUAGES, type Language } from "@/types/language";
 
 const FLAG: Record<Language, string> = { ko: "🇰🇷", ja: "🇯🇵" };
@@ -20,29 +17,25 @@ const PILL_SELECTED =
 
 const PILL_IDLE = "text-tertiary";
 
-const IS_ENABLED = process.env.NODE_ENV !== "production";
-
 type Props = {
   showLabel?: boolean;
 };
 
 export function LanguageToggle({ showLabel = false }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const dictionary = useDictionary();
   const language = useLanguage();
 
   const [, startTransition] = useTransition();
   const [optimisticLanguage, setOptimisticLanguage] = useOptimistic(language);
 
-  if (!IS_ENABLED) {
-    return null;
-  }
-
   const select = (next: Language) => {
+    if (next === language) return;
+
     startTransition(() => {
       setOptimisticLanguage(next);
-      document.cookie = `${LANGUAGE_COOKIE_NAME}=${next};path=/;max-age=${LANGUAGE_COOKIE_MAX_AGE};samesite=lax`;
-      router.refresh();
+      router.replace(localePath(next, stripLocale(pathname)));
     });
   };
 

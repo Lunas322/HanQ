@@ -1,7 +1,7 @@
 import type { Category } from "@/lib/categories";
 import { getServerDictionary } from "@/lib/i18n/server";
 import type { Question } from "@/types/question";
-import { toggleQuestionLikeAction } from "../detail/[id]/_actions/like";
+import { toggleQuestionLikeAction } from "@/app/[lang]/detail/[id]/_actions/like";
 import { AuthorLink } from "./AuthorLink";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";

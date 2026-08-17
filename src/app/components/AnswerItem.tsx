@@ -1,6 +1,6 @@
 import type { Answer } from "@/types/answer";
-import { deleteAnswerAction } from "../detail/[id]/_actions/delete";
-import { toggleAnswerLikeAction } from "../detail/[id]/_actions/like";
+import { deleteAnswerAction } from "@/app/[lang]/detail/[id]/_actions/delete";
+import { toggleAnswerLikeAction } from "@/app/[lang]/detail/[id]/_actions/like";
 import { AuthorLink } from "./AuthorLink";
 import { Avatar } from "./Avatar";
 import { DeleteMenu } from "./DeleteMenu";

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { useDictionary } from "@/lib/i18n/context";
+import { useDictionary, useLocalePath } from "@/lib/i18n/context";
 import { Icon } from "./Icon";
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
 export function BackButton({ fallback }: Props) {
   const router = useRouter();
   const { nav } = useDictionary();
+  const path = useLocalePath();
 
   const goBack = () => {
     const cameFromApp =
@@ -23,7 +24,7 @@ export function BackButton({ fallback }: Props) {
       return;
     }
 
-    router.replace(fallback);
+    router.replace(path(fallback));
   };
 
   return (
