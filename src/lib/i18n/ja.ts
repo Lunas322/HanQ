@@ -38,6 +38,7 @@ export const ja: Dictionary = {
     loadingQuestions: "質問を読み込み中",
     translating: "翻訳中",
     fallbackUserName: "ユーザー",
+    dismissNotice: "お知らせを閉じる",
   },
 
   nav: {

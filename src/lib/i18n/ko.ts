@@ -40,6 +40,7 @@ export const ko = {
     loadingQuestions: "질문을 불러오는 중",
     translating: "번역 중",
     fallbackUserName: "사용자",
+    dismissNotice: "공지 닫기",
   },
 
   nav: {
