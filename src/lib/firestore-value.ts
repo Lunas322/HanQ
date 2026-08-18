@@ -36,3 +36,13 @@ export function readLocalizedText(
 export function readTranslationStatus(value: unknown): TranslationStatus {
   return isTranslationStatus(value) ? value : "done";
 }
+
+export function readPath(data: unknown, path: string): unknown {
+  return path.split(".").reduce<unknown>((current, key) => {
+    if (typeof current !== "object" || current === null) {
+      return undefined;
+    }
+
+    return new Map(Object.entries(current)).get(key);
+  }, data);
+}

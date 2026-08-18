@@ -7,6 +7,7 @@ import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
 import { Button } from "@/app/components/Button";
 import { CategoryPicker } from "@/app/components/CategoryPicker";
 import { Notice } from "@/app/components/Notice";
+import { PollBuilder } from "@/app/components/PollBuilder";
 import { TextField } from "@/app/components/TextField";
 import { type AskFormState, submitQuestion } from "./actions";
 
@@ -17,6 +18,7 @@ export function AskForm() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [pollLabels, setPollLabels] = useState<string[] | null>(null);
 
   const [state, formAction, isPending] = useActionState(
     submitQuestion,
@@ -24,7 +26,11 @@ export function AskForm() {
   );
 
   const canSubmit =
-    title.trim().length > 0 && content.trim().length > 0 && categoryId !== null;
+    title.trim().length > 0 &&
+    content.trim().length > 0 &&
+    categoryId !== null &&
+    (pollLabels === null ||
+      pollLabels.every((label) => label.trim().length > 0));
 
   return (
     <form action={formAction} className="flex flex-1 flex-col">
@@ -49,6 +55,8 @@ export function AskForm() {
         />
 
         <CategoryPicker value={categoryId} onChange={setCategoryId} />
+
+        <PollBuilder labels={pollLabels} onChange={setPollLabels} />
 
         <Notice emoji="🌐">{dictionary.ask.translationNotice}</Notice>
       </div>

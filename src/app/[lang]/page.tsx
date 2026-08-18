@@ -7,6 +7,9 @@ import { getDictionary } from "@/lib/i18n";
 import { listQuestions } from "@/lib/questions";
 import { isLanguage, LANGUAGES } from "@/types/language";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
+import { NoticeBanner } from "@/app/components/NoticeBanner";
 
 const PREVIEW_COUNT = 3;
 
@@ -31,6 +34,10 @@ export default async function Page({ params }: Props) {
 
   return (
     <main className="min-h-dvh bg-surface px-6 py-5 pb-[114px]">
+      <Suspense fallback={null}>
+        <NoticeBanner language={lang} />
+      </Suspense>
+
       <Logo size="xl" />
       <HeroContent language={lang} />
 

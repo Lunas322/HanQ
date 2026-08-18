@@ -6,4 +6,6 @@ export const LIKES_SUBCOLLECTION = "likes";
 
 export const ANSWERS_COLLECTION = "answers";
 
+export const VOTES_SUBCOLLECTION = "votes";
+
 export const NOTIFICATIONS_SUBCOLLECTION = "notifications";

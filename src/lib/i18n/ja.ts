@@ -1,6 +1,11 @@
 import { ANSWER_MAX } from "@/lib/answer-rules";
 import { NAME_MAX, NAME_MIN } from "@/lib/profile-rules";
 import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
+import {
+  POLL_MAX_OPTIONS,
+  POLL_MIN_OPTIONS,
+  POLL_OPTION_MAX,
+} from "@/types/poll";
 import type { Dictionary } from "./ko";
 
 export const ja: Dictionary = {
@@ -33,6 +38,7 @@ export const ja: Dictionary = {
     loadingQuestions: "質問を読み込み中",
     translating: "翻訳中",
     fallbackUserName: "ユーザー",
+    dismissNotice: "お知らせを閉じる",
   },
 
   nav: {
@@ -97,6 +103,13 @@ export const ja: Dictionary = {
     contentPlaceholder:
       "日本とどう違うのか、背景も一緒に書くと伝わりやすいです",
     categoryLegend: "カテゴリー",
+    pollLegend: "投票（任意）",
+    pollEnable: "この質問に投票をつける",
+    pollHint: "意見が分かれる質問なら投票をつけてみましょう。回答にそれぞれの選択が一緒に表示されます。",
+    pollOptionLabel: (index: number) => `選択肢 ${index}`,
+    pollOptionPlaceholder: "例: 許す",
+    pollAdd: "選択肢を追加",
+    pollRemove: (index: number) => `選択肢 ${index} を削除`,
     translationNotice:
       "投稿は韓国語に自動翻訳されて一緒に表示されます。原文もそのまま保存されます。",
     submit: "質問を投稿する",
@@ -113,6 +126,13 @@ export const ja: Dictionary = {
     showOriginal: "原文を見る",
     showTranslation: "翻訳を見る",
     likeAria: (count: number) => `いいね ${count}件`,
+    pollHeading: "あなたの選択は？",
+    pollTotal: (count: number) => `${count}人が参加`,
+    pollEmpty: "最初の投票をしてみましょう",
+    pollChange: "選び直せます",
+    pollVoteAria: (label: string) => `${label}に投票する`,
+    pollResultAria: (label: string, percent: number) =>
+      `${label} ${percent}パーセント`,
 
   },
 
@@ -170,6 +190,11 @@ export const ja: Dictionary = {
     CONTENT_REQUIRED: "内容を入力してください。",
     CONTENT_TOO_LONG: `内容は${CONTENT_MAX}文字まで入力できます。`,
     CATEGORY_REQUIRED: "カテゴリーを選択してください。",
+    POLL_TOO_FEW_OPTIONS: `選択肢は${POLL_MIN_OPTIONS}つ以上必要です。`,
+    POLL_TOO_MANY_OPTIONS: `選択肢は${POLL_MAX_OPTIONS}つまで作れます。`,
+    POLL_OPTION_REQUIRED: "選択肢をすべて入力してください。",
+    POLL_OPTION_TOO_LONG: `選択肢は${POLL_OPTION_MAX}文字まで入力できます。`,
+    POLL_OPTION_DUPLICATED: "同じ選択肢は二度使えません。",
     ANSWER_REQUIRED: "回答を入力してください。",
     ANSWER_TOO_LONG: `回答は${ANSWER_MAX}文字まで入力できます。`,
     QUESTION_NOT_FOUND: "質問が見つかりませんでした。",

@@ -10,14 +10,16 @@ import { LikeButton } from "./LikeButton";
 import { RelativeTime } from "./RelativeTime";
 import { TranslatableAnswer } from "./TranslatableAnswer";
 import { TranslatingBadge } from "./TranslatingBadge";
+import { VoteBadge } from "./VoteBadge";
 
 type Props = {
   answer: Answer;
+  vote?: { label: string; index: number };
   language: Language;
   loginHref?: string;
 };
 
-export function AnswerItem({ answer, language, loginHref }: Props) {
+export function AnswerItem({ answer, vote, language, loginHref }: Props) {
   const {
     id,
     questionId,
@@ -42,6 +44,7 @@ export function AnswerItem({ answer, language, loginHref }: Props) {
 
       <div className="flex min-w-0 flex-1 flex-col gap-[6px] items-start">
         <div className="flex w-full gap-[5px] items-center">
+          {vote && <VoteBadge label={vote.label} index={vote.index} />}
           <AuthorLink userId={author.id} name={author.name} language={language}>
             <span className="text-[13px] font-bold text-strong">
               {author.name}
