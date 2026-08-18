@@ -73,6 +73,14 @@ export const ko = {
     loggingIn: "로그인 중...",
     terms: "가입하면 이용약관과 개인정보 방침에 동의하게 돼요",
     loginFailed: "로그인에 실패했어요. 다시 시도해 주세요.",
+    inAppTitle: "브라우저에서 열어 주세요",
+    inAppDescription:
+      "앱 안에서 열려 있어 구글 로그인이 막혀 있어요. 아래 버튼으로 브라우저에서 열면 로그인할 수 있어요.",
+    inAppGuideIos:
+      "앱 안에서 열려 있어 구글 로그인이 막혀 있어요. 주소를 복사해 Safari에 붙여넣거나, 공유 메뉴에서 브라우저로 열어 주세요.",
+    openInBrowser: "브라우저에서 열기",
+    copyLink: "주소 복사하기",
+    copied: "복사했어요",
     sessionFailed: "세션 생성에 실패했습니다.",
   },
 

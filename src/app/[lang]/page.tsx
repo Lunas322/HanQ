@@ -3,6 +3,7 @@ import { HeroContent } from "@/app/components/HeroContent";
 import { Logo } from "@/app/components/Logo";
 import { QuestionCard } from "@/app/components/QuestionCard";
 import { findCategory } from "@/lib/categories";
+import { SITE_URL } from "@/lib/site";
 import { getDictionary } from "@/lib/i18n";
 import { listQuestions } from "@/lib/questions";
 import { isLanguage, LANGUAGES } from "@/types/language";
@@ -59,7 +60,7 @@ export default async function Page({ params }: Props) {
       </section>
 
       <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-5.5">
-        <GoogleLoginButton />
+        <GoogleLoginButton url={`${SITE_URL}/${lang}`} />
         <p className="mt-[10px] flex justify-center text-[12px] font-medium text-tertiary">
           {landing.terms}
         </p>
