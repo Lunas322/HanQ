@@ -72,6 +72,14 @@ export const ja: Dictionary = {
     loggingIn: "ログイン中...",
     terms: "登録すると利用規約とプライバシーポリシーに同意したことになります",
     loginFailed: "ログインに失敗しました。もう一度お試しください。",
+    inAppTitle: "ブラウザで開いてください",
+    inAppDescription:
+      "アプリ内で開いているためGoogleログインがブロックされています。下のボタンでブラウザを開くとログインできます。",
+    inAppGuideIos:
+      "アプリ内で開いているためGoogleログインがブロックされています。URLをコピーしてSafariに貼り付けるか、共有メニューからブラウザで開いてください。",
+    openInBrowser: "ブラウザで開く",
+    copyLink: "URLをコピー",
+    copied: "コピーしました",
     sessionFailed: "セッションの作成に失敗しました。",
   },
 
