@@ -1,12 +1,32 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
+
 import { useLogin } from "@/hooks/login";
 import { useDictionary } from "@/lib/i18n/context";
+import { isInAppBrowser, platformOf } from "@/lib/in-app-browser";
 import { Button } from "./Button";
+import { OpenInBrowser } from "./OpenInBrowser";
 
-export function GoogleLoginButton() {
+const subscribe = () => () => {};
+
+const serverUserAgent = () => "";
+
+const readUserAgent = () => navigator.userAgent;
+
+export function GoogleLoginButton({ url }: { url: string }) {
   const { login, isPending, error } = useLogin();
   const { landing } = useDictionary();
+
+  const userAgent = useSyncExternalStore(
+    subscribe,
+    readUserAgent,
+    serverUserAgent,
+  );
+
+  if (isInAppBrowser(userAgent)) {
+    return <OpenInBrowser url={url} platform={platformOf(userAgent)} />;
+  }
 
   return (
     <>
