@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getCurrentLanguage } from "@/lib/locale";
 import { localePath } from "@/lib/routes";
 import type { FormErrorCode } from "@/lib/form-errors";
+import { validatePollLabels } from "@/lib/poll-rules";
 import { validateQuestionDraft } from "@/lib/question-rules";
 import { QUESTIONS_TAG } from "@/lib/cache-tags";
 import { createQuestion } from "@/lib/questions";
@@ -33,7 +34,11 @@ export async function submitQuestion(
     categoryId: String(formData.get("categoryId") ?? ""),
   };
 
-  const error = validateQuestionDraft(draft);
+  const pollLabels = formData
+    .getAll("pollOption")
+    .map((value) => String(value).trim());
+
+  const error = validateQuestionDraft(draft) ?? validatePollLabels(pollLabels);
 
   if (error) {
     return { error };
@@ -42,7 +47,11 @@ export async function submitQuestion(
   let questionId: string;
 
   try {
-    questionId = await createQuestion({ authorId: user.uid, ...draft });
+    questionId = await createQuestion({
+      authorId: user.uid,
+      pollLabels,
+      ...draft,
+    });
   } catch (e) {
     console.error("[submitQuestion]", e);
     return { error: "QUESTION_SUBMIT_FAILED" };

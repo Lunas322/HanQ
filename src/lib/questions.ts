@@ -21,6 +21,7 @@ import {
   readTranslationStatus,
 } from "./firestore-value";
 import { detectLanguage } from "./detect-language";
+import { buildRawPoll, readPoll } from "./polls";
 import { getCurrentLanguage } from "./locale";
 import { isLanguage, type Language } from "@/types/language";
 import type { QuestionDraft } from "./question-rules";
@@ -29,6 +30,7 @@ const LIST_LIMIT = 50;
 
 type CreateQuestionInput = QuestionDraft & {
   authorId: string;
+  pollLabels: string[];
 };
 
 export async function createQuestion({
@@ -36,14 +38,17 @@ export async function createQuestion({
   title,
   content,
   categoryId,
+  pollLabels,
 }: CreateQuestionInput): Promise<string> {
   const questionRef = adminDb.collection(QUESTIONS_COLLECTION).doc();
   const authorRef = adminDb.collection(USERS_COLLECTION).doc(authorId);
 
   const { language: sourceLanguage } = detectLanguage(
-    `${title}\n${content}`,
+    [title, content, ...pollLabels].join("\n"),
     await getCurrentLanguage(),
   );
+
+  const poll = buildRawPoll(pollLabels, sourceLanguage);
 
   const batch = adminDb.batch();
 
@@ -51,6 +56,7 @@ export async function createQuestion({
     authorId,
     title: { [sourceLanguage]: title },
     content: { [sourceLanguage]: content },
+    ...(poll ? { poll } : {}),
     sourceLanguage,
     translationStatus: "pending",
     categoryId,
@@ -79,6 +85,7 @@ type RawQuestion = {
   sourceLanguage: string;
   translationStatus: string;
   createdAt: string;
+  poll: unknown;
 };
 
 function toRaw(doc: DocumentSnapshot): RawQuestion {
@@ -95,6 +102,7 @@ function toRaw(doc: DocumentSnapshot): RawQuestion {
     sourceLanguage: readString(data.sourceLanguage),
     translationStatus: readString(data.translationStatus),
     createdAt: readDate(data.createdAt).toISOString(),
+    poll: data.poll ?? null,
   };
 }
 
@@ -138,6 +146,7 @@ function toQuestion(
           ),
         }
       : null,
+    poll: readPoll(data.poll, language, sourceLanguage),
     likeCount: data.likeCount,
     commentCount: data.answerCount,
     createdAt: data.createdAt,

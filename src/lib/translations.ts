@@ -6,7 +6,8 @@ import { answersTag, questionTag, QUESTIONS_TAG } from "./cache-tags";
 import { ANSWERS_COLLECTION, QUESTIONS_COLLECTION } from "./collections";
 import { detectLanguage, hasTranslatableText } from "./detect-language";
 import { adminDb } from "./firebase-admin";
-import { readLocalizedText } from "./firestore-value";
+import { readLocalizedText, readPath } from "./firestore-value";
+import { pollLabelPaths } from "./polls";
 import { translateTexts } from "./translate";
 import { isLanguage, type Language } from "@/types/language";
 import { otherLanguage, type TranslationStatus } from "@/types/localized";
@@ -36,10 +37,12 @@ function buildUpdate(
   return update;
 }
 
+type FieldsOf = (data: FirebaseFirestore.DocumentData) => string[];
+
 async function translateDocument(
   collection: string,
   id: string,
-  fields: string[],
+  fieldsOf: FieldsOf,
 ): Promise<void> {
   const ref = adminDb.collection(collection).doc(id);
   const snapshot = await ref.get();
@@ -51,8 +54,10 @@ async function translateDocument(
 
   const stored = isLanguage(data.sourceLanguage) ? data.sourceLanguage : "ko";
 
+  const fields = fieldsOf(data);
+
   const originals = fields.map((field) =>
-    readLocalizedText(data[field], stored, stored),
+    readLocalizedText(readPath(data, field), stored, stored),
   );
 
   const combined = originals.join("\n");
@@ -92,14 +97,18 @@ async function translateDocument(
 }
 
 export async function translateQuestion(id: string): Promise<void> {
-  await translateDocument(QUESTIONS_COLLECTION, id, ["title", "content"]);
+  await translateDocument(QUESTIONS_COLLECTION, id, (data) => [
+    "title",
+    "content",
+    ...pollLabelPaths(data.poll),
+  ]);
 
   revalidateTag(QUESTIONS_TAG, "max");
   revalidateTag(questionTag(id), "max");
 }
 
 export async function translateAnswer(id: string, questionId: string): Promise<void> {
-  await translateDocument(ANSWERS_COLLECTION, id, ["content"]);
+  await translateDocument(ANSWERS_COLLECTION, id, () => ["content"]);
 
   revalidateTag(answersTag(questionId), "max");
 }

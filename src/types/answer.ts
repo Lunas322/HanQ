@@ -19,4 +19,5 @@ export type Answer = {
   sourceLanguage: Language;
   translationPending: boolean;
   original: { content: string } | null;
+  votedOptionId: string | null;
 };

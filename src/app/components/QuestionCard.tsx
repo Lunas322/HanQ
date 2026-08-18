@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function QuestionCard({ question, category, language }: Props) {
-  const { user, likeCount, commentCount, createdAt, translationPending } =
+  const { user, likeCount, commentCount, createdAt, translationPending, poll } =
     question;
   const dictionary = getDictionary(language);
 
@@ -56,6 +56,12 @@ export function QuestionCard({ question, category, language }: Props) {
             <Icon icon="Comment" size="s" />
             {commentCount}
           </span>
+          {poll && (
+            <span className="flex items-center gap-1 text-brand">
+              <span aria-hidden="true">🗳</span>
+              {poll.totalVotes}
+            </span>
+          )}
         </div>
       </div>
     </Link>

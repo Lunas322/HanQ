@@ -14,6 +14,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { QUESTIONS_COLLECTION } from "@/lib/collections";
 import { getDictionary } from "@/lib/i18n";
 import { hasLiked } from "@/lib/likes";
+import { getVote } from "@/lib/polls";
 import { getQuestion } from "@/lib/questions";
 import { SITE_URL } from "@/lib/site";
 import { isLanguage, LANGUAGES, type Language } from "@/types/language";
@@ -88,6 +89,13 @@ async function AnswerList({
   const answers = await listAnswers(question.id, viewerId, language);
   const dictionary = getDictionary(language);
 
+  const optionIndex = new Map(
+    (question.poll?.options ?? []).map((option, index) => [
+      option.id,
+      { label: option.label, index },
+    ]),
+  );
+
   return (
     <>
       <QuestionJsonLd question={question} answers={answers} url={url} />
@@ -106,6 +114,11 @@ async function AnswerList({
           <AnswerItem
             key={answer.id}
             answer={answer}
+            vote={
+              answer.votedOptionId
+                ? optionIndex.get(answer.votedOptionId)
+                : undefined
+            }
             language={language}
             loginHref={loginHref}
           />
@@ -124,9 +137,10 @@ export default async function DetailPage({ params }: DetailProps) {
   const user = await getCurrentUser();
   const loginHref = user ? undefined : `/${lang}`;
 
-  const [question, liked] = await Promise.all([
+  const [question, liked, votedOptionId] = await Promise.all([
     getQuestion(id, language),
     user ? hasLiked(QUESTIONS_COLLECTION, id, user.uid) : false,
+    user ? getVote(id, user.uid) : null,
   ]);
 
   if (!question) notFound();
@@ -139,6 +153,7 @@ export default async function DetailPage({ params }: DetailProps) {
         question={question}
         category={category}
         liked={liked}
+        votedOptionId={votedOptionId}
         language={language}
         loginHref={loginHref}
       />

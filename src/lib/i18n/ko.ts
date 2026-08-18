@@ -4,6 +4,11 @@ import type { FormErrorCode } from "@/lib/form-errors";
 import type { NotificationType } from "@/types/notification";
 import { NAME_MAX, NAME_MIN } from "@/lib/profile-rules";
 import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
+import {
+  POLL_MAX_OPTIONS,
+  POLL_MIN_OPTIONS,
+  POLL_OPTION_MAX,
+} from "@/types/poll";
 
 export const ko = {
   meta: {
@@ -98,6 +103,13 @@ export const ko = {
     contentPlaceholder:
       "한국과 어떤 점이 다른지, 배경도 함께 적어주면 좋아요",
     categoryLegend: "카테고리",
+    pollLegend: "투표 (선택)",
+    pollEnable: "이 질문에 투표 붙이기",
+    pollHint: "의견이 갈리는 질문이면 투표를 붙여보세요. 답변에 각자의 선택이 함께 표시돼요.",
+    pollOptionLabel: (index: number) => `선택지 ${index}`,
+    pollOptionPlaceholder: "예: 봐준다",
+    pollAdd: "선택지 추가",
+    pollRemove: (index: number) => `선택지 ${index} 삭제`,
     translationNotice:
       "작성한 글은 일본어로 자동 번역돼서 함께 보여져요. 원문도 그대로 저장돼요.",
     submit: "질문 등록하기",
@@ -114,6 +126,13 @@ export const ko = {
     showOriginal: "원문 보기",
     showTranslation: "번역 보기",
     likeAria: (count: number) => `좋아요 ${count}개`,
+    pollHeading: "당신의 선택은?",
+    pollTotal: (count: number) => `${count}명 참여`,
+    pollEmpty: "첫 번째로 투표해보세요",
+    pollChange: "다시 고를 수 있어요",
+    pollVoteAria: (label: string) => `${label}에 투표하기`,
+    pollResultAria: (label: string, percent: number) =>
+      `${label} ${percent}퍼센트`,
 
   },
 
@@ -170,6 +189,11 @@ export const ko = {
     CONTENT_REQUIRED: "내용을 입력해 주세요.",
     CONTENT_TOO_LONG: `내용은 ${CONTENT_MAX}자까지 쓸 수 있어요.`,
     CATEGORY_REQUIRED: "카테고리를 선택해 주세요.",
+    POLL_TOO_FEW_OPTIONS: `선택지는 ${POLL_MIN_OPTIONS}개 이상이어야 해요.`,
+    POLL_TOO_MANY_OPTIONS: `선택지는 ${POLL_MAX_OPTIONS}개까지 만들 수 있어요.`,
+    POLL_OPTION_REQUIRED: "선택지를 모두 입력해 주세요.",
+    POLL_OPTION_TOO_LONG: `선택지는 ${POLL_OPTION_MAX}자까지 쓸 수 있어요.`,
+    POLL_OPTION_DUPLICATED: "같은 선택지를 두 번 쓸 수 없어요.",
     ANSWER_REQUIRED: "답변을 입력해 주세요.",
     ANSWER_TOO_LONG: `답변은 ${ANSWER_MAX}자까지 쓸 수 있어요.`,
     QUESTION_NOT_FOUND: "질문을 찾을 수 없어요.",

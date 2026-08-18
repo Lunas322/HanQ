@@ -3,11 +3,13 @@ import { getDictionary } from "@/lib/i18n";
 import type { Language } from "@/types/language";
 import type { Question } from "@/types/question";
 import { toggleQuestionLikeAction } from "@/app/[lang]/detail/[id]/_actions/like";
+import { voteAction } from "@/app/[lang]/detail/[id]/_actions/vote";
 import { AuthorLink } from "./AuthorLink";
 import { Avatar } from "./Avatar";
 import { Badge } from "./Badge";
 import { Flag } from "./Flag";
 import { LikeButton } from "./LikeButton";
+import { PollVote } from "./PollVote";
 import { RelativeTime } from "./RelativeTime";
 import { TranslatableQuestion } from "./TranslatableQuestion";
 import { TranslatingBadge } from "./TranslatingBadge";
@@ -16,6 +18,7 @@ type Props = {
   question: Question;
   category?: Category;
   liked: boolean;
+  votedOptionId: string | null;
   language: Language;
   loginHref?: string;
 };
@@ -24,10 +27,11 @@ export function QuestionDetail({
   question,
   category,
   liked,
+  votedOptionId,
   language,
   loginHref,
 }: Props) {
-  const { id, user, title, content, likeCount, createdAt, translationPending, original } =
+  const { id, user, title, content, likeCount, createdAt, translationPending, original, poll } =
     question;
   const dictionary = getDictionary(language);
 
@@ -54,6 +58,17 @@ export function QuestionDetail({
           {translationPending && <TranslatingBadge language={language} />}
         </div>
       </TranslatableQuestion>
+
+      {poll && (
+        <div className="mb-4 w-full">
+          <PollVote
+            poll={poll}
+            votedOptionId={votedOptionId}
+            onVote={voteAction.bind(null, id)}
+            loginHref={loginHref}
+          />
+        </div>
+      )}
 
       <LikeButton
         count={likeCount}
