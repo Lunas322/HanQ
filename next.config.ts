@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/__/auth/:path*",
+        destination: "https://hanq-e757f.firebaseapp.com/__/auth/:path*",
+      },
+    ];
+  },
   cacheComponents: true,
   experimental: {
     serverActions: {
