@@ -1,57 +1,87 @@
-import { FirebaseError } from "firebase/app";
 import {
-  inMemoryPersistence,
+  browserSessionPersistence,
+  getRedirectResult,
   setPersistence,
-  signInWithPopup,
+  signInWithRedirect,
+  signOut,
+  type User,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { auth, googleProvider } from "@/lib/firebase";
-import { useDictionary, useLocalePath } from "@/lib/i18n/context";
+import { useDictionary, useLanguage } from "@/lib/i18n/context";
+import { localePath } from "@/lib/routes";
 
-const CANCELLED_CODES = new Set([
-  "auth/popup-closed-by-user",
-  "auth/cancelled-popup-request",
-]);
+async function exchangeSession(user: User, failureMessage: string): Promise<void> {
+  const idToken = await user.getIdToken();
+
+  const response = await fetch("/api/session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ idToken }),
+  });
+
+  if (!response.ok) {
+    throw new Error(failureMessage);
+  }
+
+  await signOut(auth);
+}
 
 export function useLogin() {
   const router = useRouter();
+  const language = useLanguage();
   const { landing } = useDictionary();
-  const path = useLocalePath();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const complete = async () => {
+      try {
+        await setPersistence(auth, browserSessionPersistence);
+
+        const credential = await getRedirectResult(auth);
+
+        if (!credential || !active) {
+          return;
+        }
+
+        setIsPending(true);
+
+        await exchangeSession(credential.user, landing.sessionFailed);
+
+        router.replace(localePath(language, "/home"));
+        router.refresh();
+      } catch (e) {
+        console.error("[login:redirect]", e);
+
+        if (active) {
+          setIsPending(false);
+          setError(landing.loginFailed);
+        }
+      }
+    };
+
+    void complete();
+
+    return () => {
+      active = false;
+    };
+  }, [router, language, landing]);
 
   const login = async () => {
     setIsPending(true);
     setError(null);
 
     try {
-      await setPersistence(auth, inMemoryPersistence);
-
-      const credential = await signInWithPopup(auth, googleProvider);
-      const idToken = await credential.user.getIdToken();
-
-      const response = await fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error(landing.sessionFailed);
-      }
-
-      router.replace(path("/home"));
-      router.refresh();
+      await setPersistence(auth, browserSessionPersistence);
+      await signInWithRedirect(auth, googleProvider);
     } catch (e) {
       console.error("[login]", e);
       setIsPending(false);
-
-      if (e instanceof FirebaseError && CANCELLED_CODES.has(e.code)) {
-        return;
-      }
-
       setError(landing.loginFailed);
     }
   };
