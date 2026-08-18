@@ -1,4 +1,5 @@
 import type { Language } from "./language";
+import type { Poll } from "./poll";
 import type { User } from "./user";
 
 export type Question = {
@@ -13,4 +14,5 @@ export type Question = {
   sourceLanguage: Language;
   translationPending: boolean;
   original: { title: string; content: string } | null;
+  poll: Poll | null;
 };

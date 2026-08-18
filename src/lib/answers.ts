@@ -23,6 +23,7 @@ import { detectLanguage } from "./detect-language";
 import { isLanguage, type Language } from "@/types/language";
 import { filterLiked } from "./likes";
 import { getCurrentLanguage } from "./locale";
+import { getVote } from "./polls";
 
 const LIST_LIMIT = 100;
 
@@ -41,10 +42,10 @@ export async function createAnswer({
   const questionRef = adminDb.collection(QUESTIONS_COLLECTION).doc(questionId);
   const authorRef = adminDb.collection(USERS_COLLECTION).doc(authorId);
 
-  const { language: sourceLanguage } = detectLanguage(
-    content,
-    await getCurrentLanguage(),
-  );
+  const [{ language: sourceLanguage }, votedOptionId] = await Promise.all([
+    getCurrentLanguage().then((fallback) => detectLanguage(content, fallback)),
+    getVote(questionId, authorId),
+  ]);
 
   const batch = adminDb.batch();
 
@@ -52,6 +53,7 @@ export async function createAnswer({
     questionId,
     authorId,
     content: { [sourceLanguage]: content },
+    ...(votedOptionId ? { votedOptionId } : {}),
     sourceLanguage,
     translationStatus: "pending",
     likeCount: 0,
@@ -75,6 +77,7 @@ type RawAnswer = {
   sourceLanguage: string;
   translationStatus: string;
   createdAt: string;
+  votedOptionId: string;
 };
 
 const fetchAnswers = unstable_cache(
@@ -98,6 +101,7 @@ const fetchAnswers = unstable_cache(
         sourceLanguage: readString(data.sourceLanguage),
         translationStatus: readString(data.translationStatus),
         createdAt: readDate(data.createdAt).toISOString(),
+        votedOptionId: readString(data.votedOptionId),
       };
     });
   },
@@ -156,6 +160,7 @@ export async function listAnswers(
       liked: likedIds.has(raw.id),
       isMine: viewerId !== "" && raw.authorId === viewerId,
       createdAt: raw.createdAt,
+      votedOptionId: raw.votedOptionId || null,
       sourceLanguage,
       translationPending: pending,
       original:

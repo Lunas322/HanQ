@@ -9,6 +9,7 @@ import { listQuestions } from "@/lib/questions";
 import { BottomNavigation } from "@/app/components/BottomNavigation";
 import Categories from "@/app/components/Categories";
 import { QuestionCard } from "@/app/components/QuestionCard";
+import { NoticeBanner } from "@/app/components/NoticeBanner";
 import { QuestionListSkeleton } from "@/app/components/QuestionListSkeleton";
 import { Tab, type TabItem } from "@/app/components/Tab";
 
@@ -90,6 +91,10 @@ export default async function Page({ params, searchParams }: Props) {
 
   return (
     <div className="px-5 py-4 mb-[76px]">
+      <Suspense fallback={null}>
+        <NoticeBanner language={language} />
+      </Suspense>
+
       <Tab items={tabs} className="w-full" />
       <Categories />
 
