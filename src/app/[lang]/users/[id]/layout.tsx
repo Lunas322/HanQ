@@ -24,7 +24,7 @@ export default async function UserLayout({ children, params }: Props) {
         <Header mainIcon="ChevronLeft" title={profile.name} />
       </div>
 
-      <main className="flex-1 bg-muted">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 bg-muted">{children}</main>
     </>
   );
 }

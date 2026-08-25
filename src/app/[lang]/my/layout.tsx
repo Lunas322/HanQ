@@ -60,7 +60,7 @@ export default async function MyLayout({ children, params }: Props) {
         </Header>
       </div>
 
-      <main className="flex-1 bg-muted">
+      <main id="main" tabIndex={-1} className="flex-1 bg-muted">
         <Suspense fallback={<ProfileSummarySkeleton />}>
           <MyProfile uid={user.uid} name={user.name} language={language} />
         </Suspense>

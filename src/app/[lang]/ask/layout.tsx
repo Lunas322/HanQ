@@ -23,14 +23,14 @@ export default async function askLayout ({children}:Props) {
     return (
   <>
       <div className="sticky top-0 z-50">
-        <Header mainIcon="ChevronLeft" title={ask.headerTitle}>
+        <Header mainIcon="ChevronLeft" title={ask.headerTitle} titleAsHeading>
           <Link href={localePath(language, "/home")} aria-label={nav.close} className="flex items-center text-icon">
             <Icon size="l" icon="Close" />
           </Link>
         </Header>
       </div>
 
-      <main className="flex flex-1 flex-col bg-surface">{children}</main>
+      <main id="main" tabIndex={-1} className="flex flex-1 flex-col bg-surface">{children}</main>
       </>
     )
 }

@@ -37,7 +37,7 @@ export default async function detailLayout ({children, params}:Props) {
         </Header>
       </div>
 
-      <main className="flex-1 bg-muted ">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 bg-muted ">{children}</main>
       </>
     )
 }

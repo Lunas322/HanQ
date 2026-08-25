@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { LanguageProvider } from "@/lib/i18n/context";
+import { ToastProvider } from "@/app/components/Toast";
 import { getDictionary } from "@/lib/i18n";
 import { DEFAULT_LANGUAGE, isLanguage, LANGUAGES } from "@/types/language";
 import "@/app/globals.css";
@@ -110,7 +111,16 @@ export default async function RootLayout({ children, params }: Props) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <LanguageProvider language={lang}>{children}</LanguageProvider>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-100 focus:rounded-xl focus:bg-surface focus:px-4 focus:py-3 focus:text-[15px] focus:font-bold focus:text-brand focus:outline-2 focus:outline-brand"
+        >
+          {getDictionary(lang).common.skipToContent}
+        </a>
+
+        <LanguageProvider language={lang}>
+          <ToastProvider>{children}</ToastProvider>
+        </LanguageProvider>
         <Analytics />
         <SpeedInsights />
       </body>

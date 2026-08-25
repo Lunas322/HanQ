@@ -34,7 +34,7 @@ export default async function Page({ params }: Props) {
     .slice(0, PREVIEW_COUNT);
 
   return (
-    <main className="min-h-dvh bg-surface px-6 py-5 pb-[calc(114px+env(safe-area-inset-bottom))]">
+    <main id="main" tabIndex={-1} className="min-h-dvh bg-surface px-6 py-5 pb-[calc(114px+env(safe-area-inset-bottom))]">
       <Suspense fallback={null}>
         <NoticeBanner language={lang} />
       </Suspense>
