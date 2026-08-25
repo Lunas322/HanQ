@@ -24,7 +24,7 @@ export default async function HomeLayout({ children }: Props) {
         </Header>
       </div>
 
-      <main className="flex-1 bg-muted px-[10px] py-[8px]">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 bg-muted px-[10px] py-[8px]">{children}</main>
     </>
   );
 }

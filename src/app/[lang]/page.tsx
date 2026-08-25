@@ -34,7 +34,7 @@ export default async function Page({ params }: Props) {
     .slice(0, PREVIEW_COUNT);
 
   return (
-    <main className="min-h-dvh bg-surface px-6 py-5 pb-[114px]">
+    <main id="main" tabIndex={-1} className="min-h-dvh bg-surface px-6 py-5 pb-[calc(114px+env(safe-area-inset-bottom))]">
       <Suspense fallback={null}>
         <NoticeBanner language={lang} />
       </Suspense>
@@ -59,7 +59,7 @@ export default async function Page({ params }: Props) {
         </ul>
       </section>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-5.5">
+      <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-[calc(1.375rem+env(safe-area-inset-bottom))]">
         <GoogleLoginButton url={`${SITE_URL}/${lang}`} />
         <p className="mt-[10px] flex justify-center text-[12px] font-medium text-tertiary">
           {landing.terms}

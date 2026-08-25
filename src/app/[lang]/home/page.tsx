@@ -90,7 +90,9 @@ export default async function Page({ params, searchParams }: Props) {
   const isPopular = tab === "popular";
 
   return (
-    <div className="px-5 py-4 mb-[76px]">
+    <div className="px-5 py-4 mb-[calc(76px+env(safe-area-inset-bottom))]">
+      <h1 className="sr-only">{home.title}</h1>
+
       <Suspense fallback={null}>
         <NoticeBanner language={language} />
       </Suspense>

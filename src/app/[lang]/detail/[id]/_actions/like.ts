@@ -11,18 +11,23 @@ import { revalidateQuestion } from "./revalidate";
 
 export async function toggleQuestionLikeAction(
   questionId: string,
-): Promise<void> {
+): Promise<boolean> {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/logout");
   }
 
-  const { liked, authorId } = await toggleLike(
-    QUESTIONS_COLLECTION,
-    questionId,
-    user.uid,
-  );
+  let result;
+
+  try {
+    result = await toggleLike(QUESTIONS_COLLECTION, questionId, user.uid);
+  } catch (e) {
+    console.error("[toggleQuestionLikeAction]", questionId, e);
+    return false;
+  }
+
+  const { liked, authorId } = result;
 
   const notification = {
     actorId: user.uid,
@@ -37,23 +42,30 @@ export async function toggleQuestionLikeAction(
   );
 
   revalidateQuestion(questionId);
+
+  return true;
 }
 
 export async function toggleAnswerLikeAction(
   answerId: string,
   questionId: string,
-): Promise<void> {
+): Promise<boolean> {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/logout");
   }
 
-  const { liked, authorId } = await toggleLike(
-    ANSWERS_COLLECTION,
-    answerId,
-    user.uid,
-  );
+  let result;
+
+  try {
+    result = await toggleLike(ANSWERS_COLLECTION, answerId, user.uid);
+  } catch (e) {
+    console.error("[toggleAnswerLikeAction]", answerId, e);
+    return false;
+  }
+
+  const { liked, authorId } = result;
 
   const notification = {
     actorId: user.uid,
@@ -69,4 +81,6 @@ export async function toggleAnswerLikeAction(
   );
 
   revalidateQuestion(questionId);
+
+  return true;
 }

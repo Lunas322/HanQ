@@ -53,7 +53,7 @@ export function BottomNavigation() {
   const profile: NavItem = { href: path("/my"), icon: "User", label: nav.profile };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-10 flex h-19 items-center bg-surface px-8 py-3">
+    <nav className="fixed bottom-0 left-0 right-0 z-10 flex min-h-19 items-center bg-surface px-8 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
       <NavLink item={home} isActive={pathname === home.href} align="start" />
 
       <Link

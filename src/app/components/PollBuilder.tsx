@@ -63,7 +63,7 @@ export function PollBuilder({ labels, onChange }: Props) {
                 maxLength={POLL_OPTION_MAX}
                 aria-label={ask.pollOptionLabel(index + 1)}
                 placeholder={ask.pollOptionPlaceholder}
-                className="h-12 min-w-0 flex-1 rounded-xl bg-page px-4 text-[15px] text-primary outline-none placeholder:text-disabled focus:outline-2 focus:outline-brand"
+                className="h-12 min-w-0 flex-1 rounded-xl bg-page px-4 text-[15px] text-primary outline-none placeholder:text-tertiary focus:outline-2 focus:outline-brand"
               />
 
               {labels.length > POLL_MIN_OPTIONS && (

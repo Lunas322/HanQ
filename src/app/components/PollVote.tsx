@@ -6,11 +6,12 @@ import { useOptimistic, useTransition } from "react";
 import { useDictionary } from "@/lib/i18n/context";
 import type { Poll } from "@/types/poll";
 import { optionColor } from "./PollOptionColor";
+import { useToast } from "./Toast";
 
 type Props = {
   poll: Poll;
   votedOptionId: string | null;
-  onVote: (optionId: string) => Promise<void>;
+  onVote: (optionId: string) => Promise<boolean>;
   loginHref?: string;
 };
 
@@ -25,6 +26,7 @@ function percent(count: number, total: number): number {
 
 export function PollVote({ poll, votedOptionId, onVote, loginHref }: Props) {
   const { detail } = useDictionary();
+  const toast = useToast();
   const [isPending, startTransition] = useTransition();
 
   const [tally, setTally] = useOptimistic<Tally, string>(
@@ -59,7 +61,10 @@ export function PollVote({ poll, votedOptionId, onVote, loginHref }: Props) {
   const handleVote = (optionId: string) => {
     startTransition(async () => {
       setTally(optionId);
-      await onVote(optionId);
+
+      if (!(await onVote(optionId))) {
+        toast(detail.voteFailed, "error");
+      }
     });
   };
 
