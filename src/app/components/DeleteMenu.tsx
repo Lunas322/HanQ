@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import type { FormErrorCode } from "@/lib/form-errors";
 import { useDictionary } from "@/lib/i18n/context";
 import type { Dictionary } from "@/lib/i18n";
 import { Icon } from "./Icon";
+import { useToast } from "./Toast";
 
 type Target = keyof Dictionary["deletion"];
 
@@ -16,6 +17,7 @@ type Props = {
 
 export function DeleteMenu({ target, onDelete }: Props) {
   const { common, deletion, formError } = useDictionary();
+  const toast = useToast();
   const copy = deletion[target];
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -39,6 +41,54 @@ export function DeleteMenu({ target, onDelete }: Props) {
     return () => window.removeEventListener("keydown", close);
   }, [isOpen, isPending]);
 
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const wasConfirming = useRef(false);
+
+  useEffect(() => {
+    if (!isConfirming) return;
+
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    body.style.overflow = "hidden";
+
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        "button:not([disabled])",
+      );
+
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", trap);
+
+    return () => {
+      window.removeEventListener("keydown", trap);
+      body.style.overflow = previousOverflow;
+    };
+  }, [isConfirming]);
+
+  useEffect(() => {
+    if (wasConfirming.current && !isConfirming) {
+      triggerRef.current?.focus();
+    }
+
+    wasConfirming.current = isConfirming;
+  }, [isConfirming]);
+
   const remove = () => {
     startTransition(async () => {
       const failure = await onDelete();
@@ -49,12 +99,14 @@ export function DeleteMenu({ target, onDelete }: Props) {
       }
 
       setIsConfirming(false);
+      toast(common.deleted);
     });
   };
 
   return (
     <div className="relative flex items-center">
       <button
+        ref={triggerRef}
         type="button"
         aria-label={copy.menuAria}
         aria-haspopup="menu"
@@ -73,7 +125,7 @@ export function DeleteMenu({ target, onDelete }: Props) {
           />
           <div
             role="menu"
-            className="absolute right-0 top-full z-50 mt-1 w-28 overflow-hidden rounded-xl bg-surface py-1 shadow-[0_4px_16px_0_rgba(25,31,40,0.14)]"
+            className="absolute right-0 top-full z-50 mt-1 w-max min-w-28 overflow-hidden rounded-xl bg-surface py-1 shadow-[0_4px_16px_0_rgba(25,31,40,0.14)]"
           >
             <button
               type="button"
@@ -93,6 +145,7 @@ export function DeleteMenu({ target, onDelete }: Props) {
       {isConfirming && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-8">
           <div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={`delete-title-${target}`}
