@@ -13,39 +13,39 @@
     "Yu Gothic", "Noto Sans JP", "Meiryo", ui-sans-serif, system-ui, sans-serif;
 
   /* HanQ Design System (Figma) — 색 토큰 */
-  /* 텍스트 */
+  /* 텍스트 — 흰색·muted·page·brand-subtle 네 배경 모두에서 WCAG AA 4.5:1 이상 */
   --color-ink: #191f28; /* Figma: color-text-primary */
-  --color-secondary: #6b7684; /* Figma: color-text-secondary */
-  --color-tertiary: #8b95a1; /* Figma: color-text-tertiary */
-  --color-disabled: #d1d6db; /* Figma: color-text-disabled */
-  --color-icon: #8B95A1;
-  --color-primary: #191F28;
-  --color-strong: #333D4B;
-  --color-body: #4E5968;
-  --color-page: #F9FAFB;
+  --color-secondary: #5b6673; /* Figma: color-text-secondary (#6b7684에서 조정) */
+  --color-tertiary: #646f7c; /* Figma: color-text-tertiary (#8b95a1에서 조정) */
+  --color-disabled: #d1d6db; /* Figma: color-text-disabled — 비활성 컨트롤 전용 */
+  --color-icon: #646f7c;
+  --color-primary: #191f28;
+  --color-strong: #333d4b;
+  --color-body: #4e5968;
+  --color-page: #f9fafb;
 
   /* 브랜드 */
   --color-brand: #0064ff; /* Figma: color-text-brand */
-  --color-brand-subtle: #e8f3ff; /* brand 위에 얹는 옅은 배경 */
+  --color-brand-subtle: #edf6ff; /* brand 위에 얹는 옅은 배경 (#e8f3ff에서 조정) */
 
   /* 배경 */
   --color-surface: #ffffff; /* Figma: color-bg-surface */
   --color-muted: #f2f4f6; /* Figma: color-bg-muted (배경 + 보더 겸용) */
 
-  /* border */
-  --color-default: #E5E8EB;
+  /* border — 상태를 구분하는 컨트롤 경계. WCAG 1.4.11 3:1 */
+  --color-default: #808f9d; /* #e5e8eb에서 조정 */
 
   /* 좋아요(활성) — Figma: color-accent-like / color-bg-danger */
-  --color-like: #f04452;
+  --color-like: #da1122; /* #f04452에서 조정 */
   --color-like-subtle: #feeced;
 
   /* 아바타 팔레트 — Figma: color/avatar/* (bg + fg 한 쌍) */
-  --color-avatar-blue-bg: #e8f3ff;
+  --color-avatar-blue-bg: #edf6ff;
   --color-avatar-blue-fg: #0064ff;
   --color-avatar-purple-bg: #e5e5ff;
   --color-avatar-purple-fg: #4d1acc;
   --color-avatar-red-bg: #feeced;
-  --color-avatar-red-fg: #f04452;
+  --color-avatar-red-fg: #da1122;
   --color-avatar-green-bg: #e6f9f3;
-  --color-avatar-green-fg: #12b886;
+  --color-avatar-green-fg: #0d805d;
 }

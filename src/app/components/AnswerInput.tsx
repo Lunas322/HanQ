@@ -34,7 +34,7 @@ export function AnswerInput({ questionId }: Props) {
     <form
       ref={formRef}
       action={formAction}
-      className="sticky bottom-0 border-t border-muted bg-surface px-4 pb-[14px] pt-[10px]"
+      className="sticky bottom-0 border-t border-muted bg-surface px-4 pb-[calc(14px+env(safe-area-inset-bottom))] pt-[10px]"
     >
       <input type="hidden" name="questionId" value={questionId} />
 
@@ -55,7 +55,7 @@ export function AnswerInput({ questionId }: Props) {
           maxLength={ANSWER_MAX}
           disabled={isPending}
           placeholder={dictionary.detail.answerPlaceholder}
-          className="h-11 min-w-0 flex-1 rounded-2xl bg-page px-4 text-[15px] text-primary outline-none placeholder:text-disabled disabled:opacity-60"
+          className="h-11 min-w-0 flex-1 rounded-2xl bg-page px-4 text-[15px] text-primary outline-none placeholder:text-tertiary disabled:opacity-60"
         />
         <Button
           content={isPending ? dictionary.common.submitting : dictionary.common.submit}
