@@ -41,6 +41,8 @@ export const ko = {
     translating: "번역 중",
     fallbackUserName: "사용자",
     dismissNotice: "공지 닫기",
+    skipToContent: "본문으로 건너뛰기",
+    deleted: "삭제했어요",
   },
 
   nav: {
@@ -85,6 +87,7 @@ export const ko = {
   },
 
   home: {
+    title: "질문 목록",
     tabLatest: "최신",
     tabPopular: "인기",
     allCategories: "전체",
@@ -126,6 +129,8 @@ export const ko = {
   },
 
   detail: {
+    voteFailed: "투표를 저장하지 못했어요. 다시 시도해 주세요.",
+    likeFailed: "좋아요를 저장하지 못했어요. 다시 시도해 주세요.",
     headerTitle: "질문",
     answersHeading: "답변",
     emptyAnswers: "아직 답변이 없어요. 첫 답변을 남겨보세요.",

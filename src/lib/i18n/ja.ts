@@ -39,6 +39,8 @@ export const ja: Dictionary = {
     translating: "翻訳中",
     fallbackUserName: "ユーザー",
     dismissNotice: "お知らせを閉じる",
+    skipToContent: "本文へスキップ",
+    deleted: "削除しました",
   },
 
   nav: {
@@ -84,6 +86,7 @@ export const ja: Dictionary = {
   },
 
   home: {
+    title: "質問一覧",
     tabLatest: "新着",
     tabPopular: "人気",
     allCategories: "すべて",
@@ -125,6 +128,8 @@ export const ja: Dictionary = {
   },
 
   detail: {
+    voteFailed: "投票を保存できませんでした。もう一度お試しください。",
+    likeFailed: "いいねを保存できませんでした。もう一度お試しください。",
     headerTitle: "質問",
     answersHeading: "回答",
     emptyAnswers: "まだ回答がありません。最初の回答を残してみましょう。",
