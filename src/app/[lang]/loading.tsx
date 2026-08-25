@@ -3,7 +3,7 @@ import { Skeleton } from "@/app/components/Skeleton";
 
 export default function Loading() {
   return (
-    <main className="min-h-dvh bg-surface px-6 py-5 pb-[114px]">
+    <main className="min-h-dvh bg-surface px-6 py-5 pb-[calc(114px+env(safe-area-inset-bottom))]">
       <div className="flex w-full justify-end">
         <Skeleton className="h-[30px] w-32 rounded-full" />
       </div>
@@ -27,7 +27,7 @@ export default function Loading() {
         <QuestionCardSkeleton key={index} />
       ))}
 
-      <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-5.5">
+      <div className="fixed bottom-0 left-0 right-0 bg-surface px-4 pt-3 pb-[calc(1.375rem+env(safe-area-inset-bottom))]">
         <Skeleton className="h-14 w-full rounded-2xl" />
         <Skeleton className="mx-auto mt-[10px] h-4 w-56" />
       </div>

@@ -8,7 +8,7 @@ export default function Loading() {
         <Skeleton className="h-12 w-full rounded-xl" />
       </div>
 
-      <div className="px-5 pb-19">
+      <div className="px-5 pb-[calc(76px+env(safe-area-inset-bottom))]">
         <QuestionListSkeleton count={2} />
       </div>
     </>
