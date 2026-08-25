@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import { useDictionary } from "@/lib/i18n/context";
 import { CONTENT_MAX, TITLE_MAX } from "@/lib/question-rules";
@@ -12,6 +12,20 @@ import { TextField } from "@/app/components/TextField";
 import { type AskFormState, submitQuestion } from "./actions";
 
 const INITIAL_STATE: AskFormState = { error: null };
+
+// 오류를 문구로만 알리면 사용자가 어느 칸이 비었는지 직접 찾아야 한다.
+const FIELD_SELECTOR: Partial<Record<NonNullable<AskFormState["error"]>, string>> = {
+  TITLE_REQUIRED: "#title",
+  TITLE_TOO_LONG: "#title",
+  CONTENT_REQUIRED: "#content",
+  CONTENT_TOO_LONG: "#content",
+  CATEGORY_REQUIRED: "input[name='categoryId']",
+  POLL_TOO_FEW_OPTIONS: "input[name='pollOption']",
+  POLL_TOO_MANY_OPTIONS: "input[name='pollOption']",
+  POLL_OPTION_REQUIRED: "input[name='pollOption']",
+  POLL_OPTION_TOO_LONG: "input[name='pollOption']",
+  POLL_OPTION_DUPLICATED: "input[name='pollOption']",
+};
 
 export function AskForm() {
   const dictionary = useDictionary();
@@ -25,12 +39,16 @@ export function AskForm() {
     INITIAL_STATE,
   );
 
-  const canSubmit =
-    title.trim().length > 0 &&
-    content.trim().length > 0 &&
-    categoryId !== null &&
-    (pollLabels === null ||
-      pollLabels.every((label) => label.trim().length > 0));
+  useEffect(() => {
+    const selector = state.error && FIELD_SELECTOR[state.error];
+
+    if (!selector) return;
+
+    const field = document.querySelector<HTMLElement>(selector);
+
+    field?.scrollIntoView({ block: "center", behavior: "smooth" });
+    field?.focus({ preventScroll: true });
+  }, [state]);
 
   return (
     <form action={formAction} className="flex flex-1 flex-col">
@@ -72,7 +90,7 @@ export function AskForm() {
           content={isPending ? dictionary.ask.submitting : dictionary.ask.submit}
           size="lg"
           type="submit"
-          disabled={!canSubmit || isPending}
+          disabled={isPending}
           className="w-full"
         />
       </div>
