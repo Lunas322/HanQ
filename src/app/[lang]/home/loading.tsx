@@ -3,7 +3,7 @@ import { Skeleton } from "@/app/components/Skeleton";
 
 export default function Loading() {
   return (
-    <div className="px-5 py-4 mb-[76px]">
+    <div className="px-5 py-4 mb-[calc(76px+env(safe-area-inset-bottom))]">
       <Skeleton className="h-12 w-full rounded-xl" />
 
       <div className="mt-4 flex gap-2 overflow-hidden">

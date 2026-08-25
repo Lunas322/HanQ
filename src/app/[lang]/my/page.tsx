@@ -35,7 +35,7 @@ export default async function Page({ params, searchParams }: Props) {
         <Tab items={tabs} className="w-full" />
       </div>
 
-      <div className="px-5 pb-19">
+      <div className="px-5 pb-[calc(76px+env(safe-area-inset-bottom))]">
         <Suspense key={isAnswerTab ? "answers" : "questions"} fallback={<QuestionListSkeleton count={2} />}>
           <AuthoredQuestionList
             uid={user.uid}

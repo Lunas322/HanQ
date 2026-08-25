@@ -1,5 +1,5 @@
 const FIELD =
-  "mt-2 w-full rounded-xl bg-page text-primary outline-none placeholder:text-disabled focus:outline-2 focus:outline-brand";
+  "mt-2 w-full rounded-xl bg-page text-primary outline-none placeholder:text-tertiary focus:outline-2 focus:outline-brand";
 
 type Props = {
   id: string;

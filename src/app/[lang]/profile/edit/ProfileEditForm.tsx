@@ -134,7 +134,7 @@ export function ProfileEditForm({ profile }: Props) {
         />
       </div>
 
-      <div className="sticky bottom-0 mt-auto bg-surface px-5 pb-[18px] pt-3 shadow-[0_-4px_16px_0_rgba(25,31,40,0.06)]">
+      <div className="sticky bottom-0 mt-auto bg-surface px-5 pb-[calc(18px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_16px_0_rgba(25,31,40,0.06)]">
         {error && (
           <p role="alert" className="mb-2 text-[13px] text-like">
             {formError[error]}

@@ -35,7 +35,7 @@ export default function Error({ error, reset }: Props) {
       <Button content={dictionary.common.retry} size="md" onClick={reset} />
 
       {error.digest && (
-        <p className="text-[12px] text-disabled">
+        <p className="text-[12px] text-tertiary">
           {dictionary.error.digest(error.digest)}
         </p>
       )}
