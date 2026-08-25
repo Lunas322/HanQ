@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import type { FormErrorCode } from "@/lib/form-errors";
 import { useDictionary } from "@/lib/i18n/context";
@@ -36,6 +36,15 @@ export function ProfileEditForm({ profile }: Props) {
 
   const error = pickError ?? state.error;
   const shownPhoto = removed ? null : (preview ?? profile.photoUrl);
+
+  useEffect(() => {
+    if (!state.error?.startsWith("NAME_")) return;
+
+    const field = document.querySelector<HTMLElement>("#name");
+
+    field?.scrollIntoView({ block: "center", behavior: "smooth" });
+    field?.focus({ preventScroll: true });
+  }, [state]);
 
   const pickFile = async (file: File | undefined) => {
     if (!file) return;
@@ -145,7 +154,7 @@ export function ProfileEditForm({ profile }: Props) {
           content={isPending ? copy.saving : copy.save}
           size="lg"
           type="submit"
-          disabled={isPending || name.trim().length === 0}
+          disabled={isPending}
           className="w-full"
         />
       </div>

@@ -19,10 +19,10 @@ export default async function NotificationsLayout({ children }: Props) {
   return (
     <>
       <div className="sticky top-0 z-50">
-        <Header mainIcon="ChevronLeft" title={notification.title} />
+        <Header mainIcon="ChevronLeft" title={notification.title} titleAsHeading />
       </div>
 
-      <main className="flex-1 bg-surface">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 bg-surface">{children}</main>
     </>
   );
 }

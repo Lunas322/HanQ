@@ -40,13 +40,13 @@ export function ProfileMenu() {
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
             role="menu"
-            className="absolute right-0 top-full z-50 mt-1 w-32 overflow-hidden rounded-xl bg-surface py-1 shadow-[0_4px_16px_0_rgba(25,31,40,0.14)]"
+            className="absolute right-0 top-full z-50 mt-1 w-max min-w-32 overflow-hidden rounded-xl bg-surface py-1 shadow-[0_4px_16px_0_rgba(25,31,40,0.14)]"
           >
             <Link
               href={path("/profile/edit")}
               role="menuitem"
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-2.5 text-[14px] font-medium text-secondary"
+              className="block whitespace-nowrap px-4 py-2.5 text-[14px] font-medium text-secondary"
             >
               {my.editProfile}
             </Link>
@@ -54,7 +54,7 @@ export function ProfileMenu() {
             <a
               href="/logout"
               role="menuitem"
-              className="block px-4 py-2.5 text-[14px] font-medium text-secondary"
+              className="block whitespace-nowrap px-4 py-2.5 text-[14px] font-medium text-secondary"
             >
               {my.logout}
             </a>

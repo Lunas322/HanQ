@@ -91,6 +91,8 @@ export default async function Page({ params, searchParams }: Props) {
 
   return (
     <div className="px-5 py-4 mb-[calc(76px+env(safe-area-inset-bottom))]">
+      <h1 className="sr-only">{home.title}</h1>
+
       <Suspense fallback={null}>
         <NoticeBanner language={language} />
       </Suspense>

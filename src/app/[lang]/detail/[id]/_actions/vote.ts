@@ -9,7 +9,7 @@ import { revalidateQuestion } from "./revalidate";
 export async function voteAction(
   questionId: string,
   optionId: string,
-): Promise<void> {
+): Promise<boolean> {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -20,8 +20,10 @@ export async function voteAction(
     await votePoll(questionId, user.uid, optionId);
   } catch (e) {
     console.error("[voteAction]", questionId, optionId, e);
-    return;
+    return false;
   }
 
   revalidateQuestion(questionId);
+
+  return true;
 }

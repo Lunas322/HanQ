@@ -19,10 +19,10 @@ export default async function EditLayout({ children }: Props) {
   return (
     <>
       <div className="sticky top-0 z-50">
-        <Header mainIcon="ChevronLeft" title={profile.editTitle} />
+        <Header mainIcon="ChevronLeft" title={profile.editTitle} titleAsHeading />
       </div>
 
-      <main className="flex flex-1 flex-col bg-surface">{children}</main>
+      <main id="main" tabIndex={-1} className="flex flex-1 flex-col bg-surface">{children}</main>
     </>
   );
 }

@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { useDictionary } from "@/lib/i18n/context";
 import { Icon } from "./Icon";
+import { useToast } from "./Toast";
 
 const SIZE_CLASS = {
   sm: "px-[10px] py-[6px] gap-1 text-[13px]",
@@ -18,12 +19,13 @@ type Props = {
   count: number;
   liked: boolean;
   size: keyof typeof SIZE_CLASS;
-  onToggle: () => Promise<void>;
+  onToggle: () => Promise<boolean>;
   loginHref?: string;
 };
 
 export function LikeButton({ count, liked, size, onToggle, loginHref }: Props) {
   const { detail } = useDictionary();
+  const toast = useToast();
   const [isPending, startTransition] = useTransition();
 
   const [optimistic, setOptimistic] = useOptimistic(
@@ -37,7 +39,10 @@ export function LikeButton({ count, liked, size, onToggle, loginHref }: Props) {
   const handleClick = () => {
     startTransition(async () => {
       setOptimistic(!optimistic.liked);
-      await onToggle();
+
+      if (!(await onToggle())) {
+        toast(detail.likeFailed, "error");
+      }
     });
   };
 
