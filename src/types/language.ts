@@ -1,4 +1,4 @@
-export const LANGUAGES = ["ko", "ja", "en"] as const;
+export const LANGUAGES = ["ko", "ja", "en", "zh"] as const;
 
 export type Language = (typeof LANGUAGES)[number];
 

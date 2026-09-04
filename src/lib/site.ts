@@ -8,6 +8,7 @@ export const OG_LOCALE: Record<Language, string> = {
   ko: "ko_KR",
   ja: "ja_JP",
   en: "en_US",
+  zh: "zh_CN",
 };
 
 export function alternateOgLocales(language: Language): string[] {
