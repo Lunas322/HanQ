@@ -1,6 +1,8 @@
 export const CATEGORY_IDS = [
   "korea",
   "japan",
+  "usa",
+  "china",
   "career",
   "love",
   "travel",
@@ -19,6 +21,8 @@ export type Category = {
 export const CATEGORIES: Category[] = [
   { id: "korea", emoji: "🇰🇷" },
   { id: "japan", emoji: "🇯🇵" },
+  { id: "usa", emoji: "🇺🇸" },
+  { id: "china", emoji: "🇨🇳" },
   { id: "career", emoji: "🎓" },
   { id: "love", emoji: "❤️" },
   { id: "travel", emoji: "✈️" },

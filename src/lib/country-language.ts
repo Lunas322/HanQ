@@ -9,4 +9,9 @@ export const COUNTRY_TO_LANGUAGE: Record<string, Language> = {
   AU: "en",
   NZ: "en",
   IE: "en",
+  CN: "zh",
+  TW: "zh",
+  HK: "zh",
+  MO: "zh",
+  SG: "zh",
 };
