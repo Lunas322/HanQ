@@ -2,23 +2,31 @@ import type { Language } from "@/types/language";
 
 const HANGUL = /[가-힣ᄀ-ᇿ㄰-㆏]/g;
 const KANA = /[぀-ゟ゠-ヿ]/g;
-const TRANSLATABLE = /[가-힣ᄀ-ᇿ㄰-㆏぀-ゟ゠-ヿ㐀-䶿一-鿿]/;
+const LATIN = /[a-zA-Z]/g;
+const TRANSLATABLE = /[가-힣ᄀ-ᇿ㄰-㆏぀-ゟ゠-ヿ㐀-䶿一-鿿a-zA-Z]/;
 
 export type Detection = {
   language: Language;
   confident: boolean;
 };
 
+function countScripts(text: string): Record<Language, number> {
+  return {
+    ko: text.match(HANGUL)?.length ?? 0,
+    ja: text.match(KANA)?.length ?? 0,
+    en: text.match(LATIN)?.length ?? 0,
+  };
+}
+
 export function detectLanguage(text: string, fallback: Language): Detection {
-  const hangul = text.match(HANGUL)?.length ?? 0;
-  const kana = text.match(KANA)?.length ?? 0;
+  const ranked = Object.entries(countScripts(text)).toSorted(
+    (a, b) => b[1] - a[1],
+  ) as [Language, number][];
 
-  const [language, dominant, other] =
-    hangul >= kana
-      ? (["ko", hangul, kana] as const)
-      : (["ja", kana, hangul] as const);
+  const [language, dominant] = ranked[0];
+  const runnerUp = ranked[1][1];
 
-  if (dominant === 0 || dominant <= other * 2) {
+  if (dominant === 0 || dominant <= runnerUp * 2) {
     return { language: fallback, confident: false };
   }
 
