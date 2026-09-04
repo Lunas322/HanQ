@@ -1,4 +1,4 @@
-import type { Language } from "./language";
+import { LANGUAGES, type Language } from "./language";
 
 export type LocalizedText = Partial<Record<Language, string>>;
 
@@ -12,6 +12,6 @@ export function isTranslationStatus(
   return TRANSLATION_STATUSES.includes(value as TranslationStatus);
 }
 
-export function otherLanguage(language: Language): Language {
-  return language === "ko" ? "ja" : "ko";
+export function translationTargets(language: Language): Language[] {
+  return LANGUAGES.filter((candidate) => candidate !== language);
 }
