@@ -56,12 +56,14 @@ export const en: Dictionary = {
     ko: "한국어",
     ja: "日本語",
     en: "English",
+    zh: "中文",
   },
 
   country: {
     ko: "Korea",
     ja: "Japan",
     en: "United States",
+    zh: "China",
   },
 
   landing: {
@@ -231,6 +233,8 @@ export const en: Dictionary = {
   category: {
     korea: "Korean culture",
     japan: "Japanese culture",
+    usa: "American culture",
+    china: "Chinese culture",
     career: "Career / study",
     love: "Relationships",
     travel: "Travel",

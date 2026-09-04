@@ -58,12 +58,14 @@ export const ko = {
     ko: "한국어",
     ja: "日本語",
     en: "English",
+    zh: "中文",
   },
 
   country: {
     ko: "한국",
     ja: "일본",
     en: "미국",
+    zh: "중국",
   },
 
   landing: {
@@ -231,6 +233,8 @@ export const ko = {
   category: {
     korea: "한국 문화",
     japan: "일본 문화",
+    usa: "미국 문화",
+    china: "중국 문화",
     career: "취업 / 대학",
     love: "연애",
     travel: "여행",
