@@ -44,7 +44,7 @@ export default async function OpengraphImage({
             letterSpacing: -1,
           }}
         >
-          Korea × Japan · Realtime Translated Q&amp;A
+          Multilingual · Realtime Translated Q&amp;A
         </div>
 
         <div
@@ -59,7 +59,7 @@ export default async function OpengraphImage({
         >
           <span>{meta.title}</span>
           <span>·</span>
-          <span>{language === "ko" ? "ko" : "ja"}</span>
+          <span>{language}</span>
         </div>
       </div>
     ),

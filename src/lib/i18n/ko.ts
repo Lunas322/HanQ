@@ -13,20 +13,20 @@ import {
 export const ko = {
   meta: {
     title: "HanQ",
-    socialTitle: "HanQ — 한국과 일본, 언어 걱정 없이",
+    socialTitle: "HanQ — 언어 걱정 없이 통하는 다국어 Q&A",
     description:
-      "한국어로 물으면 일본어로, 일본어 답변은 한국어로 자동 번역되는 한일 Q&A 커뮤니티. 문화·여행·취업·연애까지 현지 사람에게 직접 물어보세요.",
+      "내 언어로 물으면 상대 언어로 자동 번역되는 다국어 Q&A 커뮤니티. 문화·여행·취업·연애까지 현지 사람에게 직접 물어보세요.",
     keywords: [
-      "한일 커뮤니티",
-      "한국 일본 질문",
+      "다국어 커뮤니티",
+      "해외 질문",
       "실시간 번역",
       "자동 번역 Q&A",
-      "일본 문화",
-      "일본 여행",
-      "일본 유학",
-      "일본 취업",
-      "일본어 질문",
-      "한일 교류",
+      "외국 문화",
+      "해외 여행",
+      "해외 유학",
+      "해외 취업",
+      "외국어 질문",
+      "글로벌 교류",
     ],
   },
 
@@ -57,16 +57,18 @@ export const ko = {
     switcherLegend: "표시 언어",
     ko: "한국어",
     ja: "日本語",
+    en: "English",
   },
 
   country: {
     ko: "한국",
     ja: "일본",
+    en: "미국",
   },
 
   landing: {
     heroLine1: "언어 걱정 없이,",
-    heroLine2: "한국과 일본에",
+    heroLine2: "전 세계에",
     heroLine3: "물어보세요",
     heroDescriptionLine1: "내 언어로 쓰면 상대 언어로 자동 번역돼요.",
     heroDescriptionLine2: "문화, 여행, 취업까지 궁금한 걸 편하게 나눠요.",
@@ -123,7 +125,7 @@ export const ko = {
     pollAdd: "선택지 추가",
     pollRemove: (index: number) => `선택지 ${index} 삭제`,
     translationNotice:
-      "작성한 글은 일본어로 자동 번역돼서 함께 보여져요. 원문도 그대로 저장돼요.",
+      "작성한 글은 다른 언어로 자동 번역돼서 함께 보여져요. 원문도 그대로 저장돼요.",
     submit: "질문 등록하기",
     submitting: "등록 중...",
   },
