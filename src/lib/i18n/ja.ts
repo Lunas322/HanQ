@@ -11,20 +11,20 @@ import type { Dictionary } from "./ko";
 export const ja: Dictionary = {
   meta: {
     title: "HanQ",
-    socialTitle: "HanQ — 韓国と日本を、言葉の壁なく",
+    socialTitle: "HanQ — 言葉の壁なく通じる多言語Q&A",
     description:
-      "日本語で質問すれば韓国語に、韓国語の回答は日本語に自動翻訳される日韓Q&Aコミュニティ。文化・旅行・就職・恋愛まで、現地の人に直接聞けます。",
+      "自分の言葉で質問すれば相手の言葉に自動翻訳される多言語Q&Aコミュニティ。文化・旅行・就職・恋愛まで、現地の人に直接聞けます。",
     keywords: [
-      "日韓コミュニティ",
-      "韓国 日本 質問",
+      "多言語コミュニティ",
+      "海外質問",
       "リアルタイム翻訳",
       "自動翻訳 Q&A",
-      "韓国文化",
-      "韓国旅行",
-      "韓国留学",
-      "韓国就職",
-      "韓国語 質問",
-      "日韓交流",
+      "海外文化",
+      "海外旅行",
+      "海外留学",
+      "海外就職",
+      "外国語 質問",
+      "グローバル交流",
     ],
   },
 
@@ -55,16 +55,18 @@ export const ja: Dictionary = {
     switcherLegend: "表示言語",
     ko: "한국어",
     ja: "日本語",
+    en: "English",
   },
 
   country: {
     ko: "韓国",
     ja: "日本",
+    en: "アメリカ",
   },
 
   landing: {
     heroLine1: "言葉の心配なく、",
-    heroLine2: "韓国と日本に",
+    heroLine2: "世界中に",
     heroLine3: "聞いてみよう",
     heroDescriptionLine1: "自分の言葉で書けば、相手の言葉に自動翻訳されます。",
     heroDescriptionLine2:
@@ -122,7 +124,7 @@ export const ja: Dictionary = {
     pollAdd: "選択肢を追加",
     pollRemove: (index: number) => `選択肢 ${index} を削除`,
     translationNotice:
-      "投稿は韓国語に自動翻訳されて一緒に表示されます。原文もそのまま保存されます。",
+      "投稿は他の言語に自動翻訳されて一緒に表示されます。原文もそのまま保存されます。",
     submit: "質問を投稿する",
     submitting: "投稿中...",
   },

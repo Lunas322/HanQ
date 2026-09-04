@@ -5,7 +5,7 @@ import { cache } from "react";
 
 import { getDictionary } from "@/lib/i18n";
 import type { Profile } from "@/types/user";
-import type { Language } from "@/types/language";
+import { isLanguage, type Language } from "@/types/language";
 import { USERS_COLLECTION } from "./collections";
 import { adminDb } from "./firebase-admin";
 
@@ -23,7 +23,7 @@ export function readPhotoUrl(value: unknown): string | null {
 }
 
 export function toLanguage(value: unknown): Language {
-  return value === "ja" ? "ja" : "ko";
+  return isLanguage(value) ? value : "ko";
 }
 
 type EnsureUserInput = {

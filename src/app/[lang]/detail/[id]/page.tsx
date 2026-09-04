@@ -16,7 +16,7 @@ import { getDictionary } from "@/lib/i18n";
 import { hasLiked } from "@/lib/likes";
 import { getVote } from "@/lib/polls";
 import { getQuestion } from "@/lib/questions";
-import { SITE_URL } from "@/lib/site";
+import { OG_LOCALE, SITE_URL } from "@/lib/site";
 import { isLanguage, LANGUAGES, type Language } from "@/types/language";
 import type { Question } from "@/types/question";
 
@@ -63,7 +63,7 @@ export async function generateMetadata({
       description,
       url: `${SITE_URL}/${lang}${path}`,
       publishedTime: question.createdAt,
-      locale: lang === "ko" ? "ko_KR" : "ja_JP",
+      locale: OG_LOCALE[lang],
     },
     twitter: {
       card: "summary",

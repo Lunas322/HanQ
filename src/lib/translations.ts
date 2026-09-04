@@ -8,33 +8,65 @@ import { detectLanguage, hasTranslatableText } from "./detect-language";
 import { adminDb } from "./firebase-admin";
 import { readLocalizedText, readPath } from "./firestore-value";
 import { pollLabelPaths } from "./polls";
-import { translateTexts } from "./translate";
+import { translateTexts, type TranslateResult } from "./translate";
 import { isLanguage, type Language } from "@/types/language";
-import { otherLanguage, type TranslationStatus } from "@/types/localized";
+import {
+  translationTargets,
+  type LocalizedText,
+  type TranslationStatus,
+} from "@/types/localized";
 
 type FieldUpdate = Record<string, unknown>;
 
 function buildUpdate(
   fields: string[],
   originals: string[],
-  translated: string[],
+  translations: Partial<Record<Language, string[]>>,
   source: Language,
 ): FieldUpdate {
-  const target = otherLanguage(source);
-
   const update: FieldUpdate = {
     sourceLanguage: source,
     translationStatus: "done" satisfies TranslationStatus,
   };
 
   fields.forEach((field, index) => {
-    update[field] = {
-      [source]: originals[index],
-      [target]: translated[index],
-    };
+    const value: LocalizedText = { [source]: originals[index] };
+
+    for (const target of Object.keys(translations) as Language[]) {
+      value[target] = translations[target]?.[index];
+    }
+
+    update[field] = value;
   });
 
   return update;
+}
+
+type MultiTranslateResult = {
+  byTarget: Partial<Record<Language, string[]>>;
+  detectedSource: Language | null;
+};
+
+async function translateToTargets(
+  texts: string[],
+  targets: Language[],
+  source: Language | undefined,
+): Promise<MultiTranslateResult | null> {
+  const byTarget: Partial<Record<Language, string[]>> = {};
+  let detectedSource: Language | null = null;
+
+  for (const target of targets) {
+    const result: TranslateResult | null = await translateTexts(texts, target, source);
+
+    if (!result) {
+      return null;
+    }
+
+    byTarget[target] = result.texts;
+    detectedSource ??= result.detectedSource;
+  }
+
+  return { byTarget, detectedSource };
 }
 
 type FieldsOf = (data: FirebaseFirestore.DocumentData) => string[];
@@ -63,16 +95,20 @@ async function translateDocument(
   const combined = originals.join("\n");
 
   if (!hasTranslatableText(combined)) {
-    await ref.update(buildUpdate(fields, originals, originals, stored));
+    const unchanged = Object.fromEntries(
+      translationTargets(stored).map((target) => [target, originals]),
+    ) as Partial<Record<Language, string[]>>;
+
+    await ref.update(buildUpdate(fields, originals, unchanged, stored));
     return;
   }
 
   const detection = detectLanguage(combined, stored);
 
   let source = detection.language;
-  let result = await translateTexts(
+  let result = await translateToTargets(
     originals,
-    otherLanguage(source),
+    translationTargets(source),
     detection.confident ? source : undefined,
   );
 
@@ -83,7 +119,7 @@ async function translateDocument(
     result.detectedSource !== source
   ) {
     source = result.detectedSource;
-    result = await translateTexts(originals, otherLanguage(source), source);
+    result = await translateToTargets(originals, translationTargets(source), source);
   }
 
   if (!result) {
@@ -93,7 +129,7 @@ async function translateDocument(
     return;
   }
 
-  await ref.update(buildUpdate(fields, originals, result.texts, source));
+  await ref.update(buildUpdate(fields, originals, result.byTarget, source));
 }
 
 export async function translateQuestion(id: string): Promise<void> {

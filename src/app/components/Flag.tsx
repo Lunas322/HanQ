@@ -3,7 +3,7 @@
 import { useDictionary } from "@/lib/i18n/context";
 import type { Language } from "@/types/language";
 
-const EMOJI: Record<Language, string> = { ko: "🇰🇷", ja: "🇯🇵" };
+const EMOJI: Record<Language, string> = { ko: "🇰🇷", ja: "🇯🇵", en: "🇺🇸" };
 
 export function Flag({ language }: { language: Language }) {
   const dictionary = useDictionary();

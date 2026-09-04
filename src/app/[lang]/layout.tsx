@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LanguageProvider } from "@/lib/i18n/context";
 import { ToastProvider } from "@/app/components/Toast";
 import { getDictionary } from "@/lib/i18n";
+import { alternateOgLocales, OG_LOCALE } from "@/lib/site";
 import { DEFAULT_LANGUAGE, isLanguage, LANGUAGES } from "@/types/language";
 import "@/app/globals.css";
 
@@ -79,8 +80,8 @@ export async function generateMetadata({
       siteName: "HanQ",
       title: meta.socialTitle,
       description: meta.description,
-      locale: lang === "ko" ? "ko_KR" : "ja_JP",
-      alternateLocale: lang === "ko" ? "ja_JP" : "ko_KR",
+      locale: OG_LOCALE[lang],
+      alternateLocale: alternateOgLocales(lang),
       url: `/${lang}`,
     },
     twitter: {

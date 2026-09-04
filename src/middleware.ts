@@ -4,19 +4,14 @@ import {
   LANGUAGE_COOKIE_MAX_AGE,
   LANGUAGE_COOKIE_NAME,
 } from "@/lib/i18n";
+import { COUNTRY_TO_LANGUAGE } from "@/lib/country-language";
 import { localePath } from "@/lib/routes";
 import { SESSION_COOKIE_NAME } from "@/lib/session";
-import {
-  DEFAULT_LANGUAGE,
-  isLanguage,
-  type Language,
-} from "@/types/language";
+import { DEFAULT_LANGUAGE, isLanguage, type Language } from "@/types/language";
 
 export const LANGUAGE_HEADER = "x-hanq-lang";
 
 const COUNTRY_HEADER = "x-vercel-ip-country";
-
-const COUNTRY_TO_LANGUAGE: Record<string, Language> = { KR: "ko", JP: "ja" };
 
 const LOCALE_SEGMENT = /^[a-z]{2}(-[a-z]{2})?$/i;
 

@@ -3,17 +3,13 @@ import "server-only";
 import { cookies, headers } from "next/headers";
 
 import { LANGUAGE_COOKIE_NAME } from "@/lib/i18n";
+import { COUNTRY_TO_LANGUAGE } from "@/lib/country-language";
 import { isLanguage, type Language } from "@/types/language";
 
 const LANGUAGE_HEADER = "x-hanq-lang";
 const COUNTRY_HEADER = "x-vercel-ip-country";
 
 const DEFAULT_LANGUAGE: Language = "ko";
-
-const COUNTRY_TO_LANGUAGE: Record<string, Language> = {
-  KR: "ko",
-  JP: "ja",
-};
 
 export function languageFromCountry(country: string | null): Language {
   if (!country) {

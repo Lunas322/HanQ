@@ -1,10 +1,16 @@
 import { SITE_URL } from "@/lib/site";
+import { LANGUAGES } from "@/types/language";
+
+const LANG_LIST = LANGUAGES.join("|");
+const LANDING_LINKS = LANGUAGES.map(
+  (lang) => `- [랜딩 (${lang})](${SITE_URL}/${lang}): 서비스 소개`,
+).join("\n");
 
 const BODY = `# HanQ
 
-> 한국과 일본 사람이 언어 장벽 없이 서로에게 직접 묻고 답하는 Q&A 커뮤니티입니다.
-> 한국어로 올린 질문은 일본어로, 일본어 답변은 한국어로 자동 번역되어 저장되며,
-> 읽는 사람의 언어로 표시됩니다. 원문과 번역문이 모두 보존되고 각 글에 원문 언어가 기록됩니다.
+> 한국어, 일본어, 영어 사용자가 언어 장벽 없이 서로에게 직접 묻고 답하는 다국어 Q&A 커뮤니티입니다.
+> 질문과 답변은 자동으로 서로의 언어로 번역되어 저장되며, 읽는 사람의 언어로 표시됩니다.
+> 원문과 번역문이 모두 보존되고 각 글에 원문 언어가 기록됩니다.
 > 현지 문화·생활 정보를 현지 사람에게서 직접 얻는 것이 이 서비스의 목적입니다.
 
 ## 이런 질문에 답이 있습니다
@@ -18,17 +24,16 @@ const BODY = `# HanQ
 
 ## 구조
 
-- 모든 페이지는 언어 접두사를 가집니다: ${SITE_URL}/ko/... , ${SITE_URL}/ja/...
-- 두 언어 페이지는 같은 내용이며 hreflang으로 서로 연결됩니다.
+- 모든 페이지는 언어 접두사를 가집니다: ${SITE_URL}/{${LANG_LIST}}/...
+- 언어별 페이지는 같은 내용이며 hreflang으로 서로 연결됩니다.
 - 질문 상세는 로그인 없이 읽을 수 있습니다. 작성·답변·좋아요는 로그인이 필요합니다.
 
 ## 주요 경로
 
 - [질문 목록 sitemap](${SITE_URL}/sitemap.xml): 색인 가능한 모든 질문 상세 페이지
-- [랜딩 (한국어)](${SITE_URL}/ko): 서비스 소개
-- [랜딩 (일본어)](${SITE_URL}/ja): 서비스 소개
-- 질문 상세: ${SITE_URL}/{ko|ja}/detail/{questionId}
-- 사용자 프로필: ${SITE_URL}/{ko|ja}/users/{userId}
+${LANDING_LINKS}
+- 질문 상세: ${SITE_URL}/{${LANG_LIST}}/detail/{questionId}
+- 사용자 프로필: ${SITE_URL}/{${LANG_LIST}}/users/{userId}
 
 ## 주제 범위
 
@@ -42,7 +47,7 @@ const BODY = `# HanQ
 
 ## 색인 제외
 
-- ${SITE_URL}/{ko|ja}/home, /ask, /my, /notifications, /profile — 로그인 전용
+- ${SITE_URL}/{${LANG_LIST}}/home, /ask, /my, /notifications, /profile — 로그인 전용
 - ${SITE_URL}/api/, /logout
 `;
 
