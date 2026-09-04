@@ -6,8 +6,18 @@ const TIMEOUT_MS = 10_000;
 
 // DeepL's target_lang requires a regional variant for English; source_lang
 // rejects one and only accepts the base code. https://developers.deepl.com/docs/api-reference/translate
-const TARGET_CODE: Record<Language, string> = { ko: "KO", ja: "JA", en: "EN-US" };
-const SOURCE_CODE: Record<Language, string> = { ko: "KO", ja: "JA", en: "EN" };
+const TARGET_CODE: Record<Language, string> = {
+  ko: "KO",
+  ja: "JA",
+  en: "EN-US",
+  zh: "ZH-HANS",
+};
+const SOURCE_CODE: Record<Language, string> = {
+  ko: "KO",
+  ja: "JA",
+  en: "EN",
+  zh: "ZH",
+};
 
 export type TranslateResult = {
   texts: string[];
